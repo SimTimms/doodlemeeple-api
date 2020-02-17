@@ -1,0 +1,20 @@
+{
+  "name": "doodlemeeple-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/SimTimms/doodlemeeple-api.git",
+  "author": "Tim Simms <36262574+SimTimms@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "npm run start:api",
+    "start:app": "react-scripts start",
+    "start:api": "nodemon --watch ./api --exec babel-node --inspect --presets=@babel/env ./api/index.js"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.8.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.2"
+  }
+}

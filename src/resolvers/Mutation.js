@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { APP_SECRET, getUserId } = require('../utils');
+const sgMail = require('@sendgrid/mail');
 
 function post(parent, args, context, info) {
   const userId = getUserId(context);
@@ -12,15 +13,20 @@ function post(parent, args, context, info) {
 }
 
 async function signup(parent, args, context, info) {
-  // 1
   const password = await bcrypt.hash(args.password, 10);
-  // 2
   const user = await context.prisma.createUser({ ...args, password });
-
-  // 3
   const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
-  // 4
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const msg = {
+    to: user.email,
+    from: 'welcome@doodlemeeple.com',
+    subject: 'Welcome to DoodleMeeple',
+    text: 'Welcome to DoodleMeeple',
+    html: '<strong>Welcome to DoodleMeeple</strong>',
+  };
+  sgMail.send(msg);
+
   return {
     token,
     user,

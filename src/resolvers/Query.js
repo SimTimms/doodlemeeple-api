@@ -25,6 +25,7 @@ async function feed(parent, args, context, info) {
     links,
     count,
   };
+  
   return links;
 }
 

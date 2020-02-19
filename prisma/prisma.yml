@@ -1,0 +1,11 @@
+# The HTTP endpoint for your Prisma API
+#endpoint: ''
+endpoint: https://eu1.prisma.sh/tim-simms-97eabd/doodlemeeple-api/dev
+
+# Points to the file that contains your datamodel
+datamodel: datamodel.graphql
+
+# Specifies language & location for the generated Prisma client
+generate:
+  - generator: javascript-client
+    output: ../src/generated/prisma-client

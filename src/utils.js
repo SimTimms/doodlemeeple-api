@@ -7,7 +7,10 @@ function getUserId(context) {
   const Authorization = context.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
+
+    // @ts-ignore
     const { userId } = jwt.verify(token, APP_SECRET);
+
     return userId;
   }
 
@@ -34,7 +37,7 @@ function signupChecks(input) {
     .not()
     .oneOf(['Passw0rd', 'Password123']);
 
-  if (input.name.length < 5) {
+  if (input.name.length < 3) {
     return false;
   }
 

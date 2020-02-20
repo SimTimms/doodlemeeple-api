@@ -6,6 +6,7 @@ const { signupChecks } = require('../utils');
 
 function post(parent, args, context, info) {
   const userId = getUserId(context);
+  console.log(userId);
   return context.prisma.createLink({
     url: args.url,
     description: args.description,

@@ -11,9 +11,51 @@ type User {
   id: ID! @id
   name: String!
   email: String! @unique
+  resetToken: String @unique
   password: String!
   links: [Link!]!
   votes: [Vote!]!
+  keywords: [String] @scalarList(strategy: RELATION)
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: [Section!]
+  notifications: [Notification!]!
+}
+
+type Notification {
+  id: ID! @id
+  title: String!
+  message: String!
+  discarded: Boolean
+  linkTo: String
+  icon: String!
+  createdAt: DateTime! @createdAt
+  user: User!
+}
+
+input SectionInput {
+  summary: String
+  gallery: Gallery
+}
+
+type Section {
+  id: ID! @id
+  summary: String
+  gallery: Gallery
+  user: User!
+}
+
+type Gallery {
+  id: ID! @id
+  summary: String
+  images: [String] @scalarList(strategy: RELATION)
+}
+
+input GalleryInput {
+  summary: String
+  images: [String] @scalarList(strategy: RELATION)
 }
 
 type Vote {

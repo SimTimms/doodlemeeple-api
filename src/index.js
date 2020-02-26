@@ -7,12 +7,16 @@ const User = require('./resolvers/User');
 const Link = require('./resolvers/Link');
 const Subscription = require('./resolvers/Subscription');
 const Vote = require('./resolvers/Vote');
+var express = require('express');
+const bodyParser = require('body-parser');
+const { sign_s3 } = require('./aws-upload');
 
 const resolvers = { Query, Mutation, Subscription, User, Link, Vote };
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
+
   context: request => {
     return {
       ...request,
@@ -20,4 +24,13 @@ const server = new GraphQLServer({
     };
   },
 });
-server.start(() => console.log(`Server is running on http://localhost:4000`));
+
+server.start();
+
+const customRouter = express.Router();
+customRouter.use(bodyParser.urlencoded({ extended: true }));
+customRouter.post('/sign_s3', (req, res) => {
+  sign_s3(req, res);
+});
+
+server.express.use(customRouter);

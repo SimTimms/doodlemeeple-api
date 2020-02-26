@@ -7,9 +7,27 @@ enum LinkOrderByInput {
   createdAt_DESC
 }
 
+type Mutation {
+  post(url: String!, description: String!): Link!
+  signup(email: String!, password: String!, name: String!): AuthPayload
+  passwordForgot(email: String!): Boolean!
+  createNotification(message: String!): Boolean!
+  passwordReset(password: String!, token: String!): Boolean!
+  login(email: String!, password: String!): AuthPayload
+  updateUser(
+    name: String!
+    summary: String
+    profileBG: String
+    sections: [SectionInput]
+  ): User
+  updateSection(id: String!, section: SectionInput): Section
+  vote(linkId: ID!): Vote
+}
+
 type Query {
-  info: String!
-  feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
+  profile: User!
+  getNotifications: [Notification!]
+  getSections: [Section!]
 }
 
 type Feed {
@@ -17,11 +35,9 @@ type Feed {
   count: Int!
 }
 
-type Mutation {
-  post(url: String!, description: String!): Link!
-  signup(email: String!, password: String!, name: String!): AuthPayload
-  login(email: String!, password: String!): AuthPayload
-  vote(linkId: ID!): Vote
+input SectionInput {
+  summary: String
+  gallery: GalleryInput
 }
 
 type Subscription {
@@ -43,8 +59,45 @@ type AuthPayload {
 type User {
   id: ID!
   name: String!
+  resetToken: String
   email: String!
   links: [Link!]!
+  keywords: [String]
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: [Section!]
+  notifications: [Notification!]!
+}
+
+type Notification {
+  id: ID!
+  title: String!
+  message: String!
+  linkTo: String
+  icon: String!
+  discarded: Boolean
+  createdAt: String
+  user: User!
+}
+
+type Section {
+  id: ID!
+  summary: String
+  gallery: Gallery
+  user: User!
+}
+
+type Gallery {
+  id: ID!
+  summary: String
+  images: [String]
+}
+
+input GalleryInput {
+  summary: String
+  images: [String]
 }
 
 type Link {

@@ -52,8 +52,21 @@ function signupChecks(input) {
   return true;
 }
 
+function profileCheck(input) {
+  if (input.name.length < 3) {
+    return false;
+  }
+
+  if (input.summary.length < 3) {
+    return false;
+  }
+
+  return true;
+}
+
 module.exports = {
   APP_SECRET,
   getUserId,
+  profileCheck,
   signupChecks,
 };

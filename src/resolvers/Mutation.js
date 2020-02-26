@@ -1,17 +1,164 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { APP_SECRET, getUserId } = require('../utils');
+const {
+  APP_SECRET,
+  getUserId,
+  signupChecks,
+  profileCheck,
+} = require('../utils');
 const sgMail = require('@sendgrid/mail');
-const { signupChecks } = require('../utils');
 
 function post(parent, args, context, info) {
   const userId = getUserId(context);
-  console.log(userId);
+
   return context.prisma.createLink({
     url: args.url,
     description: args.description,
     postedBy: { connect: { id: userId } },
   });
+}
+
+async function updateSection(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  await context.prisma.createNotification({
+    user: { connect: { id: userId } },
+    title: 'You updated a section',
+    message: 'Make sure you showcase your best work',
+    linkTo: 'app/edit-profile',
+    icon: 'contact_mail',
+  });
+
+  const sectionExists = await context.prisma.$exists.section({
+    id: args.id,
+  });
+
+  if (sectionExists) {
+    const section = await context.prisma.updateSection({
+      data: {
+        summary: args.section.summary,
+      },
+      where: {
+        id: args.id,
+      },
+    });
+    return section;
+  } else {
+    const newSection = await context.prisma.createSection({
+      user: { connect: { id: userId } },
+      summary: args.section.summary,
+    });
+    return newSection;
+  }
+}
+
+async function updateUser(parent, args, context, info) {
+  const validSubmission = profileCheck({
+    name: args.name,
+    summary: args.summary,
+  });
+
+  if (validSubmission === false) {
+    throw new Error('Submission Failed');
+  }
+
+  const userId = getUserId(context);
+
+  await context.prisma.createNotification({
+    user: { connect: { id: userId } },
+    title: 'You updated your profile',
+    message: 'Nice Work! Keep your profile up-to-date',
+    linkTo: 'app/edit-profile',
+    icon: 'contact_mail',
+  });
+
+  const user = await context.prisma.updateUser({
+    data: {
+      name: args.name,
+      summary: args.summary,
+      profileBG: args.profileBG,
+    },
+    where: {
+      id: userId,
+    },
+  });
+
+  return user;
+}
+
+async function passwordForgot(parent, args, context) {
+  const user = await context.prisma.user({
+    email: args.email,
+  });
+
+  const token = jwt.sign({ userId: user.id }, APP_SECRET);
+
+  await context.prisma.updateUser({
+    data: {
+      resetToken: token,
+    },
+    where: {
+      id: user.id,
+    },
+  });
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+  const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
+  const msg = {
+    to: args.email,
+    from: 'account@doodlemeeple.com',
+    subject: 'Reset your Password',
+    text: `You have requested a password reset, visit ${actionLink}`,
+    html: `<strong>You have requested a password reset, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
+  };
+  await sgMail.send(msg);
+
+  return true;
+}
+
+async function passwordReset(parent, args, context) {
+  const user = await context.prisma.user({
+    resetToken: args.token,
+  });
+
+  const validSubmission = signupChecks({
+    password: args.password,
+    name: user.name,
+    email: user.email,
+  });
+
+  if (validSubmission === false) {
+    throw new Error('Submission Failed');
+  }
+
+  const password = await bcrypt.hash(args.password, 10);
+
+  await context.prisma.updateUser({
+    data: {
+      resetToken: null,
+      password: password,
+    },
+    where: {
+      id: user.id,
+    },
+  });
+
+  if (user) {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const actionLink = `${process.env.EMAIL_URL}`;
+    const msg = {
+      to: user.email,
+      from: 'account@doodlemeeple.com',
+      subject: 'Password has been changed',
+      text: `Your password has been changed, visit ${actionLink}`,
+      html: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
+    };
+    await sgMail.send(msg);
+
+    return true;
+  } else {
+    return false;
+  }
 }
 
 async function signup(parent, args, context, info) {
@@ -41,6 +188,14 @@ async function signup(parent, args, context, info) {
     };
     sgMail.send(msg);
 
+    await context.prisma.createNotification({
+      user: { connect: { id: user.id } },
+      title: 'Welcome to DoodleMeeple',
+      message: 'Get started by creating a profile',
+      linkTo: 'app/edit-profile',
+      icon: 'contact_mail',
+    });
+
     return {
       token,
       user,
@@ -50,6 +205,15 @@ async function signup(parent, args, context, info) {
   }
 }
 
+function createNotification(parent, args, context) {
+  const userId = getUserId(context);
+
+  return context.prisma.createNotification({
+    user: { connect: { id: userId } },
+    message: args.message,
+  });
+}
+
 async function login(parent, args, context, info) {
   // 1
   const user = await context.prisma.user({ email: args.email });
@@ -57,7 +221,6 @@ async function login(parent, args, context, info) {
     throw new Error('No such user found');
   }
 
-  // 2
   const valid = await bcrypt.compare(args.password, user.password);
   if (!valid) {
     throw new Error('Invalid password');
@@ -94,6 +257,11 @@ async function vote(parent, args, context, info) {
 
 module.exports = {
   signup,
+  passwordForgot,
+  passwordReset,
+  updateUser,
+  updateSection,
+  createNotification,
   login,
   post,
   vote,

@@ -3,7 +3,19 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateLink {
+/* GraphQL */ `type AggregateGallery {
+  count: Int!
+}
+
+type AggregateLink {
+  count: Int!
+}
+
+type AggregateNotification {
+  count: Int!
+}
+
+type AggregateSection {
   count: Int!
 }
 
@@ -20,6 +32,140 @@ type BatchPayload {
 }
 
 scalar DateTime
+
+type Gallery {
+  id: ID!
+  summary: String
+  images: [String!]!
+}
+
+type GalleryConnection {
+  pageInfo: PageInfo!
+  edges: [GalleryEdge]!
+  aggregate: AggregateGallery!
+}
+
+input GalleryCreateimagesInput {
+  set: [String!]
+}
+
+input GalleryCreateInput {
+  id: ID
+  summary: String
+  images: GalleryCreateimagesInput
+}
+
+input GalleryCreateOneInput {
+  create: GalleryCreateInput
+  connect: GalleryWhereUniqueInput
+}
+
+type GalleryEdge {
+  node: Gallery!
+  cursor: String!
+}
+
+enum GalleryOrderByInput {
+  id_ASC
+  id_DESC
+  summary_ASC
+  summary_DESC
+}
+
+type GalleryPreviousValues {
+  id: ID!
+  summary: String
+  images: [String!]!
+}
+
+type GallerySubscriptionPayload {
+  mutation: MutationType!
+  node: Gallery
+  updatedFields: [String!]
+  previousValues: GalleryPreviousValues
+}
+
+input GallerySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GalleryWhereInput
+  AND: [GallerySubscriptionWhereInput!]
+  OR: [GallerySubscriptionWhereInput!]
+  NOT: [GallerySubscriptionWhereInput!]
+}
+
+input GalleryUpdateDataInput {
+  summary: String
+  images: GalleryUpdateimagesInput
+}
+
+input GalleryUpdateimagesInput {
+  set: [String!]
+}
+
+input GalleryUpdateInput {
+  summary: String
+  images: GalleryUpdateimagesInput
+}
+
+input GalleryUpdateManyMutationInput {
+  summary: String
+  images: GalleryUpdateimagesInput
+}
+
+input GalleryUpdateOneInput {
+  create: GalleryCreateInput
+  update: GalleryUpdateDataInput
+  upsert: GalleryUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: GalleryWhereUniqueInput
+}
+
+input GalleryUpsertNestedInput {
+  update: GalleryUpdateDataInput!
+  create: GalleryCreateInput!
+}
+
+input GalleryWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  AND: [GalleryWhereInput!]
+  OR: [GalleryWhereInput!]
+  NOT: [GalleryWhereInput!]
+}
+
+input GalleryWhereUniqueInput {
+  id: ID
+}
 
 type Link {
   id: ID!
@@ -301,12 +447,30 @@ input LinkWhereUniqueInput {
 scalar Long
 
 type Mutation {
+  createGallery(data: GalleryCreateInput!): Gallery!
+  updateGallery(data: GalleryUpdateInput!, where: GalleryWhereUniqueInput!): Gallery
+  updateManyGalleries(data: GalleryUpdateManyMutationInput!, where: GalleryWhereInput): BatchPayload!
+  upsertGallery(where: GalleryWhereUniqueInput!, create: GalleryCreateInput!, update: GalleryUpdateInput!): Gallery!
+  deleteGallery(where: GalleryWhereUniqueInput!): Gallery
+  deleteManyGalleries(where: GalleryWhereInput): BatchPayload!
   createLink(data: LinkCreateInput!): Link!
   updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
   updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
   upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
   deleteLink(where: LinkWhereUniqueInput!): Link
   deleteManyLinks(where: LinkWhereInput): BatchPayload!
+  createNotification(data: NotificationCreateInput!): Notification!
+  updateNotification(data: NotificationUpdateInput!, where: NotificationWhereUniqueInput!): Notification
+  updateManyNotifications(data: NotificationUpdateManyMutationInput!, where: NotificationWhereInput): BatchPayload!
+  upsertNotification(where: NotificationWhereUniqueInput!, create: NotificationCreateInput!, update: NotificationUpdateInput!): Notification!
+  deleteNotification(where: NotificationWhereUniqueInput!): Notification
+  deleteManyNotifications(where: NotificationWhereInput): BatchPayload!
+  createSection(data: SectionCreateInput!): Section!
+  updateSection(data: SectionUpdateInput!, where: SectionWhereUniqueInput!): Section
+  updateManySections(data: SectionUpdateManyMutationInput!, where: SectionWhereInput): BatchPayload!
+  upsertSection(where: SectionWhereUniqueInput!, create: SectionCreateInput!, update: SectionUpdateInput!): Section!
+  deleteSection(where: SectionWhereUniqueInput!): Section
+  deleteManySections(where: SectionWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -330,6 +494,335 @@ interface Node {
   id: ID!
 }
 
+type Notification {
+  id: ID!
+  title: String!
+  message: String!
+  discarded: Boolean
+  linkTo: String
+  icon: String!
+  createdAt: DateTime!
+  user: User!
+}
+
+type NotificationConnection {
+  pageInfo: PageInfo!
+  edges: [NotificationEdge]!
+  aggregate: AggregateNotification!
+}
+
+input NotificationCreateInput {
+  id: ID
+  title: String!
+  message: String!
+  discarded: Boolean
+  linkTo: String
+  icon: String!
+  user: UserCreateOneWithoutNotificationsInput!
+}
+
+input NotificationCreateManyWithoutUserInput {
+  create: [NotificationCreateWithoutUserInput!]
+  connect: [NotificationWhereUniqueInput!]
+}
+
+input NotificationCreateWithoutUserInput {
+  id: ID
+  title: String!
+  message: String!
+  discarded: Boolean
+  linkTo: String
+  icon: String!
+}
+
+type NotificationEdge {
+  node: Notification!
+  cursor: String!
+}
+
+enum NotificationOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  message_ASC
+  message_DESC
+  discarded_ASC
+  discarded_DESC
+  linkTo_ASC
+  linkTo_DESC
+  icon_ASC
+  icon_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type NotificationPreviousValues {
+  id: ID!
+  title: String!
+  message: String!
+  discarded: Boolean
+  linkTo: String
+  icon: String!
+  createdAt: DateTime!
+}
+
+input NotificationScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  message: String
+  message_not: String
+  message_in: [String!]
+  message_not_in: [String!]
+  message_lt: String
+  message_lte: String
+  message_gt: String
+  message_gte: String
+  message_contains: String
+  message_not_contains: String
+  message_starts_with: String
+  message_not_starts_with: String
+  message_ends_with: String
+  message_not_ends_with: String
+  discarded: Boolean
+  discarded_not: Boolean
+  linkTo: String
+  linkTo_not: String
+  linkTo_in: [String!]
+  linkTo_not_in: [String!]
+  linkTo_lt: String
+  linkTo_lte: String
+  linkTo_gt: String
+  linkTo_gte: String
+  linkTo_contains: String
+  linkTo_not_contains: String
+  linkTo_starts_with: String
+  linkTo_not_starts_with: String
+  linkTo_ends_with: String
+  linkTo_not_ends_with: String
+  icon: String
+  icon_not: String
+  icon_in: [String!]
+  icon_not_in: [String!]
+  icon_lt: String
+  icon_lte: String
+  icon_gt: String
+  icon_gte: String
+  icon_contains: String
+  icon_not_contains: String
+  icon_starts_with: String
+  icon_not_starts_with: String
+  icon_ends_with: String
+  icon_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [NotificationScalarWhereInput!]
+  OR: [NotificationScalarWhereInput!]
+  NOT: [NotificationScalarWhereInput!]
+}
+
+type NotificationSubscriptionPayload {
+  mutation: MutationType!
+  node: Notification
+  updatedFields: [String!]
+  previousValues: NotificationPreviousValues
+}
+
+input NotificationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: NotificationWhereInput
+  AND: [NotificationSubscriptionWhereInput!]
+  OR: [NotificationSubscriptionWhereInput!]
+  NOT: [NotificationSubscriptionWhereInput!]
+}
+
+input NotificationUpdateInput {
+  title: String
+  message: String
+  discarded: Boolean
+  linkTo: String
+  icon: String
+  user: UserUpdateOneRequiredWithoutNotificationsInput
+}
+
+input NotificationUpdateManyDataInput {
+  title: String
+  message: String
+  discarded: Boolean
+  linkTo: String
+  icon: String
+}
+
+input NotificationUpdateManyMutationInput {
+  title: String
+  message: String
+  discarded: Boolean
+  linkTo: String
+  icon: String
+}
+
+input NotificationUpdateManyWithoutUserInput {
+  create: [NotificationCreateWithoutUserInput!]
+  delete: [NotificationWhereUniqueInput!]
+  connect: [NotificationWhereUniqueInput!]
+  set: [NotificationWhereUniqueInput!]
+  disconnect: [NotificationWhereUniqueInput!]
+  update: [NotificationUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [NotificationUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [NotificationScalarWhereInput!]
+  updateMany: [NotificationUpdateManyWithWhereNestedInput!]
+}
+
+input NotificationUpdateManyWithWhereNestedInput {
+  where: NotificationScalarWhereInput!
+  data: NotificationUpdateManyDataInput!
+}
+
+input NotificationUpdateWithoutUserDataInput {
+  title: String
+  message: String
+  discarded: Boolean
+  linkTo: String
+  icon: String
+}
+
+input NotificationUpdateWithWhereUniqueWithoutUserInput {
+  where: NotificationWhereUniqueInput!
+  data: NotificationUpdateWithoutUserDataInput!
+}
+
+input NotificationUpsertWithWhereUniqueWithoutUserInput {
+  where: NotificationWhereUniqueInput!
+  update: NotificationUpdateWithoutUserDataInput!
+  create: NotificationCreateWithoutUserInput!
+}
+
+input NotificationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  message: String
+  message_not: String
+  message_in: [String!]
+  message_not_in: [String!]
+  message_lt: String
+  message_lte: String
+  message_gt: String
+  message_gte: String
+  message_contains: String
+  message_not_contains: String
+  message_starts_with: String
+  message_not_starts_with: String
+  message_ends_with: String
+  message_not_ends_with: String
+  discarded: Boolean
+  discarded_not: Boolean
+  linkTo: String
+  linkTo_not: String
+  linkTo_in: [String!]
+  linkTo_not_in: [String!]
+  linkTo_lt: String
+  linkTo_lte: String
+  linkTo_gt: String
+  linkTo_gte: String
+  linkTo_contains: String
+  linkTo_not_contains: String
+  linkTo_starts_with: String
+  linkTo_not_starts_with: String
+  linkTo_ends_with: String
+  linkTo_not_ends_with: String
+  icon: String
+  icon_not: String
+  icon_in: [String!]
+  icon_not_in: [String!]
+  icon_lt: String
+  icon_lte: String
+  icon_gt: String
+  icon_gte: String
+  icon_contains: String
+  icon_not_contains: String
+  icon_starts_with: String
+  icon_not_starts_with: String
+  icon_ends_with: String
+  icon_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  user: UserWhereInput
+  AND: [NotificationWhereInput!]
+  OR: [NotificationWhereInput!]
+  NOT: [NotificationWhereInput!]
+}
+
+input NotificationWhereUniqueInput {
+  id: ID
+}
+
 type PageInfo {
   hasNextPage: Boolean!
   hasPreviousPage: Boolean!
@@ -338,9 +831,18 @@ type PageInfo {
 }
 
 type Query {
+  gallery(where: GalleryWhereUniqueInput!): Gallery
+  galleries(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Gallery]!
+  galleriesConnection(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryConnection!
   link(where: LinkWhereUniqueInput!): Link
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
+  notification(where: NotificationWhereUniqueInput!): Notification
+  notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification]!
+  notificationsConnection(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotificationConnection!
+  section(where: SectionWhereUniqueInput!): Section
+  sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section]!
+  sectionsConnection(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SectionConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -350,8 +852,198 @@ type Query {
   node(id: ID!): Node
 }
 
+type Section {
+  id: ID!
+  summary: String
+  gallery: Gallery
+  user: User!
+}
+
+type SectionConnection {
+  pageInfo: PageInfo!
+  edges: [SectionEdge]!
+  aggregate: AggregateSection!
+}
+
+input SectionCreateInput {
+  id: ID
+  summary: String
+  gallery: GalleryCreateOneInput
+  user: UserCreateOneWithoutSectionsInput!
+}
+
+input SectionCreateManyWithoutUserInput {
+  create: [SectionCreateWithoutUserInput!]
+  connect: [SectionWhereUniqueInput!]
+}
+
+input SectionCreateWithoutUserInput {
+  id: ID
+  summary: String
+  gallery: GalleryCreateOneInput
+}
+
+type SectionEdge {
+  node: Section!
+  cursor: String!
+}
+
+enum SectionOrderByInput {
+  id_ASC
+  id_DESC
+  summary_ASC
+  summary_DESC
+}
+
+type SectionPreviousValues {
+  id: ID!
+  summary: String
+}
+
+input SectionScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  AND: [SectionScalarWhereInput!]
+  OR: [SectionScalarWhereInput!]
+  NOT: [SectionScalarWhereInput!]
+}
+
+type SectionSubscriptionPayload {
+  mutation: MutationType!
+  node: Section
+  updatedFields: [String!]
+  previousValues: SectionPreviousValues
+}
+
+input SectionSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SectionWhereInput
+  AND: [SectionSubscriptionWhereInput!]
+  OR: [SectionSubscriptionWhereInput!]
+  NOT: [SectionSubscriptionWhereInput!]
+}
+
+input SectionUpdateInput {
+  summary: String
+  gallery: GalleryUpdateOneInput
+  user: UserUpdateOneRequiredWithoutSectionsInput
+}
+
+input SectionUpdateManyDataInput {
+  summary: String
+}
+
+input SectionUpdateManyMutationInput {
+  summary: String
+}
+
+input SectionUpdateManyWithoutUserInput {
+  create: [SectionCreateWithoutUserInput!]
+  delete: [SectionWhereUniqueInput!]
+  connect: [SectionWhereUniqueInput!]
+  set: [SectionWhereUniqueInput!]
+  disconnect: [SectionWhereUniqueInput!]
+  update: [SectionUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [SectionUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [SectionScalarWhereInput!]
+  updateMany: [SectionUpdateManyWithWhereNestedInput!]
+}
+
+input SectionUpdateManyWithWhereNestedInput {
+  where: SectionScalarWhereInput!
+  data: SectionUpdateManyDataInput!
+}
+
+input SectionUpdateWithoutUserDataInput {
+  summary: String
+  gallery: GalleryUpdateOneInput
+}
+
+input SectionUpdateWithWhereUniqueWithoutUserInput {
+  where: SectionWhereUniqueInput!
+  data: SectionUpdateWithoutUserDataInput!
+}
+
+input SectionUpsertWithWhereUniqueWithoutUserInput {
+  where: SectionWhereUniqueInput!
+  update: SectionUpdateWithoutUserDataInput!
+  create: SectionCreateWithoutUserInput!
+}
+
+input SectionWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  gallery: GalleryWhereInput
+  user: UserWhereInput
+  AND: [SectionWhereInput!]
+  OR: [SectionWhereInput!]
+  NOT: [SectionWhereInput!]
+}
+
+input SectionWhereUniqueInput {
+  id: ID
+}
+
 type Subscription {
+  gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
+  notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
+  section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
 }
@@ -360,9 +1052,17 @@ type User {
   id: ID!
   name: String!
   email: String!
+  resetToken: String
   password: String!
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link!]
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
+  keywords: [String!]!
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section!]
+  notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification!]
 }
 
 type UserConnection {
@@ -375,13 +1075,35 @@ input UserCreateInput {
   id: ID
   name: String!
   email: String!
+  resetToken: String
   password: String!
   links: LinkCreateManyWithoutPostedByInput
   votes: VoteCreateManyWithoutUserInput
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionCreateManyWithoutUserInput
+  notifications: NotificationCreateManyWithoutUserInput
+}
+
+input UserCreatekeywordsInput {
+  set: [String!]
 }
 
 input UserCreateOneWithoutLinksInput {
   create: UserCreateWithoutLinksInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutNotificationsInput {
+  create: UserCreateWithoutNotificationsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSectionsInput {
+  create: UserCreateWithoutSectionsInput
   connect: UserWhereUniqueInput
 }
 
@@ -394,16 +1116,64 @@ input UserCreateWithoutLinksInput {
   id: ID
   name: String!
   email: String!
+  resetToken: String
   password: String!
   votes: VoteCreateManyWithoutUserInput
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionCreateManyWithoutUserInput
+  notifications: NotificationCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutNotificationsInput {
+  id: ID
+  name: String!
+  email: String!
+  resetToken: String
+  password: String!
+  links: LinkCreateManyWithoutPostedByInput
+  votes: VoteCreateManyWithoutUserInput
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutSectionsInput {
+  id: ID
+  name: String!
+  email: String!
+  resetToken: String
+  password: String!
+  links: LinkCreateManyWithoutPostedByInput
+  votes: VoteCreateManyWithoutUserInput
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  notifications: NotificationCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutVotesInput {
   id: ID
   name: String!
   email: String!
+  resetToken: String
   password: String!
   links: LinkCreateManyWithoutPostedByInput
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionCreateManyWithoutUserInput
+  notifications: NotificationCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -418,15 +1188,31 @@ enum UserOrderByInput {
   name_DESC
   email_ASC
   email_DESC
+  resetToken_ASC
+  resetToken_DESC
   password_ASC
   password_DESC
+  profileImg_ASC
+  profileImg_DESC
+  profileBG_ASC
+  profileBG_DESC
+  summary_ASC
+  summary_DESC
+  location_ASC
+  location_DESC
 }
 
 type UserPreviousValues {
   id: ID!
   name: String!
   email: String!
+  resetToken: String
   password: String!
+  keywords: [String!]!
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
 }
 
 type UserSubscriptionPayload {
@@ -450,15 +1236,47 @@ input UserSubscriptionWhereInput {
 input UserUpdateInput {
   name: String
   email: String
+  resetToken: String
   password: String
   links: LinkUpdateManyWithoutPostedByInput
   votes: VoteUpdateManyWithoutUserInput
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionUpdateManyWithoutUserInput
+  notifications: NotificationUpdateManyWithoutUserInput
+}
+
+input UserUpdatekeywordsInput {
+  set: [String!]
 }
 
 input UserUpdateManyMutationInput {
   name: String
   email: String
+  resetToken: String
   password: String
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+}
+
+input UserUpdateOneRequiredWithoutNotificationsInput {
+  create: UserCreateWithoutNotificationsInput
+  update: UserUpdateWithoutNotificationsDataInput
+  upsert: UserUpsertWithoutNotificationsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneRequiredWithoutSectionsInput {
+  create: UserCreateWithoutSectionsInput
+  update: UserUpdateWithoutSectionsDataInput
+  upsert: UserUpsertWithoutSectionsInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneRequiredWithoutVotesInput {
@@ -480,20 +1298,76 @@ input UserUpdateOneWithoutLinksInput {
 input UserUpdateWithoutLinksDataInput {
   name: String
   email: String
+  resetToken: String
   password: String
   votes: VoteUpdateManyWithoutUserInput
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionUpdateManyWithoutUserInput
+  notifications: NotificationUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutNotificationsDataInput {
+  name: String
+  email: String
+  resetToken: String
+  password: String
+  links: LinkUpdateManyWithoutPostedByInput
+  votes: VoteUpdateManyWithoutUserInput
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutSectionsDataInput {
+  name: String
+  email: String
+  resetToken: String
+  password: String
+  links: LinkUpdateManyWithoutPostedByInput
+  votes: VoteUpdateManyWithoutUserInput
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  notifications: NotificationUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutVotesDataInput {
   name: String
   email: String
+  resetToken: String
   password: String
   links: LinkUpdateManyWithoutPostedByInput
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileBG: String
+  summary: String
+  location: String
+  sections: SectionUpdateManyWithoutUserInput
+  notifications: NotificationUpdateManyWithoutUserInput
 }
 
 input UserUpsertWithoutLinksInput {
   update: UserUpdateWithoutLinksDataInput!
   create: UserCreateWithoutLinksInput!
+}
+
+input UserUpsertWithoutNotificationsInput {
+  update: UserUpdateWithoutNotificationsDataInput!
+  create: UserCreateWithoutNotificationsInput!
+}
+
+input UserUpsertWithoutSectionsInput {
+  update: UserUpdateWithoutSectionsDataInput!
+  create: UserCreateWithoutSectionsInput!
 }
 
 input UserUpsertWithoutVotesInput {
@@ -544,6 +1418,20 @@ input UserWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
+  resetToken: String
+  resetToken_not: String
+  resetToken_in: [String!]
+  resetToken_not_in: [String!]
+  resetToken_lt: String
+  resetToken_lte: String
+  resetToken_gt: String
+  resetToken_gte: String
+  resetToken_contains: String
+  resetToken_not_contains: String
+  resetToken_starts_with: String
+  resetToken_not_starts_with: String
+  resetToken_ends_with: String
+  resetToken_not_ends_with: String
   password: String
   password_not: String
   password_in: [String!]
@@ -564,6 +1452,68 @@ input UserWhereInput {
   votes_every: VoteWhereInput
   votes_some: VoteWhereInput
   votes_none: VoteWhereInput
+  profileImg: String
+  profileImg_not: String
+  profileImg_in: [String!]
+  profileImg_not_in: [String!]
+  profileImg_lt: String
+  profileImg_lte: String
+  profileImg_gt: String
+  profileImg_gte: String
+  profileImg_contains: String
+  profileImg_not_contains: String
+  profileImg_starts_with: String
+  profileImg_not_starts_with: String
+  profileImg_ends_with: String
+  profileImg_not_ends_with: String
+  profileBG: String
+  profileBG_not: String
+  profileBG_in: [String!]
+  profileBG_not_in: [String!]
+  profileBG_lt: String
+  profileBG_lte: String
+  profileBG_gt: String
+  profileBG_gte: String
+  profileBG_contains: String
+  profileBG_not_contains: String
+  profileBG_starts_with: String
+  profileBG_not_starts_with: String
+  profileBG_ends_with: String
+  profileBG_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  location: String
+  location_not: String
+  location_in: [String!]
+  location_not_in: [String!]
+  location_lt: String
+  location_lte: String
+  location_gt: String
+  location_gte: String
+  location_contains: String
+  location_not_contains: String
+  location_starts_with: String
+  location_not_starts_with: String
+  location_ends_with: String
+  location_not_ends_with: String
+  sections_every: SectionWhereInput
+  sections_some: SectionWhereInput
+  sections_none: SectionWhereInput
+  notifications_every: NotificationWhereInput
+  notifications_some: NotificationWhereInput
+  notifications_none: NotificationWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]
@@ -572,6 +1522,7 @@ input UserWhereInput {
 input UserWhereUniqueInput {
   id: ID
   email: String
+  resetToken: String
 }
 
 type Vote {

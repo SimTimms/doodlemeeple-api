@@ -21,6 +21,7 @@ type Mutation {
     sections: [SectionInput]
   ): User
   updateSection(id: String!, section: SectionInput): Section
+  removeSection(id: String!): Boolean
   vote(linkId: ID!): Vote
 }
 
@@ -36,6 +37,7 @@ type Feed {
 }
 
 input SectionInput {
+  title: String
   summary: String
   gallery: GalleryInput
 }
@@ -84,20 +86,32 @@ type Notification {
 
 type Section {
   id: ID!
+  title: String
   summary: String
-  gallery: Gallery
+  gallery: Gallery!
   user: User!
 }
 
 type Gallery {
   id: ID!
   summary: String
-  images: [String]
+  images: [GalleryImage!]!
 }
 
 input GalleryInput {
   summary: String
-  images: [String]
+  images: [GalleryImageInput!]!
+}
+
+type GalleryImage {
+  id: ID!
+  img: String!
+  title: String
+}
+
+input GalleryImageInput {
+  img: String!
+  title: String
 }
 
 type Link {

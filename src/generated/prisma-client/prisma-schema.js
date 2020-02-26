@@ -7,6 +7,10 @@ module.exports = {
   count: Int!
 }
 
+type AggregateGalleryImage {
+  count: Int!
+}
+
 type AggregateLink {
   count: Int!
 }
@@ -36,7 +40,7 @@ scalar DateTime
 type Gallery {
   id: ID!
   summary: String
-  images: [String!]!
+  images(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GalleryImage!]
 }
 
 type GalleryConnection {
@@ -45,14 +49,10 @@ type GalleryConnection {
   aggregate: AggregateGallery!
 }
 
-input GalleryCreateimagesInput {
-  set: [String!]
-}
-
 input GalleryCreateInput {
   id: ID
   summary: String
-  images: GalleryCreateimagesInput
+  images: GalleryImageCreateManyInput
 }
 
 input GalleryCreateOneInput {
@@ -65,6 +65,215 @@ type GalleryEdge {
   cursor: String!
 }
 
+type GalleryImage {
+  id: ID!
+  img: String!
+  title: String
+}
+
+type GalleryImageConnection {
+  pageInfo: PageInfo!
+  edges: [GalleryImageEdge]!
+  aggregate: AggregateGalleryImage!
+}
+
+input GalleryImageCreateInput {
+  id: ID
+  img: String!
+  title: String
+}
+
+input GalleryImageCreateManyInput {
+  create: [GalleryImageCreateInput!]
+  connect: [GalleryImageWhereUniqueInput!]
+}
+
+type GalleryImageEdge {
+  node: GalleryImage!
+  cursor: String!
+}
+
+enum GalleryImageOrderByInput {
+  id_ASC
+  id_DESC
+  img_ASC
+  img_DESC
+  title_ASC
+  title_DESC
+}
+
+type GalleryImagePreviousValues {
+  id: ID!
+  img: String!
+  title: String
+}
+
+input GalleryImageScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  img: String
+  img_not: String
+  img_in: [String!]
+  img_not_in: [String!]
+  img_lt: String
+  img_lte: String
+  img_gt: String
+  img_gte: String
+  img_contains: String
+  img_not_contains: String
+  img_starts_with: String
+  img_not_starts_with: String
+  img_ends_with: String
+  img_not_ends_with: String
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  AND: [GalleryImageScalarWhereInput!]
+  OR: [GalleryImageScalarWhereInput!]
+  NOT: [GalleryImageScalarWhereInput!]
+}
+
+type GalleryImageSubscriptionPayload {
+  mutation: MutationType!
+  node: GalleryImage
+  updatedFields: [String!]
+  previousValues: GalleryImagePreviousValues
+}
+
+input GalleryImageSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GalleryImageWhereInput
+  AND: [GalleryImageSubscriptionWhereInput!]
+  OR: [GalleryImageSubscriptionWhereInput!]
+  NOT: [GalleryImageSubscriptionWhereInput!]
+}
+
+input GalleryImageUpdateDataInput {
+  img: String
+  title: String
+}
+
+input GalleryImageUpdateInput {
+  img: String
+  title: String
+}
+
+input GalleryImageUpdateManyDataInput {
+  img: String
+  title: String
+}
+
+input GalleryImageUpdateManyInput {
+  create: [GalleryImageCreateInput!]
+  update: [GalleryImageUpdateWithWhereUniqueNestedInput!]
+  upsert: [GalleryImageUpsertWithWhereUniqueNestedInput!]
+  delete: [GalleryImageWhereUniqueInput!]
+  connect: [GalleryImageWhereUniqueInput!]
+  set: [GalleryImageWhereUniqueInput!]
+  disconnect: [GalleryImageWhereUniqueInput!]
+  deleteMany: [GalleryImageScalarWhereInput!]
+  updateMany: [GalleryImageUpdateManyWithWhereNestedInput!]
+}
+
+input GalleryImageUpdateManyMutationInput {
+  img: String
+  title: String
+}
+
+input GalleryImageUpdateManyWithWhereNestedInput {
+  where: GalleryImageScalarWhereInput!
+  data: GalleryImageUpdateManyDataInput!
+}
+
+input GalleryImageUpdateWithWhereUniqueNestedInput {
+  where: GalleryImageWhereUniqueInput!
+  data: GalleryImageUpdateDataInput!
+}
+
+input GalleryImageUpsertWithWhereUniqueNestedInput {
+  where: GalleryImageWhereUniqueInput!
+  update: GalleryImageUpdateDataInput!
+  create: GalleryImageCreateInput!
+}
+
+input GalleryImageWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  img: String
+  img_not: String
+  img_in: [String!]
+  img_not_in: [String!]
+  img_lt: String
+  img_lte: String
+  img_gt: String
+  img_gte: String
+  img_contains: String
+  img_not_contains: String
+  img_starts_with: String
+  img_not_starts_with: String
+  img_ends_with: String
+  img_not_ends_with: String
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  AND: [GalleryImageWhereInput!]
+  OR: [GalleryImageWhereInput!]
+  NOT: [GalleryImageWhereInput!]
+}
+
+input GalleryImageWhereUniqueInput {
+  id: ID
+}
+
 enum GalleryOrderByInput {
   id_ASC
   id_DESC
@@ -75,7 +284,6 @@ enum GalleryOrderByInput {
 type GalleryPreviousValues {
   id: ID!
   summary: String
-  images: [String!]!
 }
 
 type GallerySubscriptionPayload {
@@ -98,29 +306,22 @@ input GallerySubscriptionWhereInput {
 
 input GalleryUpdateDataInput {
   summary: String
-  images: GalleryUpdateimagesInput
-}
-
-input GalleryUpdateimagesInput {
-  set: [String!]
+  images: GalleryImageUpdateManyInput
 }
 
 input GalleryUpdateInput {
   summary: String
-  images: GalleryUpdateimagesInput
+  images: GalleryImageUpdateManyInput
 }
 
 input GalleryUpdateManyMutationInput {
   summary: String
-  images: GalleryUpdateimagesInput
 }
 
-input GalleryUpdateOneInput {
+input GalleryUpdateOneRequiredInput {
   create: GalleryCreateInput
   update: GalleryUpdateDataInput
   upsert: GalleryUpsertNestedInput
-  delete: Boolean
-  disconnect: Boolean
   connect: GalleryWhereUniqueInput
 }
 
@@ -158,6 +359,9 @@ input GalleryWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
+  images_every: GalleryImageWhereInput
+  images_some: GalleryImageWhereInput
+  images_none: GalleryImageWhereInput
   AND: [GalleryWhereInput!]
   OR: [GalleryWhereInput!]
   NOT: [GalleryWhereInput!]
@@ -453,6 +657,12 @@ type Mutation {
   upsertGallery(where: GalleryWhereUniqueInput!, create: GalleryCreateInput!, update: GalleryUpdateInput!): Gallery!
   deleteGallery(where: GalleryWhereUniqueInput!): Gallery
   deleteManyGalleries(where: GalleryWhereInput): BatchPayload!
+  createGalleryImage(data: GalleryImageCreateInput!): GalleryImage!
+  updateGalleryImage(data: GalleryImageUpdateInput!, where: GalleryImageWhereUniqueInput!): GalleryImage
+  updateManyGalleryImages(data: GalleryImageUpdateManyMutationInput!, where: GalleryImageWhereInput): BatchPayload!
+  upsertGalleryImage(where: GalleryImageWhereUniqueInput!, create: GalleryImageCreateInput!, update: GalleryImageUpdateInput!): GalleryImage!
+  deleteGalleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
+  deleteManyGalleryImages(where: GalleryImageWhereInput): BatchPayload!
   createLink(data: LinkCreateInput!): Link!
   updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
   updateManyLinks(data: LinkUpdateManyMutationInput!, where: LinkWhereInput): BatchPayload!
@@ -834,6 +1044,9 @@ type Query {
   gallery(where: GalleryWhereUniqueInput!): Gallery
   galleries(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Gallery]!
   galleriesConnection(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryConnection!
+  galleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
+  galleryImages(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GalleryImage]!
+  galleryImagesConnection(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryImageConnection!
   link(where: LinkWhereUniqueInput!): Link
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
@@ -854,8 +1067,9 @@ type Query {
 
 type Section {
   id: ID!
+  title: String
   summary: String
-  gallery: Gallery
+  gallery: Gallery!
   user: User!
 }
 
@@ -867,8 +1081,9 @@ type SectionConnection {
 
 input SectionCreateInput {
   id: ID
+  title: String
   summary: String
-  gallery: GalleryCreateOneInput
+  gallery: GalleryCreateOneInput!
   user: UserCreateOneWithoutSectionsInput!
 }
 
@@ -879,8 +1094,9 @@ input SectionCreateManyWithoutUserInput {
 
 input SectionCreateWithoutUserInput {
   id: ID
+  title: String
   summary: String
-  gallery: GalleryCreateOneInput
+  gallery: GalleryCreateOneInput!
 }
 
 type SectionEdge {
@@ -891,12 +1107,15 @@ type SectionEdge {
 enum SectionOrderByInput {
   id_ASC
   id_DESC
+  title_ASC
+  title_DESC
   summary_ASC
   summary_DESC
 }
 
 type SectionPreviousValues {
   id: ID!
+  title: String
   summary: String
 }
 
@@ -915,6 +1134,20 @@ input SectionScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -953,16 +1186,19 @@ input SectionSubscriptionWhereInput {
 }
 
 input SectionUpdateInput {
+  title: String
   summary: String
-  gallery: GalleryUpdateOneInput
+  gallery: GalleryUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
 
 input SectionUpdateManyDataInput {
+  title: String
   summary: String
 }
 
 input SectionUpdateManyMutationInput {
+  title: String
   summary: String
 }
 
@@ -984,8 +1220,9 @@ input SectionUpdateManyWithWhereNestedInput {
 }
 
 input SectionUpdateWithoutUserDataInput {
+  title: String
   summary: String
-  gallery: GalleryUpdateOneInput
+  gallery: GalleryUpdateOneRequiredInput
 }
 
 input SectionUpdateWithWhereUniqueWithoutUserInput {
@@ -1014,6 +1251,20 @@ input SectionWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]
@@ -1041,6 +1292,7 @@ input SectionWhereUniqueInput {
 
 type Subscription {
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
+  galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload

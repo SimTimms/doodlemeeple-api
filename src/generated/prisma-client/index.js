@@ -25,6 +25,10 @@ var models = [
     embedded: false
   },
   {
+    name: "GalleryImage",
+    embedded: false
+  },
+  {
     name: "Vote",
     embedded: false
   }

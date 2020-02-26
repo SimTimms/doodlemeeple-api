@@ -17,6 +17,7 @@ export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
   gallery: (where?: GalleryWhereInput) => Promise<boolean>;
+  galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
   link: (where?: LinkWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
@@ -62,6 +63,27 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GalleryConnectionPromise;
+  galleryImage: (
+    where: GalleryImageWhereUniqueInput
+  ) => GalleryImageNullablePromise;
+  galleryImages: (args?: {
+    where?: GalleryImageWhereInput;
+    orderBy?: GalleryImageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<GalleryImage>;
+  galleryImagesConnection: (args?: {
+    where?: GalleryImageWhereInput;
+    orderBy?: GalleryImageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GalleryImageConnectionPromise;
   link: (where: LinkWhereUniqueInput) => LinkNullablePromise;
   links: (args?: {
     where?: LinkWhereInput;
@@ -181,6 +203,26 @@ export interface Prisma {
   }) => GalleryPromise;
   deleteGallery: (where: GalleryWhereUniqueInput) => GalleryPromise;
   deleteManyGalleries: (where?: GalleryWhereInput) => BatchPayloadPromise;
+  createGalleryImage: (data: GalleryImageCreateInput) => GalleryImagePromise;
+  updateGalleryImage: (args: {
+    data: GalleryImageUpdateInput;
+    where: GalleryImageWhereUniqueInput;
+  }) => GalleryImagePromise;
+  updateManyGalleryImages: (args: {
+    data: GalleryImageUpdateManyMutationInput;
+    where?: GalleryImageWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGalleryImage: (args: {
+    where: GalleryImageWhereUniqueInput;
+    create: GalleryImageCreateInput;
+    update: GalleryImageUpdateInput;
+  }) => GalleryImagePromise;
+  deleteGalleryImage: (
+    where: GalleryImageWhereUniqueInput
+  ) => GalleryImagePromise;
+  deleteManyGalleryImages: (
+    where?: GalleryImageWhereInput
+  ) => BatchPayloadPromise;
   createLink: (data: LinkCreateInput) => LinkPromise;
   updateLink: (args: {
     data: LinkUpdateInput;
@@ -273,6 +315,9 @@ export interface Subscription {
   gallery: (
     where?: GallerySubscriptionWhereInput
   ) => GallerySubscriptionPayloadSubscription;
+  galleryImage: (
+    where?: GalleryImageSubscriptionWhereInput
+  ) => GalleryImageSubscriptionPayloadSubscription;
   link: (
     where?: LinkSubscriptionWhereInput
   ) => LinkSubscriptionPayloadSubscription;
@@ -298,6 +343,14 @@ export interface ClientConstructor<T> {
  * Types
  */
 
+export type GalleryImageOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "img_ASC"
+  | "img_DESC"
+  | "title_ASC"
+  | "title_DESC";
+
 export type GalleryOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -319,6 +372,8 @@ export type VoteOrderByInput = "id_ASC" | "id_DESC";
 export type SectionOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "title_ASC"
+  | "title_DESC"
   | "summary_ASC"
   | "summary_DESC";
 
@@ -364,6 +419,54 @@ export type GalleryWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export interface GalleryImageWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  AND?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
+  OR?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
+  NOT?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
+}
+
 export interface GalleryWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -393,10 +496,17 @@ export interface GalleryWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
+  images_every?: Maybe<GalleryImageWhereInput>;
+  images_some?: Maybe<GalleryImageWhereInput>;
+  images_none?: Maybe<GalleryImageWhereInput>;
   AND?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
   OR?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
   NOT?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
 }
+
+export type GalleryImageWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
 
 export type LinkWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
@@ -643,6 +753,20 @@ export interface SectionWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
   summary?: Maybe<String>;
   summary_not?: Maybe<String>;
   summary_in?: Maybe<String[] | String>;
@@ -772,25 +896,140 @@ export type VoteWhereUniqueInput = AtLeastOne<{
 export interface GalleryCreateInput {
   id?: Maybe<ID_Input>;
   summary?: Maybe<String>;
-  images?: Maybe<GalleryCreateimagesInput>;
+  images?: Maybe<GalleryImageCreateManyInput>;
 }
 
-export interface GalleryCreateimagesInput {
-  set?: Maybe<String[] | String>;
+export interface GalleryImageCreateManyInput {
+  create?: Maybe<GalleryImageCreateInput[] | GalleryImageCreateInput>;
+  connect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
+}
+
+export interface GalleryImageCreateInput {
+  id?: Maybe<ID_Input>;
+  img: String;
+  title?: Maybe<String>;
 }
 
 export interface GalleryUpdateInput {
   summary?: Maybe<String>;
-  images?: Maybe<GalleryUpdateimagesInput>;
+  images?: Maybe<GalleryImageUpdateManyInput>;
 }
 
-export interface GalleryUpdateimagesInput {
-  set?: Maybe<String[] | String>;
+export interface GalleryImageUpdateManyInput {
+  create?: Maybe<GalleryImageCreateInput[] | GalleryImageCreateInput>;
+  update?: Maybe<
+    | GalleryImageUpdateWithWhereUniqueNestedInput[]
+    | GalleryImageUpdateWithWhereUniqueNestedInput
+  >;
+  upsert?: Maybe<
+    | GalleryImageUpsertWithWhereUniqueNestedInput[]
+    | GalleryImageUpsertWithWhereUniqueNestedInput
+  >;
+  delete?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
+  connect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
+  set?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
+  disconnect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
+  deleteMany?: Maybe<
+    GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput
+  >;
+  updateMany?: Maybe<
+    | GalleryImageUpdateManyWithWhereNestedInput[]
+    | GalleryImageUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface GalleryImageUpdateWithWhereUniqueNestedInput {
+  where: GalleryImageWhereUniqueInput;
+  data: GalleryImageUpdateDataInput;
+}
+
+export interface GalleryImageUpdateDataInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
+}
+
+export interface GalleryImageUpsertWithWhereUniqueNestedInput {
+  where: GalleryImageWhereUniqueInput;
+  update: GalleryImageUpdateDataInput;
+  create: GalleryImageCreateInput;
+}
+
+export interface GalleryImageScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  AND?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
+  OR?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
+  NOT?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
+}
+
+export interface GalleryImageUpdateManyWithWhereNestedInput {
+  where: GalleryImageScalarWhereInput;
+  data: GalleryImageUpdateManyDataInput;
+}
+
+export interface GalleryImageUpdateManyDataInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
 }
 
 export interface GalleryUpdateManyMutationInput {
   summary?: Maybe<String>;
-  images?: Maybe<GalleryUpdateimagesInput>;
+}
+
+export interface GalleryImageUpdateInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
+}
+
+export interface GalleryImageUpdateManyMutationInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
 }
 
 export interface LinkCreateInput {
@@ -857,8 +1096,9 @@ export interface SectionCreateManyWithoutUserInput {
 
 export interface SectionCreateWithoutUserInput {
   id?: Maybe<ID_Input>;
+  title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryCreateOneInput>;
+  gallery: GalleryCreateOneInput;
 }
 
 export interface GalleryCreateOneInput {
@@ -1063,22 +1303,21 @@ export interface SectionUpdateWithWhereUniqueWithoutUserInput {
 }
 
 export interface SectionUpdateWithoutUserDataInput {
+  title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneInput>;
+  gallery?: Maybe<GalleryUpdateOneRequiredInput>;
 }
 
-export interface GalleryUpdateOneInput {
+export interface GalleryUpdateOneRequiredInput {
   create?: Maybe<GalleryCreateInput>;
   update?: Maybe<GalleryUpdateDataInput>;
   upsert?: Maybe<GalleryUpsertNestedInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
   connect?: Maybe<GalleryWhereUniqueInput>;
 }
 
 export interface GalleryUpdateDataInput {
   summary?: Maybe<String>;
-  images?: Maybe<GalleryUpdateimagesInput>;
+  images?: Maybe<GalleryImageUpdateManyInput>;
 }
 
 export interface GalleryUpsertNestedInput {
@@ -1107,6 +1346,20 @@ export interface SectionScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
   summary?: Maybe<String>;
   summary_not?: Maybe<String>;
   summary_in?: Maybe<String[] | String>;
@@ -1132,6 +1385,7 @@ export interface SectionUpdateManyWithWhereNestedInput {
 }
 
 export interface SectionUpdateManyDataInput {
+  title?: Maybe<String>;
   summary?: Maybe<String>;
 }
 
@@ -1533,8 +1787,9 @@ export interface NotificationUpdateManyMutationInput {
 
 export interface SectionCreateInput {
   id?: Maybe<ID_Input>;
+  title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryCreateOneInput>;
+  gallery: GalleryCreateOneInput;
   user: UserCreateOneWithoutSectionsInput;
 }
 
@@ -1560,8 +1815,9 @@ export interface UserCreateWithoutSectionsInput {
 }
 
 export interface SectionUpdateInput {
+  title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneInput>;
+  gallery?: Maybe<GalleryUpdateOneRequiredInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
 }
 
@@ -1593,6 +1849,7 @@ export interface UserUpsertWithoutSectionsInput {
 }
 
 export interface SectionUpdateManyMutationInput {
+  title?: Maybe<String>;
   summary?: Maybe<String>;
 }
 
@@ -1663,6 +1920,23 @@ export interface GallerySubscriptionWhereInput {
   NOT?: Maybe<GallerySubscriptionWhereInput[] | GallerySubscriptionWhereInput>;
 }
 
+export interface GalleryImageSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GalleryImageWhereInput>;
+  AND?: Maybe<
+    GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
+  >;
+}
+
 export interface LinkSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
@@ -1731,13 +2005,20 @@ export interface NodeNode {
 export interface Gallery {
   id: ID_Output;
   summary?: String;
-  images: String[];
 }
 
 export interface GalleryPromise extends Promise<Gallery>, Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String[]>;
+  images: <T = FragmentableArray<GalleryImage>>(args?: {
+    where?: GalleryImageWhereInput;
+    orderBy?: GalleryImageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface GallerySubscription
@@ -1745,7 +2026,15 @@ export interface GallerySubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
-  images: () => Promise<AsyncIterator<String[]>>;
+  images: <T = Promise<AsyncIterator<GalleryImageSubscription>>>(args?: {
+    where?: GalleryImageWhereInput;
+    orderBy?: GalleryImageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface GalleryNullablePromise
@@ -1753,7 +2042,45 @@ export interface GalleryNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String[]>;
+  images: <T = FragmentableArray<GalleryImage>>(args?: {
+    where?: GalleryImageWhereInput;
+    orderBy?: GalleryImageOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface GalleryImage {
+  id: ID_Output;
+  img: String;
+  title?: String;
+}
+
+export interface GalleryImagePromise
+  extends Promise<GalleryImage>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  img: () => Promise<String>;
+  title: () => Promise<String>;
+}
+
+export interface GalleryImageSubscription
+  extends Promise<AsyncIterator<GalleryImage>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  img: () => Promise<AsyncIterator<String>>;
+  title: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GalleryImageNullablePromise
+  extends Promise<GalleryImage | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  img: () => Promise<String>;
+  title: () => Promise<String>;
 }
 
 export interface GalleryConnection {
@@ -1829,6 +2156,62 @@ export interface AggregateGalleryPromise
 
 export interface AggregateGallerySubscription
   extends Promise<AsyncIterator<AggregateGallery>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GalleryImageConnection {
+  pageInfo: PageInfo;
+  edges: GalleryImageEdge[];
+}
+
+export interface GalleryImageConnectionPromise
+  extends Promise<GalleryImageConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GalleryImageEdge>>() => T;
+  aggregate: <T = AggregateGalleryImagePromise>() => T;
+}
+
+export interface GalleryImageConnectionSubscription
+  extends Promise<AsyncIterator<GalleryImageConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GalleryImageEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGalleryImageSubscription>() => T;
+}
+
+export interface GalleryImageEdge {
+  node: GalleryImage;
+  cursor: String;
+}
+
+export interface GalleryImageEdgePromise
+  extends Promise<GalleryImageEdge>,
+    Fragmentable {
+  node: <T = GalleryImagePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface GalleryImageEdgeSubscription
+  extends Promise<AsyncIterator<GalleryImageEdge>>,
+    Fragmentable {
+  node: <T = GalleryImageSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateGalleryImage {
+  count: Int;
+}
+
+export interface AggregateGalleryImagePromise
+  extends Promise<AggregateGalleryImage>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateGalleryImageSubscription
+  extends Promise<AsyncIterator<AggregateGalleryImage>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -2087,11 +2470,13 @@ export interface VoteNullablePromise
 
 export interface Section {
   id: ID_Output;
+  title?: String;
   summary?: String;
 }
 
 export interface SectionPromise extends Promise<Section>, Fragmentable {
   id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
   user: <T = UserPromise>() => T;
@@ -2101,6 +2486,7 @@ export interface SectionSubscription
   extends Promise<AsyncIterator<Section>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
   gallery: <T = GallerySubscription>() => T;
   user: <T = UserSubscription>() => T;
@@ -2110,6 +2496,7 @@ export interface SectionNullablePromise
   extends Promise<Section | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
   user: <T = UserPromise>() => T;
@@ -2480,7 +2867,6 @@ export interface GallerySubscriptionPayloadSubscription
 export interface GalleryPreviousValues {
   id: ID_Output;
   summary?: String;
-  images: String[];
 }
 
 export interface GalleryPreviousValuesPromise
@@ -2488,7 +2874,6 @@ export interface GalleryPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String[]>;
 }
 
 export interface GalleryPreviousValuesSubscription
@@ -2496,7 +2881,53 @@ export interface GalleryPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
-  images: () => Promise<AsyncIterator<String[]>>;
+}
+
+export interface GalleryImageSubscriptionPayload {
+  mutation: MutationType;
+  node: GalleryImage;
+  updatedFields: String[];
+  previousValues: GalleryImagePreviousValues;
+}
+
+export interface GalleryImageSubscriptionPayloadPromise
+  extends Promise<GalleryImageSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GalleryImagePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GalleryImagePreviousValuesPromise>() => T;
+}
+
+export interface GalleryImageSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GalleryImageSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GalleryImageSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GalleryImagePreviousValuesSubscription>() => T;
+}
+
+export interface GalleryImagePreviousValues {
+  id: ID_Output;
+  img: String;
+  title?: String;
+}
+
+export interface GalleryImagePreviousValuesPromise
+  extends Promise<GalleryImagePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  img: () => Promise<String>;
+  title: () => Promise<String>;
+}
+
+export interface GalleryImagePreviousValuesSubscription
+  extends Promise<AsyncIterator<GalleryImagePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  img: () => Promise<AsyncIterator<String>>;
+  title: () => Promise<AsyncIterator<String>>;
 }
 
 export interface LinkSubscriptionPayload {
@@ -2635,6 +3066,7 @@ export interface SectionSubscriptionPayloadSubscription
 
 export interface SectionPreviousValues {
   id: ID_Output;
+  title?: String;
   summary?: String;
 }
 
@@ -2642,6 +3074,7 @@ export interface SectionPreviousValuesPromise
   extends Promise<SectionPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
   summary: () => Promise<String>;
 }
 
@@ -2649,6 +3082,7 @@ export interface SectionPreviousValuesSubscription
   extends Promise<AsyncIterator<SectionPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
 }
 
@@ -2817,6 +3251,10 @@ export const models: Model[] = [
   },
   {
     name: "Gallery",
+    embedded: false
+  },
+  {
+    name: "GalleryImage",
     embedded: false
   },
   {

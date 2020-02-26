@@ -11,7 +11,20 @@ var express = require('express');
 const bodyParser = require('body-parser');
 const { sign_s3 } = require('./aws-upload');
 
-const resolvers = { Query, Mutation, Subscription, User, Link, Vote };
+const resolvers = {
+  Query,
+  Mutation,
+  Subscription,
+  User,
+  Link,
+  Section: {
+    async gallery(parent) {
+      const returnVal = await prisma.gallery({ id: parent.id });
+      console.log(returnVal);
+      return returnVal;
+    },
+  },
+};
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',

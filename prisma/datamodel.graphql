@@ -36,26 +36,40 @@ type Notification {
 }
 
 input SectionInput {
+  title: String
   summary: String
   gallery: Gallery
 }
 
 type Section {
   id: ID! @id
+  title: String
   summary: String
-  gallery: Gallery
+  gallery: Gallery!
   user: User!
 }
 
 type Gallery {
   id: ID! @id
   summary: String
-  images: [String] @scalarList(strategy: RELATION)
+  images: [GalleryImage!]!
 }
 
 input GalleryInput {
   summary: String
-  images: [String] @scalarList(strategy: RELATION)
+  images: [GalleryImageInput]
+}
+
+type GalleryImage {
+  id: ID! @id
+  img: String!
+  title: String
+}
+
+input GalleryImageInput {
+  id: String
+  img: String!
+  title: String
 }
 
 type Vote {

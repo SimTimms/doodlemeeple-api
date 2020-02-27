@@ -6,11 +6,10 @@
   "author": "Tim Simms <36262574+SimTimms@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "start": " npm run start",
+    "start": " npm run start:src",
     "start:app": "react-scripts start",
     "start:src": "nodemon --watch ./src --exec babel-node --inspect --presets=@babel/env ./src/index.js",
-    "dev": "prisma deploy && npm run start:src",
-    "heroku-postbuild": "npm start"
+    "dev": "prisma deploy && npm run start:src"
   },
   "devDependencies": {
     "@babel/node": "^7.8.4"

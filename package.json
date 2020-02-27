@@ -6,7 +6,7 @@
   "author": "Tim Simms <36262574+SimTimms@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "start": " npm run start:src",
+    "start": " npm run start",
     "start:app": "react-scripts start",
     "start:src": "nodemon --watch ./src --exec babel-node --inspect --presets=@babel/env ./src/index.js",
     "dev": "prisma deploy && npm run start:src"

@@ -45,14 +45,14 @@ type Section {
   id: ID! @id
   title: String
   summary: String
-  gallery: Gallery!
+  gallery: Gallery
   user: User!
 }
 
 type Gallery {
   id: ID! @id
   summary: String
-  images: [GalleryImage!]!
+  images: [GalleryImage]
 }
 
 input GalleryInput {

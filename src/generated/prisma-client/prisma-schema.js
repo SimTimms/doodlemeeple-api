@@ -318,10 +318,12 @@ input GalleryUpdateManyMutationInput {
   summary: String
 }
 
-input GalleryUpdateOneRequiredInput {
+input GalleryUpdateOneInput {
   create: GalleryCreateInput
   update: GalleryUpdateDataInput
   upsert: GalleryUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
   connect: GalleryWhereUniqueInput
 }
 
@@ -1069,7 +1071,7 @@ type Section {
   id: ID!
   title: String
   summary: String
-  gallery: Gallery!
+  gallery: Gallery
   user: User!
 }
 
@@ -1083,7 +1085,7 @@ input SectionCreateInput {
   id: ID
   title: String
   summary: String
-  gallery: GalleryCreateOneInput!
+  gallery: GalleryCreateOneInput
   user: UserCreateOneWithoutSectionsInput!
 }
 
@@ -1096,7 +1098,7 @@ input SectionCreateWithoutUserInput {
   id: ID
   title: String
   summary: String
-  gallery: GalleryCreateOneInput!
+  gallery: GalleryCreateOneInput
 }
 
 type SectionEdge {
@@ -1188,7 +1190,7 @@ input SectionSubscriptionWhereInput {
 input SectionUpdateInput {
   title: String
   summary: String
-  gallery: GalleryUpdateOneRequiredInput
+  gallery: GalleryUpdateOneInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
 
@@ -1222,7 +1224,7 @@ input SectionUpdateManyWithWhereNestedInput {
 input SectionUpdateWithoutUserDataInput {
   title: String
   summary: String
-  gallery: GalleryUpdateOneRequiredInput
+  gallery: GalleryUpdateOneInput
 }
 
 input SectionUpdateWithWhereUniqueWithoutUserInput {

@@ -39,9 +39,6 @@ async function getSections(parent, args, context) {
       },
     },
   });
-
-  console.log(sections);
-
   return sections;
 }
 async function profile(parent, args, context, info) {

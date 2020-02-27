@@ -54,7 +54,6 @@ async function updateSection(parent, args, context, info) {
     const newGallery = await context.prisma.createGallery({
       summary: args.section.gallery.summary,
       images: { connect: imageIds },
-      section
     });
 
     const newSection = await context.prisma.createSection({

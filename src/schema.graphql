@@ -88,14 +88,14 @@ type Section {
   id: ID!
   title: String
   summary: String
-  gallery: Gallery!
+  gallery: Gallery
   user: User!
 }
 
 type Gallery {
   id: ID!
   summary: String
-  images: [GalleryImage!]!
+  images: [GalleryImage]
 }
 
 input GalleryInput {

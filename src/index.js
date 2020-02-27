@@ -4,26 +4,16 @@ const { prisma } = require('./generated/prisma-client');
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
 const User = require('./resolvers/User');
-const Link = require('./resolvers/Link');
-const Subscription = require('./resolvers/Subscription');
-const Vote = require('./resolvers/Vote');
 var express = require('express');
 const bodyParser = require('body-parser');
 const { sign_s3 } = require('./aws-upload');
+const Section = require('./resolvers/Section');
 
 const resolvers = {
   Query,
   Mutation,
-  Subscription,
   User,
-  Link,
-  Section: {
-    async gallery(parent) {
-      const returnVal = await prisma.gallery({ id: parent.id });
-      console.log(returnVal);
-      return returnVal;
-    },
-  },
+  Section,
 };
 
 const server = new GraphQLServer({

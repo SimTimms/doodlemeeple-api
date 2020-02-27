@@ -1098,7 +1098,7 @@ export interface SectionCreateWithoutUserInput {
   id?: Maybe<ID_Input>;
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery: GalleryCreateOneInput;
+  gallery?: Maybe<GalleryCreateOneInput>;
 }
 
 export interface GalleryCreateOneInput {
@@ -1305,13 +1305,15 @@ export interface SectionUpdateWithWhereUniqueWithoutUserInput {
 export interface SectionUpdateWithoutUserDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneRequiredInput>;
+  gallery?: Maybe<GalleryUpdateOneInput>;
 }
 
-export interface GalleryUpdateOneRequiredInput {
+export interface GalleryUpdateOneInput {
   create?: Maybe<GalleryCreateInput>;
   update?: Maybe<GalleryUpdateDataInput>;
   upsert?: Maybe<GalleryUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
   connect?: Maybe<GalleryWhereUniqueInput>;
 }
 
@@ -1789,7 +1791,7 @@ export interface SectionCreateInput {
   id?: Maybe<ID_Input>;
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery: GalleryCreateOneInput;
+  gallery?: Maybe<GalleryCreateOneInput>;
   user: UserCreateOneWithoutSectionsInput;
 }
 
@@ -1817,7 +1819,7 @@ export interface UserCreateWithoutSectionsInput {
 export interface SectionUpdateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneRequiredInput>;
+  gallery?: Maybe<GalleryUpdateOneInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
 }
 

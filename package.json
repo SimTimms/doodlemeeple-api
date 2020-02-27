@@ -9,7 +9,7 @@
     "start": " npm run start:src",
     "start:app": "react-scripts start",
     "start:src": "nodemon --watch ./src --exec babel-node --inspect --presets=@babel/env ./src/index.js",
-    "dev": "prisma deploy && npm run start:src"
+    "dev": "prisma deploy && nodemon --watch ./src --exec babel-node --inspect --presets=@babel/env ./src/index.js"
   },
   "devDependencies": {
     "@babel/node": "^7.8.4"
@@ -28,6 +28,7 @@
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.2",
     "password-validator": "^5.0.3",
+    "pm2": "^4.2.3",
     "prisma-client-lib": "^1.34.10"
   }
 }

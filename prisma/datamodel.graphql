@@ -1,27 +1,16 @@
-type Link {
-  id: ID! @id
-  createdAt: DateTime! @createdAt
-  description: String!
-  url: String!
-  postedBy: User
-  votes: [Vote!]!
-}
-
 type User {
   id: ID! @id
   name: String!
   email: String! @unique
   resetToken: String @unique
   password: String!
-  links: [Link!]!
-  votes: [Vote!]!
   keywords: [String] @scalarList(strategy: RELATION)
   profileImg: String
   profileBG: String
   summary: String
   location: String
   sections: [Section!]
-  notifications: [Notification!]!
+  notifications: [Notification!]! @relation(link: TABLE)
 }
 
 type Notification {
@@ -45,14 +34,22 @@ type Section {
   id: ID! @id
   title: String
   summary: String
-  gallery: Gallery
+  gallery: Gallery @relation(link: INLINE)
   user: User!
 }
 
 type Gallery {
   id: ID! @id
   summary: String
-  images: [GalleryImage]
+  section: Section
+  images: [GalleryImage] @relation(link: TABLE)
+}
+
+type GalleryImage {
+  id: ID! @id
+  img: String!
+  title: String
+  gallery: Gallery
 }
 
 input GalleryInput {
@@ -60,20 +57,8 @@ input GalleryInput {
   images: [GalleryImageInput]
 }
 
-type GalleryImage {
-  id: ID! @id
-  img: String!
-  title: String
-}
-
 input GalleryImageInput {
   id: String
   img: String!
   title: String
-}
-
-type Vote {
-  id: ID! @id
-  link: Link!
-  user: User!
 }

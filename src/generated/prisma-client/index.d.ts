@@ -18,11 +18,9 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   gallery: (where?: GalleryWhereInput) => Promise<boolean>;
   galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
-  link: (where?: LinkWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
-  vote: (where?: VoteWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -84,25 +82,6 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GalleryImageConnectionPromise;
-  link: (where: LinkWhereUniqueInput) => LinkNullablePromise;
-  links: (args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => FragmentableArray<Link>;
-  linksConnection: (args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => LinkConnectionPromise;
   notification: (
     where: NotificationWhereUniqueInput
   ) => NotificationNullablePromise;
@@ -162,25 +141,6 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => UserConnectionPromise;
-  vote: (where: VoteWhereUniqueInput) => VoteNullablePromise;
-  votes: (args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => FragmentableArray<Vote>;
-  votesConnection: (args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => VoteConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -223,22 +183,6 @@ export interface Prisma {
   deleteManyGalleryImages: (
     where?: GalleryImageWhereInput
   ) => BatchPayloadPromise;
-  createLink: (data: LinkCreateInput) => LinkPromise;
-  updateLink: (args: {
-    data: LinkUpdateInput;
-    where: LinkWhereUniqueInput;
-  }) => LinkPromise;
-  updateManyLinks: (args: {
-    data: LinkUpdateManyMutationInput;
-    where?: LinkWhereInput;
-  }) => BatchPayloadPromise;
-  upsertLink: (args: {
-    where: LinkWhereUniqueInput;
-    create: LinkCreateInput;
-    update: LinkUpdateInput;
-  }) => LinkPromise;
-  deleteLink: (where: LinkWhereUniqueInput) => LinkPromise;
-  deleteManyLinks: (where?: LinkWhereInput) => BatchPayloadPromise;
   createNotification: (data: NotificationCreateInput) => NotificationPromise;
   updateNotification: (args: {
     data: NotificationUpdateInput;
@@ -291,18 +235,6 @@ export interface Prisma {
   }) => UserPromise;
   deleteUser: (where: UserWhereUniqueInput) => UserPromise;
   deleteManyUsers: (where?: UserWhereInput) => BatchPayloadPromise;
-  createVote: (data: VoteCreateInput) => VotePromise;
-  updateVote: (args: {
-    data: VoteUpdateInput;
-    where: VoteWhereUniqueInput;
-  }) => VotePromise;
-  upsertVote: (args: {
-    where: VoteWhereUniqueInput;
-    create: VoteCreateInput;
-    update: VoteUpdateInput;
-  }) => VotePromise;
-  deleteVote: (where: VoteWhereUniqueInput) => VotePromise;
-  deleteManyVotes: (where?: VoteWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -318,9 +250,6 @@ export interface Subscription {
   galleryImage: (
     where?: GalleryImageSubscriptionWhereInput
   ) => GalleryImageSubscriptionPayloadSubscription;
-  link: (
-    where?: LinkSubscriptionWhereInput
-  ) => LinkSubscriptionPayloadSubscription;
   notification: (
     where?: NotificationSubscriptionWhereInput
   ) => NotificationSubscriptionPayloadSubscription;
@@ -330,9 +259,6 @@ export interface Subscription {
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
-  vote: (
-    where?: VoteSubscriptionWhereInput
-  ) => VoteSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -342,32 +268,6 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
-
-export type GalleryImageOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "img_ASC"
-  | "img_DESC"
-  | "title_ASC"
-  | "title_DESC";
-
-export type GalleryOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "summary_ASC"
-  | "summary_DESC";
-
-export type LinkOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "description_ASC"
-  | "description_DESC"
-  | "url_ASC"
-  | "url_DESC";
-
-export type VoteOrderByInput = "id_ASC" | "id_DESC";
 
 export type SectionOrderByInput =
   | "id_ASC"
@@ -392,6 +292,20 @@ export type NotificationOrderByInput =
   | "icon_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC";
+
+export type GalleryImageOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "img_ASC"
+  | "img_DESC"
+  | "title_ASC"
+  | "title_DESC";
+
+export type GalleryOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "summary_ASC"
+  | "summary_DESC";
 
 export type UserOrderByInput =
   | "id_ASC"
@@ -418,6 +332,94 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 export type GalleryWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
+
+export interface SectionWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  gallery?: Maybe<GalleryWhereInput>;
+  user?: Maybe<UserWhereInput>;
+  AND?: Maybe<SectionWhereInput[] | SectionWhereInput>;
+  OR?: Maybe<SectionWhereInput[] | SectionWhereInput>;
+  NOT?: Maybe<SectionWhereInput[] | SectionWhereInput>;
+}
+
+export interface GalleryWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  section?: Maybe<SectionWhereInput>;
+  images_every?: Maybe<GalleryImageWhereInput>;
+  images_some?: Maybe<GalleryImageWhereInput>;
+  images_none?: Maybe<GalleryImageWhereInput>;
+  AND?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
+  OR?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
+  NOT?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
+}
 
 export interface GalleryImageWhereInput {
   id?: Maybe<ID_Input>;
@@ -462,114 +464,10 @@ export interface GalleryImageWhereInput {
   title_not_starts_with?: Maybe<String>;
   title_ends_with?: Maybe<String>;
   title_not_ends_with?: Maybe<String>;
+  gallery?: Maybe<GalleryWhereInput>;
   AND?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
   OR?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
   NOT?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
-}
-
-export interface GalleryWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  summary?: Maybe<String>;
-  summary_not?: Maybe<String>;
-  summary_in?: Maybe<String[] | String>;
-  summary_not_in?: Maybe<String[] | String>;
-  summary_lt?: Maybe<String>;
-  summary_lte?: Maybe<String>;
-  summary_gt?: Maybe<String>;
-  summary_gte?: Maybe<String>;
-  summary_contains?: Maybe<String>;
-  summary_not_contains?: Maybe<String>;
-  summary_starts_with?: Maybe<String>;
-  summary_not_starts_with?: Maybe<String>;
-  summary_ends_with?: Maybe<String>;
-  summary_not_ends_with?: Maybe<String>;
-  images_every?: Maybe<GalleryImageWhereInput>;
-  images_some?: Maybe<GalleryImageWhereInput>;
-  images_none?: Maybe<GalleryImageWhereInput>;
-  AND?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
-  OR?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
-  NOT?: Maybe<GalleryWhereInput[] | GalleryWhereInput>;
-}
-
-export type GalleryImageWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export type LinkWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface LinkWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  url?: Maybe<String>;
-  url_not?: Maybe<String>;
-  url_in?: Maybe<String[] | String>;
-  url_not_in?: Maybe<String[] | String>;
-  url_lt?: Maybe<String>;
-  url_lte?: Maybe<String>;
-  url_gt?: Maybe<String>;
-  url_gte?: Maybe<String>;
-  url_contains?: Maybe<String>;
-  url_not_contains?: Maybe<String>;
-  url_starts_with?: Maybe<String>;
-  url_not_starts_with?: Maybe<String>;
-  url_ends_with?: Maybe<String>;
-  url_not_ends_with?: Maybe<String>;
-  postedBy?: Maybe<UserWhereInput>;
-  votes_every?: Maybe<VoteWhereInput>;
-  votes_some?: Maybe<VoteWhereInput>;
-  votes_none?: Maybe<VoteWhereInput>;
-  AND?: Maybe<LinkWhereInput[] | LinkWhereInput>;
-  OR?: Maybe<LinkWhereInput[] | LinkWhereInput>;
-  NOT?: Maybe<LinkWhereInput[] | LinkWhereInput>;
 }
 
 export interface UserWhereInput {
@@ -643,12 +541,6 @@ export interface UserWhereInput {
   password_not_starts_with?: Maybe<String>;
   password_ends_with?: Maybe<String>;
   password_not_ends_with?: Maybe<String>;
-  links_every?: Maybe<LinkWhereInput>;
-  links_some?: Maybe<LinkWhereInput>;
-  links_none?: Maybe<LinkWhereInput>;
-  votes_every?: Maybe<VoteWhereInput>;
-  votes_some?: Maybe<VoteWhereInput>;
-  votes_none?: Maybe<VoteWhereInput>;
   profileImg?: Maybe<String>;
   profileImg_not?: Maybe<String>;
   profileImg_in?: Maybe<String[] | String>;
@@ -714,78 +606,6 @@ export interface UserWhereInput {
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
-}
-
-export interface VoteWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  link?: Maybe<LinkWhereInput>;
-  user?: Maybe<UserWhereInput>;
-  AND?: Maybe<VoteWhereInput[] | VoteWhereInput>;
-  OR?: Maybe<VoteWhereInput[] | VoteWhereInput>;
-  NOT?: Maybe<VoteWhereInput[] | VoteWhereInput>;
-}
-
-export interface SectionWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  summary?: Maybe<String>;
-  summary_not?: Maybe<String>;
-  summary_in?: Maybe<String[] | String>;
-  summary_not_in?: Maybe<String[] | String>;
-  summary_lt?: Maybe<String>;
-  summary_lte?: Maybe<String>;
-  summary_gt?: Maybe<String>;
-  summary_gte?: Maybe<String>;
-  summary_contains?: Maybe<String>;
-  summary_not_contains?: Maybe<String>;
-  summary_starts_with?: Maybe<String>;
-  summary_not_starts_with?: Maybe<String>;
-  summary_ends_with?: Maybe<String>;
-  summary_not_ends_with?: Maybe<String>;
-  gallery?: Maybe<GalleryWhereInput>;
-  user?: Maybe<UserWhereInput>;
-  AND?: Maybe<SectionWhereInput[] | SectionWhereInput>;
-  OR?: Maybe<SectionWhereInput[] | SectionWhereInput>;
-  NOT?: Maybe<SectionWhereInput[] | SectionWhereInput>;
 }
 
 export interface NotificationWhereInput {
@@ -875,6 +695,10 @@ export interface NotificationWhereInput {
   NOT?: Maybe<NotificationWhereInput[] | NotificationWhereInput>;
 }
 
+export type GalleryImageWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export type NotificationWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
@@ -889,221 +713,46 @@ export type UserWhereUniqueInput = AtLeastOne<{
   resetToken?: Maybe<String>;
 }>;
 
-export type VoteWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
 export interface GalleryCreateInput {
   id?: Maybe<ID_Input>;
   summary?: Maybe<String>;
-  images?: Maybe<GalleryImageCreateManyInput>;
+  section?: Maybe<SectionCreateOneWithoutGalleryInput>;
+  images?: Maybe<GalleryImageCreateManyWithoutGalleryInput>;
 }
 
-export interface GalleryImageCreateManyInput {
-  create?: Maybe<GalleryImageCreateInput[] | GalleryImageCreateInput>;
-  connect?: Maybe<
-    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
-  >;
+export interface SectionCreateOneWithoutGalleryInput {
+  create?: Maybe<SectionCreateWithoutGalleryInput>;
+  connect?: Maybe<SectionWhereUniqueInput>;
 }
 
-export interface GalleryImageCreateInput {
+export interface SectionCreateWithoutGalleryInput {
   id?: Maybe<ID_Input>;
-  img: String;
   title?: Maybe<String>;
-}
-
-export interface GalleryUpdateInput {
   summary?: Maybe<String>;
-  images?: Maybe<GalleryImageUpdateManyInput>;
+  user: UserCreateOneWithoutSectionsInput;
 }
 
-export interface GalleryImageUpdateManyInput {
-  create?: Maybe<GalleryImageCreateInput[] | GalleryImageCreateInput>;
-  update?: Maybe<
-    | GalleryImageUpdateWithWhereUniqueNestedInput[]
-    | GalleryImageUpdateWithWhereUniqueNestedInput
-  >;
-  upsert?: Maybe<
-    | GalleryImageUpsertWithWhereUniqueNestedInput[]
-    | GalleryImageUpsertWithWhereUniqueNestedInput
-  >;
-  delete?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
-  connect?: Maybe<
-    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
-  >;
-  set?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
-  disconnect?: Maybe<
-    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
-  >;
-  deleteMany?: Maybe<
-    GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput
-  >;
-  updateMany?: Maybe<
-    | GalleryImageUpdateManyWithWhereNestedInput[]
-    | GalleryImageUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface GalleryImageUpdateWithWhereUniqueNestedInput {
-  where: GalleryImageWhereUniqueInput;
-  data: GalleryImageUpdateDataInput;
-}
-
-export interface GalleryImageUpdateDataInput {
-  img?: Maybe<String>;
-  title?: Maybe<String>;
-}
-
-export interface GalleryImageUpsertWithWhereUniqueNestedInput {
-  where: GalleryImageWhereUniqueInput;
-  update: GalleryImageUpdateDataInput;
-  create: GalleryImageCreateInput;
-}
-
-export interface GalleryImageScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  img?: Maybe<String>;
-  img_not?: Maybe<String>;
-  img_in?: Maybe<String[] | String>;
-  img_not_in?: Maybe<String[] | String>;
-  img_lt?: Maybe<String>;
-  img_lte?: Maybe<String>;
-  img_gt?: Maybe<String>;
-  img_gte?: Maybe<String>;
-  img_contains?: Maybe<String>;
-  img_not_contains?: Maybe<String>;
-  img_starts_with?: Maybe<String>;
-  img_not_starts_with?: Maybe<String>;
-  img_ends_with?: Maybe<String>;
-  img_not_ends_with?: Maybe<String>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  AND?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
-  OR?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
-  NOT?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
-}
-
-export interface GalleryImageUpdateManyWithWhereNestedInput {
-  where: GalleryImageScalarWhereInput;
-  data: GalleryImageUpdateManyDataInput;
-}
-
-export interface GalleryImageUpdateManyDataInput {
-  img?: Maybe<String>;
-  title?: Maybe<String>;
-}
-
-export interface GalleryUpdateManyMutationInput {
-  summary?: Maybe<String>;
-}
-
-export interface GalleryImageUpdateInput {
-  img?: Maybe<String>;
-  title?: Maybe<String>;
-}
-
-export interface GalleryImageUpdateManyMutationInput {
-  img?: Maybe<String>;
-  title?: Maybe<String>;
-}
-
-export interface LinkCreateInput {
-  id?: Maybe<ID_Input>;
-  description: String;
-  url: String;
-  postedBy?: Maybe<UserCreateOneWithoutLinksInput>;
-  votes?: Maybe<VoteCreateManyWithoutLinkInput>;
-}
-
-export interface UserCreateOneWithoutLinksInput {
-  create?: Maybe<UserCreateWithoutLinksInput>;
+export interface UserCreateOneWithoutSectionsInput {
+  create?: Maybe<UserCreateWithoutSectionsInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutLinksInput {
+export interface UserCreateWithoutSectionsInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
   resetToken?: Maybe<String>;
   password: String;
-  votes?: Maybe<VoteCreateManyWithoutUserInput>;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
-  sections?: Maybe<SectionCreateManyWithoutUserInput>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
-}
-
-export interface VoteCreateManyWithoutUserInput {
-  create?: Maybe<VoteCreateWithoutUserInput[] | VoteCreateWithoutUserInput>;
-  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-}
-
-export interface VoteCreateWithoutUserInput {
-  id?: Maybe<ID_Input>;
-  link: LinkCreateOneWithoutVotesInput;
-}
-
-export interface LinkCreateOneWithoutVotesInput {
-  create?: Maybe<LinkCreateWithoutVotesInput>;
-  connect?: Maybe<LinkWhereUniqueInput>;
-}
-
-export interface LinkCreateWithoutVotesInput {
-  id?: Maybe<ID_Input>;
-  description: String;
-  url: String;
-  postedBy?: Maybe<UserCreateOneWithoutLinksInput>;
 }
 
 export interface UserCreatekeywordsInput {
   set?: Maybe<String[] | String>;
-}
-
-export interface SectionCreateManyWithoutUserInput {
-  create?: Maybe<
-    SectionCreateWithoutUserInput[] | SectionCreateWithoutUserInput
-  >;
-  connect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
-}
-
-export interface SectionCreateWithoutUserInput {
-  id?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  summary?: Maybe<String>;
-  gallery?: Maybe<GalleryCreateOneInput>;
-}
-
-export interface GalleryCreateOneInput {
-  create?: Maybe<GalleryCreateInput>;
-  connect?: Maybe<GalleryWhereUniqueInput>;
 }
 
 export interface NotificationCreateManyWithoutUserInput {
@@ -1124,271 +773,65 @@ export interface NotificationCreateWithoutUserInput {
   icon: String;
 }
 
-export interface VoteCreateManyWithoutLinkInput {
-  create?: Maybe<VoteCreateWithoutLinkInput[] | VoteCreateWithoutLinkInput>;
-  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-}
-
-export interface VoteCreateWithoutLinkInput {
-  id?: Maybe<ID_Input>;
-  user: UserCreateOneWithoutVotesInput;
-}
-
-export interface UserCreateOneWithoutVotesInput {
-  create?: Maybe<UserCreateWithoutVotesInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserCreateWithoutVotesInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  resetToken?: Maybe<String>;
-  password: String;
-  links?: Maybe<LinkCreateManyWithoutPostedByInput>;
-  keywords?: Maybe<UserCreatekeywordsInput>;
-  profileImg?: Maybe<String>;
-  profileBG?: Maybe<String>;
-  summary?: Maybe<String>;
-  location?: Maybe<String>;
-  sections?: Maybe<SectionCreateManyWithoutUserInput>;
-  notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
-}
-
-export interface LinkCreateManyWithoutPostedByInput {
+export interface GalleryImageCreateManyWithoutGalleryInput {
   create?: Maybe<
-    LinkCreateWithoutPostedByInput[] | LinkCreateWithoutPostedByInput
+    | GalleryImageCreateWithoutGalleryInput[]
+    | GalleryImageCreateWithoutGalleryInput
   >;
-  connect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
+  connect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
 }
 
-export interface LinkCreateWithoutPostedByInput {
+export interface GalleryImageCreateWithoutGalleryInput {
   id?: Maybe<ID_Input>;
-  description: String;
-  url: String;
-  votes?: Maybe<VoteCreateManyWithoutLinkInput>;
+  img: String;
+  title?: Maybe<String>;
 }
 
-export interface LinkUpdateInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
-  postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
-  votes?: Maybe<VoteUpdateManyWithoutLinkInput>;
+export interface GalleryUpdateInput {
+  summary?: Maybe<String>;
+  section?: Maybe<SectionUpdateOneWithoutGalleryInput>;
+  images?: Maybe<GalleryImageUpdateManyWithoutGalleryInput>;
 }
 
-export interface UserUpdateOneWithoutLinksInput {
-  create?: Maybe<UserCreateWithoutLinksInput>;
-  update?: Maybe<UserUpdateWithoutLinksDataInput>;
-  upsert?: Maybe<UserUpsertWithoutLinksInput>;
+export interface SectionUpdateOneWithoutGalleryInput {
+  create?: Maybe<SectionCreateWithoutGalleryInput>;
+  update?: Maybe<SectionUpdateWithoutGalleryDataInput>;
+  upsert?: Maybe<SectionUpsertWithoutGalleryInput>;
   delete?: Maybe<Boolean>;
   disconnect?: Maybe<Boolean>;
+  connect?: Maybe<SectionWhereUniqueInput>;
+}
+
+export interface SectionUpdateWithoutGalleryDataInput {
+  title?: Maybe<String>;
+  summary?: Maybe<String>;
+  user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutSectionsInput {
+  create?: Maybe<UserCreateWithoutSectionsInput>;
+  update?: Maybe<UserUpdateWithoutSectionsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutSectionsInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateWithoutLinksDataInput {
+export interface UserUpdateWithoutSectionsDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
   resetToken?: Maybe<String>;
   password?: Maybe<String>;
-  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
-  sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
-}
-
-export interface VoteUpdateManyWithoutUserInput {
-  create?: Maybe<VoteCreateWithoutUserInput[] | VoteCreateWithoutUserInput>;
-  delete?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  set?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  disconnect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  update?: Maybe<
-    | VoteUpdateWithWhereUniqueWithoutUserInput[]
-    | VoteUpdateWithWhereUniqueWithoutUserInput
-  >;
-  upsert?: Maybe<
-    | VoteUpsertWithWhereUniqueWithoutUserInput[]
-    | VoteUpsertWithWhereUniqueWithoutUserInput
-  >;
-  deleteMany?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
-}
-
-export interface VoteUpdateWithWhereUniqueWithoutUserInput {
-  where: VoteWhereUniqueInput;
-  data: VoteUpdateWithoutUserDataInput;
-}
-
-export interface VoteUpdateWithoutUserDataInput {
-  link?: Maybe<LinkUpdateOneRequiredWithoutVotesInput>;
-}
-
-export interface LinkUpdateOneRequiredWithoutVotesInput {
-  create?: Maybe<LinkCreateWithoutVotesInput>;
-  update?: Maybe<LinkUpdateWithoutVotesDataInput>;
-  upsert?: Maybe<LinkUpsertWithoutVotesInput>;
-  connect?: Maybe<LinkWhereUniqueInput>;
-}
-
-export interface LinkUpdateWithoutVotesDataInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
-  postedBy?: Maybe<UserUpdateOneWithoutLinksInput>;
-}
-
-export interface LinkUpsertWithoutVotesInput {
-  update: LinkUpdateWithoutVotesDataInput;
-  create: LinkCreateWithoutVotesInput;
-}
-
-export interface VoteUpsertWithWhereUniqueWithoutUserInput {
-  where: VoteWhereUniqueInput;
-  update: VoteUpdateWithoutUserDataInput;
-  create: VoteCreateWithoutUserInput;
-}
-
-export interface VoteScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  AND?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
-  OR?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
-  NOT?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
 }
 
 export interface UserUpdatekeywordsInput {
   set?: Maybe<String[] | String>;
-}
-
-export interface SectionUpdateManyWithoutUserInput {
-  create?: Maybe<
-    SectionCreateWithoutUserInput[] | SectionCreateWithoutUserInput
-  >;
-  delete?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
-  connect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
-  set?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
-  disconnect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
-  update?: Maybe<
-    | SectionUpdateWithWhereUniqueWithoutUserInput[]
-    | SectionUpdateWithWhereUniqueWithoutUserInput
-  >;
-  upsert?: Maybe<
-    | SectionUpsertWithWhereUniqueWithoutUserInput[]
-    | SectionUpsertWithWhereUniqueWithoutUserInput
-  >;
-  deleteMany?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
-  updateMany?: Maybe<
-    | SectionUpdateManyWithWhereNestedInput[]
-    | SectionUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface SectionUpdateWithWhereUniqueWithoutUserInput {
-  where: SectionWhereUniqueInput;
-  data: SectionUpdateWithoutUserDataInput;
-}
-
-export interface SectionUpdateWithoutUserDataInput {
-  title?: Maybe<String>;
-  summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneInput>;
-}
-
-export interface GalleryUpdateOneInput {
-  create?: Maybe<GalleryCreateInput>;
-  update?: Maybe<GalleryUpdateDataInput>;
-  upsert?: Maybe<GalleryUpsertNestedInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<GalleryWhereUniqueInput>;
-}
-
-export interface GalleryUpdateDataInput {
-  summary?: Maybe<String>;
-  images?: Maybe<GalleryImageUpdateManyInput>;
-}
-
-export interface GalleryUpsertNestedInput {
-  update: GalleryUpdateDataInput;
-  create: GalleryCreateInput;
-}
-
-export interface SectionUpsertWithWhereUniqueWithoutUserInput {
-  where: SectionWhereUniqueInput;
-  update: SectionUpdateWithoutUserDataInput;
-  create: SectionCreateWithoutUserInput;
-}
-
-export interface SectionScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  summary?: Maybe<String>;
-  summary_not?: Maybe<String>;
-  summary_in?: Maybe<String[] | String>;
-  summary_not_in?: Maybe<String[] | String>;
-  summary_lt?: Maybe<String>;
-  summary_lte?: Maybe<String>;
-  summary_gt?: Maybe<String>;
-  summary_gte?: Maybe<String>;
-  summary_contains?: Maybe<String>;
-  summary_not_contains?: Maybe<String>;
-  summary_starts_with?: Maybe<String>;
-  summary_not_starts_with?: Maybe<String>;
-  summary_ends_with?: Maybe<String>;
-  summary_not_ends_with?: Maybe<String>;
-  AND?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
-  OR?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
-  NOT?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
-}
-
-export interface SectionUpdateManyWithWhereNestedInput {
-  where: SectionScalarWhereInput;
-  data: SectionUpdateManyDataInput;
-}
-
-export interface SectionUpdateManyDataInput {
-  title?: Maybe<String>;
-  summary?: Maybe<String>;
 }
 
 export interface NotificationUpdateManyWithoutUserInput {
@@ -1538,99 +981,63 @@ export interface NotificationUpdateManyDataInput {
   icon?: Maybe<String>;
 }
 
-export interface UserUpsertWithoutLinksInput {
-  update: UserUpdateWithoutLinksDataInput;
-  create: UserCreateWithoutLinksInput;
+export interface UserUpsertWithoutSectionsInput {
+  update: UserUpdateWithoutSectionsDataInput;
+  create: UserCreateWithoutSectionsInput;
 }
 
-export interface VoteUpdateManyWithoutLinkInput {
-  create?: Maybe<VoteCreateWithoutLinkInput[] | VoteCreateWithoutLinkInput>;
-  delete?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  connect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  set?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  disconnect?: Maybe<VoteWhereUniqueInput[] | VoteWhereUniqueInput>;
-  update?: Maybe<
-    | VoteUpdateWithWhereUniqueWithoutLinkInput[]
-    | VoteUpdateWithWhereUniqueWithoutLinkInput
-  >;
-  upsert?: Maybe<
-    | VoteUpsertWithWhereUniqueWithoutLinkInput[]
-    | VoteUpsertWithWhereUniqueWithoutLinkInput
-  >;
-  deleteMany?: Maybe<VoteScalarWhereInput[] | VoteScalarWhereInput>;
+export interface SectionUpsertWithoutGalleryInput {
+  update: SectionUpdateWithoutGalleryDataInput;
+  create: SectionCreateWithoutGalleryInput;
 }
 
-export interface VoteUpdateWithWhereUniqueWithoutLinkInput {
-  where: VoteWhereUniqueInput;
-  data: VoteUpdateWithoutLinkDataInput;
-}
-
-export interface VoteUpdateWithoutLinkDataInput {
-  user?: Maybe<UserUpdateOneRequiredWithoutVotesInput>;
-}
-
-export interface UserUpdateOneRequiredWithoutVotesInput {
-  create?: Maybe<UserCreateWithoutVotesInput>;
-  update?: Maybe<UserUpdateWithoutVotesDataInput>;
-  upsert?: Maybe<UserUpsertWithoutVotesInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateWithoutVotesDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  resetToken?: Maybe<String>;
-  password?: Maybe<String>;
-  links?: Maybe<LinkUpdateManyWithoutPostedByInput>;
-  keywords?: Maybe<UserUpdatekeywordsInput>;
-  profileImg?: Maybe<String>;
-  profileBG?: Maybe<String>;
-  summary?: Maybe<String>;
-  location?: Maybe<String>;
-  sections?: Maybe<SectionUpdateManyWithoutUserInput>;
-  notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
-}
-
-export interface LinkUpdateManyWithoutPostedByInput {
+export interface GalleryImageUpdateManyWithoutGalleryInput {
   create?: Maybe<
-    LinkCreateWithoutPostedByInput[] | LinkCreateWithoutPostedByInput
+    | GalleryImageCreateWithoutGalleryInput[]
+    | GalleryImageCreateWithoutGalleryInput
   >;
-  delete?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  connect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  set?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
-  disconnect?: Maybe<LinkWhereUniqueInput[] | LinkWhereUniqueInput>;
+  delete?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
+  connect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
+  set?: Maybe<GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput>;
+  disconnect?: Maybe<
+    GalleryImageWhereUniqueInput[] | GalleryImageWhereUniqueInput
+  >;
   update?: Maybe<
-    | LinkUpdateWithWhereUniqueWithoutPostedByInput[]
-    | LinkUpdateWithWhereUniqueWithoutPostedByInput
+    | GalleryImageUpdateWithWhereUniqueWithoutGalleryInput[]
+    | GalleryImageUpdateWithWhereUniqueWithoutGalleryInput
   >;
   upsert?: Maybe<
-    | LinkUpsertWithWhereUniqueWithoutPostedByInput[]
-    | LinkUpsertWithWhereUniqueWithoutPostedByInput
+    | GalleryImageUpsertWithWhereUniqueWithoutGalleryInput[]
+    | GalleryImageUpsertWithWhereUniqueWithoutGalleryInput
   >;
-  deleteMany?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
+  deleteMany?: Maybe<
+    GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput
+  >;
   updateMany?: Maybe<
-    LinkUpdateManyWithWhereNestedInput[] | LinkUpdateManyWithWhereNestedInput
+    | GalleryImageUpdateManyWithWhereNestedInput[]
+    | GalleryImageUpdateManyWithWhereNestedInput
   >;
 }
 
-export interface LinkUpdateWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput;
-  data: LinkUpdateWithoutPostedByDataInput;
+export interface GalleryImageUpdateWithWhereUniqueWithoutGalleryInput {
+  where: GalleryImageWhereUniqueInput;
+  data: GalleryImageUpdateWithoutGalleryDataInput;
 }
 
-export interface LinkUpdateWithoutPostedByDataInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
-  votes?: Maybe<VoteUpdateManyWithoutLinkInput>;
+export interface GalleryImageUpdateWithoutGalleryDataInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
 }
 
-export interface LinkUpsertWithWhereUniqueWithoutPostedByInput {
-  where: LinkWhereUniqueInput;
-  update: LinkUpdateWithoutPostedByDataInput;
-  create: LinkCreateWithoutPostedByInput;
+export interface GalleryImageUpsertWithWhereUniqueWithoutGalleryInput {
+  where: GalleryImageWhereUniqueInput;
+  update: GalleryImageUpdateWithoutGalleryDataInput;
+  create: GalleryImageCreateWithoutGalleryInput;
 }
 
-export interface LinkScalarWhereInput {
+export interface GalleryImageScalarWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
   id_in?: Maybe<ID_Input[] | ID_Input>;
@@ -1645,71 +1052,99 @@ export interface LinkScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  url?: Maybe<String>;
-  url_not?: Maybe<String>;
-  url_in?: Maybe<String[] | String>;
-  url_not_in?: Maybe<String[] | String>;
-  url_lt?: Maybe<String>;
-  url_lte?: Maybe<String>;
-  url_gt?: Maybe<String>;
-  url_gte?: Maybe<String>;
-  url_contains?: Maybe<String>;
-  url_not_contains?: Maybe<String>;
-  url_starts_with?: Maybe<String>;
-  url_not_starts_with?: Maybe<String>;
-  url_ends_with?: Maybe<String>;
-  url_not_ends_with?: Maybe<String>;
-  AND?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
-  OR?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
-  NOT?: Maybe<LinkScalarWhereInput[] | LinkScalarWhereInput>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  AND?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
+  OR?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
+  NOT?: Maybe<GalleryImageScalarWhereInput[] | GalleryImageScalarWhereInput>;
 }
 
-export interface LinkUpdateManyWithWhereNestedInput {
-  where: LinkScalarWhereInput;
-  data: LinkUpdateManyDataInput;
+export interface GalleryImageUpdateManyWithWhereNestedInput {
+  where: GalleryImageScalarWhereInput;
+  data: GalleryImageUpdateManyDataInput;
 }
 
-export interface LinkUpdateManyDataInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
+export interface GalleryImageUpdateManyDataInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
 }
 
-export interface UserUpsertWithoutVotesInput {
-  update: UserUpdateWithoutVotesDataInput;
-  create: UserCreateWithoutVotesInput;
+export interface GalleryUpdateManyMutationInput {
+  summary?: Maybe<String>;
 }
 
-export interface VoteUpsertWithWhereUniqueWithoutLinkInput {
-  where: VoteWhereUniqueInput;
-  update: VoteUpdateWithoutLinkDataInput;
-  create: VoteCreateWithoutLinkInput;
+export interface GalleryImageCreateInput {
+  id?: Maybe<ID_Input>;
+  img: String;
+  title?: Maybe<String>;
+  gallery?: Maybe<GalleryCreateOneWithoutImagesInput>;
 }
 
-export interface LinkUpdateManyMutationInput {
-  description?: Maybe<String>;
-  url?: Maybe<String>;
+export interface GalleryCreateOneWithoutImagesInput {
+  create?: Maybe<GalleryCreateWithoutImagesInput>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
+}
+
+export interface GalleryCreateWithoutImagesInput {
+  id?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  section?: Maybe<SectionCreateOneWithoutGalleryInput>;
+}
+
+export interface GalleryImageUpdateInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
+  gallery?: Maybe<GalleryUpdateOneWithoutImagesInput>;
+}
+
+export interface GalleryUpdateOneWithoutImagesInput {
+  create?: Maybe<GalleryCreateWithoutImagesInput>;
+  update?: Maybe<GalleryUpdateWithoutImagesDataInput>;
+  upsert?: Maybe<GalleryUpsertWithoutImagesInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
+}
+
+export interface GalleryUpdateWithoutImagesDataInput {
+  summary?: Maybe<String>;
+  section?: Maybe<SectionUpdateOneWithoutGalleryInput>;
+}
+
+export interface GalleryUpsertWithoutImagesInput {
+  update: GalleryUpdateWithoutImagesDataInput;
+  create: GalleryCreateWithoutImagesInput;
+}
+
+export interface GalleryImageUpdateManyMutationInput {
+  img?: Maybe<String>;
+  title?: Maybe<String>;
 }
 
 export interface NotificationCreateInput {
@@ -1733,14 +1168,37 @@ export interface UserCreateWithoutNotificationsInput {
   email: String;
   resetToken?: Maybe<String>;
   password: String;
-  links?: Maybe<LinkCreateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteCreateManyWithoutUserInput>;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
+}
+
+export interface SectionCreateManyWithoutUserInput {
+  create?: Maybe<
+    SectionCreateWithoutUserInput[] | SectionCreateWithoutUserInput
+  >;
+  connect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
+}
+
+export interface SectionCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  summary?: Maybe<String>;
+  gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
+}
+
+export interface GalleryCreateOneWithoutSectionInput {
+  create?: Maybe<GalleryCreateWithoutSectionInput>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
+}
+
+export interface GalleryCreateWithoutSectionInput {
+  id?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  images?: Maybe<GalleryImageCreateManyWithoutGalleryInput>;
 }
 
 export interface NotificationUpdateInput {
@@ -1764,14 +1222,129 @@ export interface UserUpdateWithoutNotificationsDataInput {
   email?: Maybe<String>;
   resetToken?: Maybe<String>;
   password?: Maybe<String>;
-  links?: Maybe<LinkUpdateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
+}
+
+export interface SectionUpdateManyWithoutUserInput {
+  create?: Maybe<
+    SectionCreateWithoutUserInput[] | SectionCreateWithoutUserInput
+  >;
+  delete?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
+  connect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
+  set?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
+  disconnect?: Maybe<SectionWhereUniqueInput[] | SectionWhereUniqueInput>;
+  update?: Maybe<
+    | SectionUpdateWithWhereUniqueWithoutUserInput[]
+    | SectionUpdateWithWhereUniqueWithoutUserInput
+  >;
+  upsert?: Maybe<
+    | SectionUpsertWithWhereUniqueWithoutUserInput[]
+    | SectionUpsertWithWhereUniqueWithoutUserInput
+  >;
+  deleteMany?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
+  updateMany?: Maybe<
+    | SectionUpdateManyWithWhereNestedInput[]
+    | SectionUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface SectionUpdateWithWhereUniqueWithoutUserInput {
+  where: SectionWhereUniqueInput;
+  data: SectionUpdateWithoutUserDataInput;
+}
+
+export interface SectionUpdateWithoutUserDataInput {
+  title?: Maybe<String>;
+  summary?: Maybe<String>;
+  gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
+}
+
+export interface GalleryUpdateOneWithoutSectionInput {
+  create?: Maybe<GalleryCreateWithoutSectionInput>;
+  update?: Maybe<GalleryUpdateWithoutSectionDataInput>;
+  upsert?: Maybe<GalleryUpsertWithoutSectionInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
+}
+
+export interface GalleryUpdateWithoutSectionDataInput {
+  summary?: Maybe<String>;
+  images?: Maybe<GalleryImageUpdateManyWithoutGalleryInput>;
+}
+
+export interface GalleryUpsertWithoutSectionInput {
+  update: GalleryUpdateWithoutSectionDataInput;
+  create: GalleryCreateWithoutSectionInput;
+}
+
+export interface SectionUpsertWithWhereUniqueWithoutUserInput {
+  where: SectionWhereUniqueInput;
+  update: SectionUpdateWithoutUserDataInput;
+  create: SectionCreateWithoutUserInput;
+}
+
+export interface SectionScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  AND?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
+  OR?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
+  NOT?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
+}
+
+export interface SectionUpdateManyWithWhereNestedInput {
+  where: SectionScalarWhereInput;
+  data: SectionUpdateManyDataInput;
+}
+
+export interface SectionUpdateManyDataInput {
+  title?: Maybe<String>;
+  summary?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutNotificationsInput {
@@ -1791,63 +1364,15 @@ export interface SectionCreateInput {
   id?: Maybe<ID_Input>;
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryCreateOneInput>;
+  gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
   user: UserCreateOneWithoutSectionsInput;
-}
-
-export interface UserCreateOneWithoutSectionsInput {
-  create?: Maybe<UserCreateWithoutSectionsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserCreateWithoutSectionsInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  resetToken?: Maybe<String>;
-  password: String;
-  links?: Maybe<LinkCreateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteCreateManyWithoutUserInput>;
-  keywords?: Maybe<UserCreatekeywordsInput>;
-  profileImg?: Maybe<String>;
-  profileBG?: Maybe<String>;
-  summary?: Maybe<String>;
-  location?: Maybe<String>;
-  notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
 }
 
 export interface SectionUpdateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  gallery?: Maybe<GalleryUpdateOneInput>;
+  gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
-}
-
-export interface UserUpdateOneRequiredWithoutSectionsInput {
-  create?: Maybe<UserCreateWithoutSectionsInput>;
-  update?: Maybe<UserUpdateWithoutSectionsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutSectionsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserUpdateWithoutSectionsDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  resetToken?: Maybe<String>;
-  password?: Maybe<String>;
-  links?: Maybe<LinkUpdateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
-  keywords?: Maybe<UserUpdatekeywordsInput>;
-  profileImg?: Maybe<String>;
-  profileBG?: Maybe<String>;
-  summary?: Maybe<String>;
-  location?: Maybe<String>;
-  notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
-}
-
-export interface UserUpsertWithoutSectionsInput {
-  update: UserUpdateWithoutSectionsDataInput;
-  create: UserCreateWithoutSectionsInput;
 }
 
 export interface SectionUpdateManyMutationInput {
@@ -1861,8 +1386,6 @@ export interface UserCreateInput {
   email: String;
   resetToken?: Maybe<String>;
   password: String;
-  links?: Maybe<LinkCreateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteCreateManyWithoutUserInput>;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
@@ -1877,8 +1400,6 @@ export interface UserUpdateInput {
   email?: Maybe<String>;
   resetToken?: Maybe<String>;
   password?: Maybe<String>;
-  links?: Maybe<LinkUpdateManyWithoutPostedByInput>;
-  votes?: Maybe<VoteUpdateManyWithoutUserInput>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
   profileBG?: Maybe<String>;
@@ -1898,17 +1419,6 @@ export interface UserUpdateManyMutationInput {
   profileBG?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
-}
-
-export interface VoteCreateInput {
-  id?: Maybe<ID_Input>;
-  link: LinkCreateOneWithoutVotesInput;
-  user: UserCreateOneWithoutVotesInput;
-}
-
-export interface VoteUpdateInput {
-  link?: Maybe<LinkUpdateOneRequiredWithoutVotesInput>;
-  user?: Maybe<UserUpdateOneRequiredWithoutVotesInput>;
 }
 
 export interface GallerySubscriptionWhereInput {
@@ -1937,17 +1447,6 @@ export interface GalleryImageSubscriptionWhereInput {
   NOT?: Maybe<
     GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
   >;
-}
-
-export interface LinkSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<LinkWhereInput>;
-  AND?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
-  OR?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
-  NOT?: Maybe<LinkSubscriptionWhereInput[] | LinkSubscriptionWhereInput>;
 }
 
 export interface NotificationSubscriptionWhereInput {
@@ -1989,17 +1488,6 @@ export interface UserSubscriptionWhereInput {
   NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
-export interface VoteSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<VoteWhereInput>;
-  AND?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
-  OR?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
-  NOT?: Maybe<VoteSubscriptionWhereInput[] | VoteSubscriptionWhereInput>;
-}
-
 export interface NodeNode {
   id: ID_Output;
 }
@@ -2012,6 +1500,7 @@ export interface Gallery {
 export interface GalleryPromise extends Promise<Gallery>, Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
+  section: <T = SectionPromise>() => T;
   images: <T = FragmentableArray<GalleryImage>>(args?: {
     where?: GalleryImageWhereInput;
     orderBy?: GalleryImageOrderByInput;
@@ -2028,6 +1517,7 @@ export interface GallerySubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
+  section: <T = SectionSubscription>() => T;
   images: <T = Promise<AsyncIterator<GalleryImageSubscription>>>(args?: {
     where?: GalleryImageWhereInput;
     orderBy?: GalleryImageOrderByInput;
@@ -2044,6 +1534,7 @@ export interface GalleryNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
+  section: <T = SectionPromise>() => T;
   images: <T = FragmentableArray<GalleryImage>>(args?: {
     where?: GalleryImageWhereInput;
     orderBy?: GalleryImageOrderByInput;
@@ -2053,6 +1544,199 @@ export interface GalleryNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+}
+
+export interface Section {
+  id: ID_Output;
+  title?: String;
+  summary?: String;
+}
+
+export interface SectionPromise extends Promise<Section>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  summary: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
+  user: <T = UserPromise>() => T;
+}
+
+export interface SectionSubscription
+  extends Promise<AsyncIterator<Section>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  gallery: <T = GallerySubscription>() => T;
+  user: <T = UserSubscription>() => T;
+}
+
+export interface SectionNullablePromise
+  extends Promise<Section | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  summary: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
+  user: <T = UserPromise>() => T;
+}
+
+export interface User {
+  id: ID_Output;
+  name: String;
+  email: String;
+  resetToken?: String;
+  password: String;
+  keywords: String[];
+  profileImg?: String;
+  profileBG?: String;
+  summary?: String;
+  location?: String;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  resetToken: () => Promise<String>;
+  password: () => Promise<String>;
+  keywords: () => Promise<String[]>;
+  profileImg: () => Promise<String>;
+  profileBG: () => Promise<String>;
+  summary: () => Promise<String>;
+  location: () => Promise<String>;
+  sections: <T = FragmentableArray<Section>>(args?: {
+    where?: SectionWhereInput;
+    orderBy?: SectionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  notifications: <T = FragmentableArray<Notification>>(args?: {
+    where?: NotificationWhereInput;
+    orderBy?: NotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  resetToken: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  keywords: () => Promise<AsyncIterator<String[]>>;
+  profileImg: () => Promise<AsyncIterator<String>>;
+  profileBG: () => Promise<AsyncIterator<String>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  location: () => Promise<AsyncIterator<String>>;
+  sections: <T = Promise<AsyncIterator<SectionSubscription>>>(args?: {
+    where?: SectionWhereInput;
+    orderBy?: SectionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  notifications: <T = Promise<AsyncIterator<NotificationSubscription>>>(args?: {
+    where?: NotificationWhereInput;
+    orderBy?: NotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  resetToken: () => Promise<String>;
+  password: () => Promise<String>;
+  keywords: () => Promise<String[]>;
+  profileImg: () => Promise<String>;
+  profileBG: () => Promise<String>;
+  summary: () => Promise<String>;
+  location: () => Promise<String>;
+  sections: <T = FragmentableArray<Section>>(args?: {
+    where?: SectionWhereInput;
+    orderBy?: SectionOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  notifications: <T = FragmentableArray<Notification>>(args?: {
+    where?: NotificationWhereInput;
+    orderBy?: NotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface Notification {
+  id: ID_Output;
+  title: String;
+  message: String;
+  discarded?: Boolean;
+  linkTo?: String;
+  icon: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface NotificationPromise
+  extends Promise<Notification>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  message: () => Promise<String>;
+  discarded: () => Promise<Boolean>;
+  linkTo: () => Promise<String>;
+  icon: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
+}
+
+export interface NotificationSubscription
+  extends Promise<AsyncIterator<Notification>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  title: () => Promise<AsyncIterator<String>>;
+  message: () => Promise<AsyncIterator<String>>;
+  discarded: () => Promise<AsyncIterator<Boolean>>;
+  linkTo: () => Promise<AsyncIterator<String>>;
+  icon: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  user: <T = UserSubscription>() => T;
+}
+
+export interface NotificationNullablePromise
+  extends Promise<Notification | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  title: () => Promise<String>;
+  message: () => Promise<String>;
+  discarded: () => Promise<Boolean>;
+  linkTo: () => Promise<String>;
+  icon: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  user: <T = UserPromise>() => T;
 }
 
 export interface GalleryImage {
@@ -2067,6 +1751,7 @@ export interface GalleryImagePromise
   id: () => Promise<ID_Output>;
   img: () => Promise<String>;
   title: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
 }
 
 export interface GalleryImageSubscription
@@ -2075,6 +1760,7 @@ export interface GalleryImageSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   img: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
+  gallery: <T = GallerySubscription>() => T;
 }
 
 export interface GalleryImageNullablePromise
@@ -2083,6 +1769,7 @@ export interface GalleryImageNullablePromise
   id: () => Promise<ID_Output>;
   img: () => Promise<String>;
   title: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
 }
 
 export interface GalleryConnection {
@@ -2214,395 +1901,6 @@ export interface AggregateGalleryImagePromise
 
 export interface AggregateGalleryImageSubscription
   extends Promise<AsyncIterator<AggregateGalleryImage>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface Link {
-  id: ID_Output;
-  createdAt: DateTimeOutput;
-  description: String;
-  url: String;
-}
-
-export interface LinkPromise extends Promise<Link>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
-  postedBy: <T = UserPromise>() => T;
-  votes: <T = FragmentableArray<Vote>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface LinkSubscription
-  extends Promise<AsyncIterator<Link>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  description: () => Promise<AsyncIterator<String>>;
-  url: () => Promise<AsyncIterator<String>>;
-  postedBy: <T = UserSubscription>() => T;
-  votes: <T = Promise<AsyncIterator<VoteSubscription>>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface LinkNullablePromise
-  extends Promise<Link | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
-  postedBy: <T = UserPromise>() => T;
-  votes: <T = FragmentableArray<Vote>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface User {
-  id: ID_Output;
-  name: String;
-  email: String;
-  resetToken?: String;
-  password: String;
-  keywords: String[];
-  profileImg?: String;
-  profileBG?: String;
-  summary?: String;
-  location?: String;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  resetToken: () => Promise<String>;
-  password: () => Promise<String>;
-  links: <T = FragmentableArray<Link>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  votes: <T = FragmentableArray<Vote>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  keywords: () => Promise<String[]>;
-  profileImg: () => Promise<String>;
-  profileBG: () => Promise<String>;
-  summary: () => Promise<String>;
-  location: () => Promise<String>;
-  sections: <T = FragmentableArray<Section>>(args?: {
-    where?: SectionWhereInput;
-    orderBy?: SectionOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  notifications: <T = FragmentableArray<Notification>>(args?: {
-    where?: NotificationWhereInput;
-    orderBy?: NotificationOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  resetToken: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  links: <T = Promise<AsyncIterator<LinkSubscription>>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  votes: <T = Promise<AsyncIterator<VoteSubscription>>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  keywords: () => Promise<AsyncIterator<String[]>>;
-  profileImg: () => Promise<AsyncIterator<String>>;
-  profileBG: () => Promise<AsyncIterator<String>>;
-  summary: () => Promise<AsyncIterator<String>>;
-  location: () => Promise<AsyncIterator<String>>;
-  sections: <T = Promise<AsyncIterator<SectionSubscription>>>(args?: {
-    where?: SectionWhereInput;
-    orderBy?: SectionOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  notifications: <T = Promise<AsyncIterator<NotificationSubscription>>>(args?: {
-    where?: NotificationWhereInput;
-    orderBy?: NotificationOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface UserNullablePromise
-  extends Promise<User | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  resetToken: () => Promise<String>;
-  password: () => Promise<String>;
-  links: <T = FragmentableArray<Link>>(args?: {
-    where?: LinkWhereInput;
-    orderBy?: LinkOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  votes: <T = FragmentableArray<Vote>>(args?: {
-    where?: VoteWhereInput;
-    orderBy?: VoteOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  keywords: () => Promise<String[]>;
-  profileImg: () => Promise<String>;
-  profileBG: () => Promise<String>;
-  summary: () => Promise<String>;
-  location: () => Promise<String>;
-  sections: <T = FragmentableArray<Section>>(args?: {
-    where?: SectionWhereInput;
-    orderBy?: SectionOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  notifications: <T = FragmentableArray<Notification>>(args?: {
-    where?: NotificationWhereInput;
-    orderBy?: NotificationOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface Vote {
-  id: ID_Output;
-}
-
-export interface VotePromise extends Promise<Vote>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  link: <T = LinkPromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface VoteSubscription
-  extends Promise<AsyncIterator<Vote>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  link: <T = LinkSubscription>() => T;
-  user: <T = UserSubscription>() => T;
-}
-
-export interface VoteNullablePromise
-  extends Promise<Vote | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  link: <T = LinkPromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface Section {
-  id: ID_Output;
-  title?: String;
-  summary?: String;
-}
-
-export interface SectionPromise extends Promise<Section>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  summary: () => Promise<String>;
-  gallery: <T = GalleryPromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface SectionSubscription
-  extends Promise<AsyncIterator<Section>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  summary: () => Promise<AsyncIterator<String>>;
-  gallery: <T = GallerySubscription>() => T;
-  user: <T = UserSubscription>() => T;
-}
-
-export interface SectionNullablePromise
-  extends Promise<Section | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  summary: () => Promise<String>;
-  gallery: <T = GalleryPromise>() => T;
-  user: <T = UserPromise>() => T;
-}
-
-export interface Notification {
-  id: ID_Output;
-  title: String;
-  message: String;
-  discarded?: Boolean;
-  linkTo?: String;
-  icon: String;
-  createdAt: DateTimeOutput;
-}
-
-export interface NotificationPromise
-  extends Promise<Notification>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  message: () => Promise<String>;
-  discarded: () => Promise<Boolean>;
-  linkTo: () => Promise<String>;
-  icon: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
-  user: <T = UserPromise>() => T;
-}
-
-export interface NotificationSubscription
-  extends Promise<AsyncIterator<Notification>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  message: () => Promise<AsyncIterator<String>>;
-  discarded: () => Promise<AsyncIterator<Boolean>>;
-  linkTo: () => Promise<AsyncIterator<String>>;
-  icon: () => Promise<AsyncIterator<String>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  user: <T = UserSubscription>() => T;
-}
-
-export interface NotificationNullablePromise
-  extends Promise<Notification | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  message: () => Promise<String>;
-  discarded: () => Promise<Boolean>;
-  linkTo: () => Promise<String>;
-  icon: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
-  user: <T = UserPromise>() => T;
-}
-
-export interface LinkConnection {
-  pageInfo: PageInfo;
-  edges: LinkEdge[];
-}
-
-export interface LinkConnectionPromise
-  extends Promise<LinkConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<LinkEdge>>() => T;
-  aggregate: <T = AggregateLinkPromise>() => T;
-}
-
-export interface LinkConnectionSubscription
-  extends Promise<AsyncIterator<LinkConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<LinkEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateLinkSubscription>() => T;
-}
-
-export interface LinkEdge {
-  node: Link;
-  cursor: String;
-}
-
-export interface LinkEdgePromise extends Promise<LinkEdge>, Fragmentable {
-  node: <T = LinkPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface LinkEdgeSubscription
-  extends Promise<AsyncIterator<LinkEdge>>,
-    Fragmentable {
-  node: <T = LinkSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateLink {
-  count: Int;
-}
-
-export interface AggregateLinkPromise
-  extends Promise<AggregateLink>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateLinkSubscription
-  extends Promise<AsyncIterator<AggregateLink>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -2771,60 +2069,6 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface VoteConnection {
-  pageInfo: PageInfo;
-  edges: VoteEdge[];
-}
-
-export interface VoteConnectionPromise
-  extends Promise<VoteConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<VoteEdge>>() => T;
-  aggregate: <T = AggregateVotePromise>() => T;
-}
-
-export interface VoteConnectionSubscription
-  extends Promise<AsyncIterator<VoteConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<VoteEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateVoteSubscription>() => T;
-}
-
-export interface VoteEdge {
-  node: Vote;
-  cursor: String;
-}
-
-export interface VoteEdgePromise extends Promise<VoteEdge>, Fragmentable {
-  node: <T = VotePromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface VoteEdgeSubscription
-  extends Promise<AsyncIterator<VoteEdge>>,
-    Fragmentable {
-  node: <T = VoteSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateVote {
-  count: Int;
-}
-
-export interface AggregateVotePromise
-  extends Promise<AggregateVote>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateVoteSubscription
-  extends Promise<AsyncIterator<AggregateVote>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
 export interface BatchPayload {
   count: Long;
 }
@@ -2930,56 +2174,6 @@ export interface GalleryImagePreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   img: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
-}
-
-export interface LinkSubscriptionPayload {
-  mutation: MutationType;
-  node: Link;
-  updatedFields: String[];
-  previousValues: LinkPreviousValues;
-}
-
-export interface LinkSubscriptionPayloadPromise
-  extends Promise<LinkSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = LinkPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = LinkPreviousValuesPromise>() => T;
-}
-
-export interface LinkSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<LinkSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = LinkSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = LinkPreviousValuesSubscription>() => T;
-}
-
-export interface LinkPreviousValues {
-  id: ID_Output;
-  createdAt: DateTimeOutput;
-  description: String;
-  url: String;
-}
-
-export interface LinkPreviousValuesPromise
-  extends Promise<LinkPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  description: () => Promise<String>;
-  url: () => Promise<String>;
-}
-
-export interface LinkPreviousValuesSubscription
-  extends Promise<AsyncIterator<LinkPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  description: () => Promise<AsyncIterator<String>>;
-  url: () => Promise<AsyncIterator<String>>;
 }
 
 export interface NotificationSubscriptionPayload {
@@ -3156,47 +2350,6 @@ export interface UserPreviousValuesSubscription
   location: () => Promise<AsyncIterator<String>>;
 }
 
-export interface VoteSubscriptionPayload {
-  mutation: MutationType;
-  node: Vote;
-  updatedFields: String[];
-  previousValues: VotePreviousValues;
-}
-
-export interface VoteSubscriptionPayloadPromise
-  extends Promise<VoteSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = VotePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = VotePreviousValuesPromise>() => T;
-}
-
-export interface VoteSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<VoteSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = VoteSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = VotePreviousValuesSubscription>() => T;
-}
-
-export interface VotePreviousValues {
-  id: ID_Output;
-}
-
-export interface VotePreviousValuesPromise
-  extends Promise<VotePreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-}
-
-export interface VotePreviousValuesSubscription
-  extends Promise<AsyncIterator<VotePreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-}
-
 /*
 The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
 */
@@ -3207,11 +2360,6 @@ export type ID_Output = string;
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-*/
-export type Int = number;
 
 /*
 The `Boolean` scalar type represents `true` or `false`.
@@ -3228,6 +2376,11 @@ DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
 
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+*/
+export type Int = number;
+
 export type Long = string;
 
 /**
@@ -3235,10 +2388,6 @@ export type Long = string;
  */
 
 export const models: Model[] = [
-  {
-    name: "Link",
-    embedded: false
-  },
   {
     name: "User",
     embedded: false
@@ -3257,10 +2406,6 @@ export const models: Model[] = [
   },
   {
     name: "GalleryImage",
-    embedded: false
-  },
-  {
-    name: "Vote",
     embedded: false
   }
 ];

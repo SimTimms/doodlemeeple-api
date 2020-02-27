@@ -3,17 +3,19 @@ const { GraphQLServer } = require('graphql-yoga');
 const { prisma } = require('./generated/prisma-client');
 const Query = require('./resolvers/Query');
 const Mutation = require('./resolvers/Mutation');
-const User = require('./resolvers/User');
 var express = require('express');
 const bodyParser = require('body-parser');
 const { sign_s3 } = require('./aws-upload');
 const Section = require('./resolvers/Section');
+const Gallery = require('./resolvers/Gallery');
+const User = require('./resolvers/User');
 
 const resolvers = {
   Query,
   Mutation,
   User,
   Section,
+  Gallery,
 };
 
 const server = new GraphQLServer({
@@ -32,6 +34,7 @@ server.start();
 
 const customRouter = express.Router();
 customRouter.use(bodyParser.urlencoded({ extended: true }));
+customRouter.use(bodyParser.json());
 customRouter.post('/sign_s3', (req, res) => {
   sign_s3(req, res);
 });

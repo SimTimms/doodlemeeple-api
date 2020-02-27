@@ -57,10 +57,6 @@ function profileCheck(input) {
     return false;
   }
 
-  if (input.summary.length < 3) {
-    return false;
-  }
-
   return true;
 }
 

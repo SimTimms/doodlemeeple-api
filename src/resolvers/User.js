@@ -1,7 +1,12 @@
-function links(parent, args, context) {
-  return context.prisma.user({ id: parent.id }).links();
+function sections(parent, args, context) {
+  return context.prisma.user({ id: parent.id }).sections();
+}
+
+function notifications(parent, args, context) {
+  return context.prisma.user({ id: parent.id }).notifications();
 }
 
 module.exports = {
-  links,
+  sections,
+  notifications,
 };

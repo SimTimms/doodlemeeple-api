@@ -1,35 +1,5 @@
 const { getUserId } = require('../utils');
-/* For reference
-async function feed(parent, args, context, info) {
-  const where = args.filter
-    ? {
-        OR: [
-          { description_contains: args.filter },
-          { url_contains: args.filter },
-        ],
-      }
-    : {};
 
-  const links = await context.prisma.links({
-    where,
-    skip: args.skip,
-    first: args.first,
-    orderBy: args.orderBy,
-  });
-
-  const count = await context.prisma
-    .linksConnection({
-      where,
-    })
-    .aggregate()
-    .count();
-  return {
-    links,
-    count,
-  };
-
-  return links;
-}*/
 async function getSections(parent, args, context) {
   const userId = getUserId(context);
   const sections = await context.prisma.sections({
@@ -59,6 +29,8 @@ async function getNotifications(parent, args, context) {
         id: userId,
       },
     },
+    skip: 0,
+    first: 20,
   });
 
   return notifications;

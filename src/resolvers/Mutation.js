@@ -7,68 +7,18 @@ const {
   profileCheck,
 } = require('../utils');
 const sgMail = require('@sendgrid/mail');
-
-async function updateSection(parent, args, context, info) {
-  const userId = getUserId(context);
-
-  await context.prisma.createNotification({
-    user: { connect: { id: userId } },
-    title: 'You updated a section',
-    message: 'Make sure you showcase your best work',
-    linkTo: 'app/edit-profile',
-    icon: 'contact_mail',
-  });
-
-  const sectionExists = await context.prisma.$exists.section({
-    id: args.id,
-  });
-
-  if (sectionExists) {
-    console.log(args.section.gallery);
-    const section = await context.prisma.updateSection({
-      data: {
-        title: args.section.title,
-        summary: args.section.summary,
-        gallery: context.prisma.createGallery({
-          summary: 'da',
-          images: [{ img: 'dsa' }],
-        }),
-      },
-      where: {
-        id: args.id,
-      },
-    });
-
-    return section;
-  } else {
-    //TODO if this is the only way to do this with Prisma then it's shit, check for another way
-    let imageIds = [];
-    for (let i = 0; i < args.section.gallery.images.length; i++) {
-      const imageIn = args.section.gallery.images[i];
-      const imageReturn = await context.prisma.createGalleryImage({
-        img: imageIn.img,
-      });
-      imageIds.push({ id: imageReturn.id });
-    }
-
-    const newGallery = await context.prisma.createGallery({
-      summary: args.section.gallery.summary,
-      images: { connect: imageIds },
-    });
-
-    const newSection = await context.prisma.createSection({
-      user: { connect: { id: userId } },
-      title: args.section.title,
-      summary: args.section.summary,
-      gallery: { connect: { id: newGallery.id } },
-    });
-
-    return newSection;
-  }
-}
+const { updateGallerySection, updateSection } = require('./mutations/section');
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
+    id: args.id,
+  });
+
+  return true;
+}
+
+async function removeNotification(parent, args, context) {
+  await context.prisma.deleteNotification({
     id: args.id,
   });
 
@@ -100,6 +50,7 @@ async function updateUser(parent, args, context, info) {
       name: args.name,
       summary: args.summary,
       profileBG: args.profileBG,
+      profileImg: args.profileImg,
     },
     where: {
       id: userId,
@@ -258,34 +209,15 @@ async function login(parent, args, context, info) {
   };
 }
 
-async function vote(parent, args, context, info) {
-  // 1
-  const userId = getUserId(context);
-
-  // 2
-  const linkExists = await context.prisma.$exists.vote({
-    user: { id: userId },
-    link: { id: args.linkId },
-  });
-  if (linkExists) {
-    throw new Error(`Already voted for link: ${args.linkId}`);
-  }
-
-  // 3
-  return context.prisma.createVote({
-    user: { connect: { id: userId } },
-    link: { connect: { id: args.linkId } },
-  });
-}
-
 module.exports = {
   signup,
   passwordForgot,
   passwordReset,
   updateUser,
   updateSection,
+  updateGallerySection,
   removeSection,
   createNotification,
+  removeNotification,
   login,
-  vote,
 };

@@ -1,14 +1,4 @@
-enum LinkOrderByInput {
-  description_ASC
-  description_DESC
-  url_ASC
-  url_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
 type Mutation {
-  post(url: String!, description: String!): Link!
   signup(email: String!, password: String!, name: String!): AuthPayload
   passwordForgot(email: String!): Boolean!
   createNotification(message: String!): Boolean!
@@ -18,11 +8,13 @@ type Mutation {
     name: String!
     summary: String
     profileBG: String
+    profileImg: String
     sections: [SectionInput]
   ): User
   updateSection(id: String!, section: SectionInput): Section
+  updateGallerySection(id: String!, section: SectionInput): Section
   removeSection(id: String!): Boolean
-  vote(linkId: ID!): Vote
+  removeNotification(id: String!): Boolean
 }
 
 type Query {
@@ -31,26 +23,10 @@ type Query {
   getSections: [Section!]
 }
 
-type Feed {
-  links: [Link!]!
-  count: Int!
-}
-
 input SectionInput {
   title: String
   summary: String
   gallery: GalleryInput
-}
-
-type Subscription {
-  newLink: Link
-  newVote: Vote
-}
-
-type Vote {
-  id: ID!
-  link: Link!
-  user: User!
 }
 
 type AuthPayload {
@@ -63,7 +39,6 @@ type User {
   name: String!
   resetToken: String
   email: String!
-  links: [Link!]!
   keywords: [String]
   profileImg: String
   profileBG: String
@@ -96,6 +71,14 @@ type Gallery {
   id: ID!
   summary: String
   images: [GalleryImage]
+  section: Section
+}
+
+type GalleryImage {
+  id: ID!
+  img: String!
+  title: String
+  gallery: Gallery
 }
 
 input GalleryInput {
@@ -103,22 +86,7 @@ input GalleryInput {
   images: [GalleryImageInput!]!
 }
 
-type GalleryImage {
-  id: ID!
-  img: String!
-  title: String
-}
-
 input GalleryImageInput {
   img: String!
   title: String
-}
-
-type Link {
-  id: ID!
-  description: String!
-  url: String!
-  postedBy: User
-  createdAt: String
-  votes: [Vote!]!
 }

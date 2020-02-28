@@ -8,7 +8,7 @@ async function updateGallerySection(parent, args, context, info) {
     user: { connect: { id: userId } },
     title: 'You updated a gallery',
     message: 'Make sure you showcase your best work',
-    linkTo: 'app/edit-profile',
+    linkTo: 'edit-profile',
     icon: 'contact_mail',
   });
 
@@ -93,7 +93,7 @@ async function updateSection(parent, args, context, info) {
     user: { connect: { id: userId } },
     title: 'Profile Updated!',
     message: "It's good that you did that",
-    linkTo: 'app/edit-profile',
+    linkTo: 'edit-profile',
     icon: 'contact_mail',
   });
 

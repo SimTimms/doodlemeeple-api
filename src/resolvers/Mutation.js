@@ -41,7 +41,7 @@ async function updateUser(parent, args, context, info) {
     user: { connect: { id: userId } },
     title: 'You updated your profile',
     message: 'Nice Work! Keep your profile up-to-date',
-    linkTo: 'app/edit-profile',
+    linkTo: '/edit-profile',
     icon: 'contact_mail',
   });
 

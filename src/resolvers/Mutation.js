@@ -166,7 +166,7 @@ async function signup(parent, args, context, info) {
       user: { connect: { id: user.id } },
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
-      linkTo: 'app/edit-profile',
+      linkTo: 'edit-profile',
       icon: 'contact_mail',
     });
 

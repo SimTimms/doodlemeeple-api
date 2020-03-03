@@ -1,4 +1,4 @@
-export const emailAddress = {
+const emailAddress = {
   tech: 'support@doodlemeeple.com',
   jamie: 'jamie@doodlemeeple.com',
   tim: 'tim@doodlemeeple.com',
@@ -6,4 +6,8 @@ export const emailAddress = {
   noreply: 'noreply@doodlemeeple.com',
   signoffPlain: 'The DoodleMeeple Team',
   signoffHTML: '<strong>The DoodleMeeple Team</strong>',
+};
+
+module.exports = {
+  emailAddress,
 };

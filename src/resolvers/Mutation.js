@@ -42,7 +42,7 @@ async function updateUser(parent, args, context, info) {
     user: { connect: { id: userId } },
     title: 'You updated your profile',
     message: 'Nice Work! Keep your profile up-to-date',
-    linkTo: '/edit-profile',
+    linkTo: '/app/edit-profile',
     icon: 'contact_mail',
   });
 
@@ -167,7 +167,7 @@ async function signup(parent, args, context, info) {
       user: { connect: { id: user.id } },
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
-      linkTo: 'edit-profile',
+      linkTo: '/app/edit-profile',
       icon: 'contact_mail',
     });
 

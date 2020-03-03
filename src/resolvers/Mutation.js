@@ -8,7 +8,7 @@ const {
 } = require('../utils');
 const sgMail = require('@sendgrid/mail');
 const { updateGallerySection, updateSection } = require('./mutations/section');
-import { emailAddress } from '../utils/emailAddress';
+const emailAddress = require('../utils/emailAddress');
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({

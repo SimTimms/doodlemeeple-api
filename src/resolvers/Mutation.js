@@ -8,6 +8,7 @@ const {
 } = require('../utils');
 const sgMail = require('@sendgrid/mail');
 const { updateGallerySection, updateSection } = require('./mutations/section');
+import { emailAddress } from '../utils/emailAddress';
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
@@ -80,10 +81,10 @@ async function passwordForgot(parent, args, context) {
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
   const msg = {
     to: args.email,
-    from: 'account@doodlemeeple.com',
-    subject: 'Reset your Password',
-    text: `You have requested a password reset, visit ${actionLink}`,
-    html: `<strong>You have requested a password reset, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
+    from: emailAddress.noreply,
+    subject: 'Reset your DoodleMeeple password',
+    text: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
+    html: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
   };
   await sgMail.send(msg);
 

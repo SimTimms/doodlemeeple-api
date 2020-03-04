@@ -1,6 +1,6 @@
 const { getUserId } = require('../../utils');
-import { createImages, createNotification } from './utils';
-import { UPDATED_PROFILE } from '../../utils/notifications';
+const { UPDATED_PROFILE } = require('../../utils/notifications');
+const { createImages, createNotification } = require('./utils');
 
 async function updateGallerySection(parent, args, context, info) {
   const userId = getUserId(context);

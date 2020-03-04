@@ -19,6 +19,10 @@ type AggregateSection {
   count: Int!
 }
 
+type AggregateTestimonial {
+  count: Int!
+}
+
 type AggregateUser {
   count: Int!
 }
@@ -442,6 +446,12 @@ type Mutation {
   upsertSection(where: SectionWhereUniqueInput!, create: SectionCreateInput!, update: SectionUpdateInput!): Section!
   deleteSection(where: SectionWhereUniqueInput!): Section
   deleteManySections(where: SectionWhereInput): BatchPayload!
+  createTestimonial(data: TestimonialCreateInput!): Testimonial!
+  updateTestimonial(data: TestimonialUpdateInput!, where: TestimonialWhereUniqueInput!): Testimonial
+  updateManyTestimonials(data: TestimonialUpdateManyMutationInput!, where: TestimonialWhereInput): BatchPayload!
+  upsertTestimonial(where: TestimonialWhereUniqueInput!, create: TestimonialCreateInput!, update: TestimonialUpdateInput!): Testimonial!
+  deleteTestimonial(where: TestimonialWhereUniqueInput!): Testimonial
+  deleteManyTestimonials(where: TestimonialWhereInput): BatchPayload!
   createUser(data: UserCreateInput!): User!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
@@ -809,6 +819,9 @@ type Query {
   section(where: SectionWhereUniqueInput!): Section
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section]!
   sectionsConnection(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SectionConnection!
+  testimonial(where: TestimonialWhereUniqueInput!): Testimonial
+  testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial]!
+  testimonialsConnection(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TestimonialConnection!
   user(where: UserWhereUniqueInput!): User
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
@@ -820,6 +833,8 @@ type Section {
   title: String
   summary: String
   gallery: Gallery
+  notableProjects: [String!]!
+  testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial!]
   user: User!
 }
 
@@ -834,12 +849,18 @@ input SectionCreateInput {
   title: String
   summary: String
   gallery: GalleryCreateOneWithoutSectionInput
+  notableProjects: SectionCreatenotableProjectsInput
+  testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
 }
 
 input SectionCreateManyWithoutUserInput {
   create: [SectionCreateWithoutUserInput!]
   connect: [SectionWhereUniqueInput!]
+}
+
+input SectionCreatenotableProjectsInput {
+  set: [String!]
 }
 
 input SectionCreateOneWithoutGalleryInput {
@@ -851,6 +872,8 @@ input SectionCreateWithoutGalleryInput {
   id: ID
   title: String
   summary: String
+  notableProjects: SectionCreatenotableProjectsInput
+  testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
 }
 
@@ -859,6 +882,8 @@ input SectionCreateWithoutUserInput {
   title: String
   summary: String
   gallery: GalleryCreateOneWithoutSectionInput
+  notableProjects: SectionCreatenotableProjectsInput
+  testimonials: TestimonialCreateManyInput
 }
 
 type SectionEdge {
@@ -879,6 +904,7 @@ type SectionPreviousValues {
   id: ID!
   title: String
   summary: String
+  notableProjects: [String!]!
 }
 
 input SectionScalarWhereInput {
@@ -951,17 +977,21 @@ input SectionUpdateInput {
   title: String
   summary: String
   gallery: GalleryUpdateOneWithoutSectionInput
+  notableProjects: SectionUpdatenotableProjectsInput
+  testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
 
 input SectionUpdateManyDataInput {
   title: String
   summary: String
+  notableProjects: SectionUpdatenotableProjectsInput
 }
 
 input SectionUpdateManyMutationInput {
   title: String
   summary: String
+  notableProjects: SectionUpdatenotableProjectsInput
 }
 
 input SectionUpdateManyWithoutUserInput {
@@ -981,6 +1011,10 @@ input SectionUpdateManyWithWhereNestedInput {
   data: SectionUpdateManyDataInput!
 }
 
+input SectionUpdatenotableProjectsInput {
+  set: [String!]
+}
+
 input SectionUpdateOneWithoutGalleryInput {
   create: SectionCreateWithoutGalleryInput
   update: SectionUpdateWithoutGalleryDataInput
@@ -993,6 +1027,8 @@ input SectionUpdateOneWithoutGalleryInput {
 input SectionUpdateWithoutGalleryDataInput {
   title: String
   summary: String
+  notableProjects: SectionUpdatenotableProjectsInput
+  testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
 
@@ -1000,6 +1036,8 @@ input SectionUpdateWithoutUserDataInput {
   title: String
   summary: String
   gallery: GalleryUpdateOneWithoutSectionInput
+  notableProjects: SectionUpdatenotableProjectsInput
+  testimonials: TestimonialUpdateManyInput
 }
 
 input SectionUpdateWithWhereUniqueWithoutUserInput {
@@ -1062,6 +1100,9 @@ input SectionWhereInput {
   summary_ends_with: String
   summary_not_ends_with: String
   gallery: GalleryWhereInput
+  testimonials_every: TestimonialWhereInput
+  testimonials_some: TestimonialWhereInput
+  testimonials_none: TestimonialWhereInput
   user: UserWhereInput
   AND: [SectionWhereInput!]
   OR: [SectionWhereInput!]
@@ -1077,7 +1118,267 @@ type Subscription {
   galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload
+  testimonial(where: TestimonialSubscriptionWhereInput): TestimonialSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type Testimonial {
+  id: ID!
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
+}
+
+type TestimonialConnection {
+  pageInfo: PageInfo!
+  edges: [TestimonialEdge]!
+  aggregate: AggregateTestimonial!
+}
+
+input TestimonialCreateInput {
+  id: ID
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialCreateManyInput {
+  create: [TestimonialCreateInput!]
+  connect: [TestimonialWhereUniqueInput!]
+}
+
+type TestimonialEdge {
+  node: Testimonial!
+  cursor: String!
+}
+
+enum TestimonialOrderByInput {
+  id_ASC
+  id_DESC
+  summary_ASC
+  summary_DESC
+  images_ASC
+  images_DESC
+  name_ASC
+  name_DESC
+  status_ASC
+  status_DESC
+}
+
+type TestimonialPreviousValues {
+  id: ID!
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  images: String
+  images_not: String
+  images_in: [String!]
+  images_not_in: [String!]
+  images_lt: String
+  images_lte: String
+  images_gt: String
+  images_gte: String
+  images_contains: String
+  images_not_contains: String
+  images_starts_with: String
+  images_not_starts_with: String
+  images_ends_with: String
+  images_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  status: Boolean
+  status_not: Boolean
+  AND: [TestimonialScalarWhereInput!]
+  OR: [TestimonialScalarWhereInput!]
+  NOT: [TestimonialScalarWhereInput!]
+}
+
+type TestimonialSubscriptionPayload {
+  mutation: MutationType!
+  node: Testimonial
+  updatedFields: [String!]
+  previousValues: TestimonialPreviousValues
+}
+
+input TestimonialSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: TestimonialWhereInput
+  AND: [TestimonialSubscriptionWhereInput!]
+  OR: [TestimonialSubscriptionWhereInput!]
+  NOT: [TestimonialSubscriptionWhereInput!]
+}
+
+input TestimonialUpdateDataInput {
+  summary: String
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialUpdateInput {
+  summary: String
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialUpdateManyDataInput {
+  summary: String
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialUpdateManyInput {
+  create: [TestimonialCreateInput!]
+  update: [TestimonialUpdateWithWhereUniqueNestedInput!]
+  upsert: [TestimonialUpsertWithWhereUniqueNestedInput!]
+  delete: [TestimonialWhereUniqueInput!]
+  connect: [TestimonialWhereUniqueInput!]
+  set: [TestimonialWhereUniqueInput!]
+  disconnect: [TestimonialWhereUniqueInput!]
+  deleteMany: [TestimonialScalarWhereInput!]
+  updateMany: [TestimonialUpdateManyWithWhereNestedInput!]
+}
+
+input TestimonialUpdateManyMutationInput {
+  summary: String
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialUpdateManyWithWhereNestedInput {
+  where: TestimonialScalarWhereInput!
+  data: TestimonialUpdateManyDataInput!
+}
+
+input TestimonialUpdateWithWhereUniqueNestedInput {
+  where: TestimonialWhereUniqueInput!
+  data: TestimonialUpdateDataInput!
+}
+
+input TestimonialUpsertWithWhereUniqueNestedInput {
+  where: TestimonialWhereUniqueInput!
+  update: TestimonialUpdateDataInput!
+  create: TestimonialCreateInput!
+}
+
+input TestimonialWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  images: String
+  images_not: String
+  images_in: [String!]
+  images_not_in: [String!]
+  images_lt: String
+  images_lte: String
+  images_gt: String
+  images_gte: String
+  images_contains: String
+  images_not_contains: String
+  images_starts_with: String
+  images_not_starts_with: String
+  images_ends_with: String
+  images_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  status: Boolean
+  status_not: Boolean
+  AND: [TestimonialWhereInput!]
+  OR: [TestimonialWhereInput!]
+  NOT: [TestimonialWhereInput!]
+}
+
+input TestimonialWhereUniqueInput {
+  id: ID
 }
 
 type User {

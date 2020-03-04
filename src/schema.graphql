@@ -64,7 +64,17 @@ type Section {
   title: String
   summary: String
   gallery: Gallery
+  notableProjects: [String]
+  testimonials: [Testimonial]
   user: User!
+}
+
+type Testimonial {
+  id: ID!
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
 }
 
 type Gallery {

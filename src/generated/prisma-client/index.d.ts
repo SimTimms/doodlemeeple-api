@@ -20,6 +20,7 @@ export interface Exists {
   galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
+  testimonial: (where?: TestimonialWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
 }
 
@@ -122,6 +123,27 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => SectionConnectionPromise;
+  testimonial: (
+    where: TestimonialWhereUniqueInput
+  ) => TestimonialNullablePromise;
+  testimonials: (args?: {
+    where?: TestimonialWhereInput;
+    orderBy?: TestimonialOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Testimonial>;
+  testimonialsConnection: (args?: {
+    where?: TestimonialWhereInput;
+    orderBy?: TestimonialOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => TestimonialConnectionPromise;
   user: (where: UserWhereUniqueInput) => UserNullablePromise;
   users: (args?: {
     where?: UserWhereInput;
@@ -219,6 +241,24 @@ export interface Prisma {
   }) => SectionPromise;
   deleteSection: (where: SectionWhereUniqueInput) => SectionPromise;
   deleteManySections: (where?: SectionWhereInput) => BatchPayloadPromise;
+  createTestimonial: (data: TestimonialCreateInput) => TestimonialPromise;
+  updateTestimonial: (args: {
+    data: TestimonialUpdateInput;
+    where: TestimonialWhereUniqueInput;
+  }) => TestimonialPromise;
+  updateManyTestimonials: (args: {
+    data: TestimonialUpdateManyMutationInput;
+    where?: TestimonialWhereInput;
+  }) => BatchPayloadPromise;
+  upsertTestimonial: (args: {
+    where: TestimonialWhereUniqueInput;
+    create: TestimonialCreateInput;
+    update: TestimonialUpdateInput;
+  }) => TestimonialPromise;
+  deleteTestimonial: (where: TestimonialWhereUniqueInput) => TestimonialPromise;
+  deleteManyTestimonials: (
+    where?: TestimonialWhereInput
+  ) => BatchPayloadPromise;
   createUser: (data: UserCreateInput) => UserPromise;
   updateUser: (args: {
     data: UserUpdateInput;
@@ -256,6 +296,9 @@ export interface Subscription {
   section: (
     where?: SectionSubscriptionWhereInput
   ) => SectionSubscriptionPayloadSubscription;
+  testimonial: (
+    where?: TestimonialSubscriptionWhereInput
+  ) => TestimonialSubscriptionPayloadSubscription;
   user: (
     where?: UserSubscriptionWhereInput
   ) => UserSubscriptionPayloadSubscription;
@@ -268,6 +311,18 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type TestimonialOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "summary_ASC"
+  | "summary_DESC"
+  | "images_ASC"
+  | "images_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "status_ASC"
+  | "status_DESC";
 
 export type SectionOrderByInput =
   | "id_ASC"
@@ -333,6 +388,70 @@ export type GalleryWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export interface TestimonialWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  images?: Maybe<String>;
+  images_not?: Maybe<String>;
+  images_in?: Maybe<String[] | String>;
+  images_not_in?: Maybe<String[] | String>;
+  images_lt?: Maybe<String>;
+  images_lte?: Maybe<String>;
+  images_gt?: Maybe<String>;
+  images_gte?: Maybe<String>;
+  images_contains?: Maybe<String>;
+  images_not_contains?: Maybe<String>;
+  images_starts_with?: Maybe<String>;
+  images_not_starts_with?: Maybe<String>;
+  images_ends_with?: Maybe<String>;
+  images_not_ends_with?: Maybe<String>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  status?: Maybe<Boolean>;
+  status_not?: Maybe<Boolean>;
+  AND?: Maybe<TestimonialWhereInput[] | TestimonialWhereInput>;
+  OR?: Maybe<TestimonialWhereInput[] | TestimonialWhereInput>;
+  NOT?: Maybe<TestimonialWhereInput[] | TestimonialWhereInput>;
+}
+
 export interface SectionWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -377,6 +496,9 @@ export interface SectionWhereInput {
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
   gallery?: Maybe<GalleryWhereInput>;
+  testimonials_every?: Maybe<TestimonialWhereInput>;
+  testimonials_some?: Maybe<TestimonialWhereInput>;
+  testimonials_none?: Maybe<TestimonialWhereInput>;
   user?: Maybe<UserWhereInput>;
   AND?: Maybe<SectionWhereInput[] | SectionWhereInput>;
   OR?: Maybe<SectionWhereInput[] | SectionWhereInput>;
@@ -707,6 +829,10 @@ export type SectionWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export type TestimonialWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export type UserWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
   email?: Maybe<String>;
@@ -729,7 +855,26 @@ export interface SectionCreateWithoutGalleryInput {
   id?: Maybe<ID_Input>;
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
+}
+
+export interface SectionCreatenotableProjectsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface TestimonialCreateManyInput {
+  create?: Maybe<TestimonialCreateInput[] | TestimonialCreateInput>;
+  connect?: Maybe<TestimonialWhereUniqueInput[] | TestimonialWhereUniqueInput>;
+}
+
+export interface TestimonialCreateInput {
+  id?: Maybe<ID_Input>;
+  summary: String;
+  images?: Maybe<String>;
+  name?: Maybe<String>;
+  status?: Maybe<Boolean>;
 }
 
 export interface UserCreateOneWithoutSectionsInput {
@@ -807,7 +952,132 @@ export interface SectionUpdateOneWithoutGalleryInput {
 export interface SectionUpdateWithoutGalleryDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
+}
+
+export interface SectionUpdatenotableProjectsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface TestimonialUpdateManyInput {
+  create?: Maybe<TestimonialCreateInput[] | TestimonialCreateInput>;
+  update?: Maybe<
+    | TestimonialUpdateWithWhereUniqueNestedInput[]
+    | TestimonialUpdateWithWhereUniqueNestedInput
+  >;
+  upsert?: Maybe<
+    | TestimonialUpsertWithWhereUniqueNestedInput[]
+    | TestimonialUpsertWithWhereUniqueNestedInput
+  >;
+  delete?: Maybe<TestimonialWhereUniqueInput[] | TestimonialWhereUniqueInput>;
+  connect?: Maybe<TestimonialWhereUniqueInput[] | TestimonialWhereUniqueInput>;
+  set?: Maybe<TestimonialWhereUniqueInput[] | TestimonialWhereUniqueInput>;
+  disconnect?: Maybe<
+    TestimonialWhereUniqueInput[] | TestimonialWhereUniqueInput
+  >;
+  deleteMany?: Maybe<
+    TestimonialScalarWhereInput[] | TestimonialScalarWhereInput
+  >;
+  updateMany?: Maybe<
+    | TestimonialUpdateManyWithWhereNestedInput[]
+    | TestimonialUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface TestimonialUpdateWithWhereUniqueNestedInput {
+  where: TestimonialWhereUniqueInput;
+  data: TestimonialUpdateDataInput;
+}
+
+export interface TestimonialUpdateDataInput {
+  summary?: Maybe<String>;
+  images?: Maybe<String>;
+  name?: Maybe<String>;
+  status?: Maybe<Boolean>;
+}
+
+export interface TestimonialUpsertWithWhereUniqueNestedInput {
+  where: TestimonialWhereUniqueInput;
+  update: TestimonialUpdateDataInput;
+  create: TestimonialCreateInput;
+}
+
+export interface TestimonialScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  images?: Maybe<String>;
+  images_not?: Maybe<String>;
+  images_in?: Maybe<String[] | String>;
+  images_not_in?: Maybe<String[] | String>;
+  images_lt?: Maybe<String>;
+  images_lte?: Maybe<String>;
+  images_gt?: Maybe<String>;
+  images_gte?: Maybe<String>;
+  images_contains?: Maybe<String>;
+  images_not_contains?: Maybe<String>;
+  images_starts_with?: Maybe<String>;
+  images_not_starts_with?: Maybe<String>;
+  images_ends_with?: Maybe<String>;
+  images_not_ends_with?: Maybe<String>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  status?: Maybe<Boolean>;
+  status_not?: Maybe<Boolean>;
+  AND?: Maybe<TestimonialScalarWhereInput[] | TestimonialScalarWhereInput>;
+  OR?: Maybe<TestimonialScalarWhereInput[] | TestimonialScalarWhereInput>;
+  NOT?: Maybe<TestimonialScalarWhereInput[] | TestimonialScalarWhereInput>;
+}
+
+export interface TestimonialUpdateManyWithWhereNestedInput {
+  where: TestimonialScalarWhereInput;
+  data: TestimonialUpdateManyDataInput;
+}
+
+export interface TestimonialUpdateManyDataInput {
+  summary?: Maybe<String>;
+  images?: Maybe<String>;
+  name?: Maybe<String>;
+  status?: Maybe<Boolean>;
 }
 
 export interface UserUpdateOneRequiredWithoutSectionsInput {
@@ -1188,6 +1458,8 @@ export interface SectionCreateWithoutUserInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
+  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialCreateManyInput>;
 }
 
 export interface GalleryCreateOneWithoutSectionInput {
@@ -1262,6 +1534,8 @@ export interface SectionUpdateWithoutUserDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
+  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialUpdateManyInput>;
 }
 
 export interface GalleryUpdateOneWithoutSectionInput {
@@ -1345,6 +1619,7 @@ export interface SectionUpdateManyWithWhereNestedInput {
 export interface SectionUpdateManyDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
 }
 
 export interface UserUpsertWithoutNotificationsInput {
@@ -1365,6 +1640,8 @@ export interface SectionCreateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
+  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
 }
 
@@ -1372,12 +1649,29 @@ export interface SectionUpdateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
+  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
 }
 
 export interface SectionUpdateManyMutationInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+}
+
+export interface TestimonialUpdateInput {
+  summary?: Maybe<String>;
+  images?: Maybe<String>;
+  name?: Maybe<String>;
+  status?: Maybe<Boolean>;
+}
+
+export interface TestimonialUpdateManyMutationInput {
+  summary?: Maybe<String>;
+  images?: Maybe<String>;
+  name?: Maybe<String>;
+  status?: Maybe<Boolean>;
 }
 
 export interface UserCreateInput {
@@ -1477,6 +1771,23 @@ export interface SectionSubscriptionWhereInput {
   NOT?: Maybe<SectionSubscriptionWhereInput[] | SectionSubscriptionWhereInput>;
 }
 
+export interface TestimonialSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<TestimonialWhereInput>;
+  AND?: Maybe<
+    TestimonialSubscriptionWhereInput[] | TestimonialSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    TestimonialSubscriptionWhereInput[] | TestimonialSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    TestimonialSubscriptionWhereInput[] | TestimonialSubscriptionWhereInput
+  >;
+}
+
 export interface UserSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
@@ -1550,6 +1861,7 @@ export interface Section {
   id: ID_Output;
   title?: String;
   summary?: String;
+  notableProjects: String[];
 }
 
 export interface SectionPromise extends Promise<Section>, Fragmentable {
@@ -1557,6 +1869,16 @@ export interface SectionPromise extends Promise<Section>, Fragmentable {
   title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
+  notableProjects: () => Promise<String[]>;
+  testimonials: <T = FragmentableArray<Testimonial>>(args?: {
+    where?: TestimonialWhereInput;
+    orderBy?: TestimonialOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   user: <T = UserPromise>() => T;
 }
 
@@ -1567,6 +1889,16 @@ export interface SectionSubscription
   title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
   gallery: <T = GallerySubscription>() => T;
+  notableProjects: () => Promise<AsyncIterator<String[]>>;
+  testimonials: <T = Promise<AsyncIterator<TestimonialSubscription>>>(args?: {
+    where?: TestimonialWhereInput;
+    orderBy?: TestimonialOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   user: <T = UserSubscription>() => T;
 }
 
@@ -1577,7 +1909,53 @@ export interface SectionNullablePromise
   title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
+  notableProjects: () => Promise<String[]>;
+  testimonials: <T = FragmentableArray<Testimonial>>(args?: {
+    where?: TestimonialWhereInput;
+    orderBy?: TestimonialOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   user: <T = UserPromise>() => T;
+}
+
+export interface Testimonial {
+  id: ID_Output;
+  summary: String;
+  images?: String;
+  name?: String;
+  status?: Boolean;
+}
+
+export interface TestimonialPromise extends Promise<Testimonial>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
+  images: () => Promise<String>;
+  name: () => Promise<String>;
+  status: () => Promise<Boolean>;
+}
+
+export interface TestimonialSubscription
+  extends Promise<AsyncIterator<Testimonial>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  images: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<Boolean>>;
+}
+
+export interface TestimonialNullablePromise
+  extends Promise<Testimonial | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
+  images: () => Promise<String>;
+  name: () => Promise<String>;
+  status: () => Promise<Boolean>;
 }
 
 export interface User {
@@ -2015,6 +2393,62 @@ export interface AggregateSectionSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface TestimonialConnection {
+  pageInfo: PageInfo;
+  edges: TestimonialEdge[];
+}
+
+export interface TestimonialConnectionPromise
+  extends Promise<TestimonialConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<TestimonialEdge>>() => T;
+  aggregate: <T = AggregateTestimonialPromise>() => T;
+}
+
+export interface TestimonialConnectionSubscription
+  extends Promise<AsyncIterator<TestimonialConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<TestimonialEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateTestimonialSubscription>() => T;
+}
+
+export interface TestimonialEdge {
+  node: Testimonial;
+  cursor: String;
+}
+
+export interface TestimonialEdgePromise
+  extends Promise<TestimonialEdge>,
+    Fragmentable {
+  node: <T = TestimonialPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface TestimonialEdgeSubscription
+  extends Promise<AsyncIterator<TestimonialEdge>>,
+    Fragmentable {
+  node: <T = TestimonialSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateTestimonial {
+  count: Int;
+}
+
+export interface AggregateTestimonialPromise
+  extends Promise<AggregateTestimonial>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateTestimonialSubscription
+  extends Promise<AsyncIterator<AggregateTestimonial>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface UserConnection {
   pageInfo: PageInfo;
   edges: UserEdge[];
@@ -2264,6 +2698,7 @@ export interface SectionPreviousValues {
   id: ID_Output;
   title?: String;
   summary?: String;
+  notableProjects: String[];
 }
 
 export interface SectionPreviousValuesPromise
@@ -2272,6 +2707,7 @@ export interface SectionPreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   summary: () => Promise<String>;
+  notableProjects: () => Promise<String[]>;
 }
 
 export interface SectionPreviousValuesSubscription
@@ -2280,6 +2716,60 @@ export interface SectionPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
+  notableProjects: () => Promise<AsyncIterator<String[]>>;
+}
+
+export interface TestimonialSubscriptionPayload {
+  mutation: MutationType;
+  node: Testimonial;
+  updatedFields: String[];
+  previousValues: TestimonialPreviousValues;
+}
+
+export interface TestimonialSubscriptionPayloadPromise
+  extends Promise<TestimonialSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = TestimonialPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = TestimonialPreviousValuesPromise>() => T;
+}
+
+export interface TestimonialSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<TestimonialSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = TestimonialSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = TestimonialPreviousValuesSubscription>() => T;
+}
+
+export interface TestimonialPreviousValues {
+  id: ID_Output;
+  summary: String;
+  images?: String;
+  name?: String;
+  status?: Boolean;
+}
+
+export interface TestimonialPreviousValuesPromise
+  extends Promise<TestimonialPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
+  images: () => Promise<String>;
+  name: () => Promise<String>;
+  status: () => Promise<Boolean>;
+}
+
+export interface TestimonialPreviousValuesSubscription
+  extends Promise<AsyncIterator<TestimonialPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  images: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<Boolean>>;
 }
 
 export interface UserSubscriptionPayload {
@@ -2367,6 +2857,11 @@ The `Boolean` scalar type represents `true` or `false`.
 export type Boolean = boolean;
 
 /*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+*/
+export type Int = number;
+
+/*
 DateTime scalar input type, allowing Date
 */
 export type DateTimeInput = Date | string;
@@ -2375,11 +2870,6 @@ export type DateTimeInput = Date | string;
 DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-*/
-export type Int = number;
 
 export type Long = string;
 
@@ -2398,6 +2888,10 @@ export const models: Model[] = [
   },
   {
     name: "Section",
+    embedded: false
+  },
+  {
+    name: "Testimonial",
     embedded: false
   },
   {

@@ -35,7 +35,17 @@ type Section {
   title: String
   summary: String
   gallery: Gallery @relation(link: INLINE)
+  notableProjects: [String] @scalarList(strategy: RELATION)
+  testimonials: [Testimonial] @relation(link: TABLE)
   user: User!
+}
+
+type Testimonial {
+  id: ID! @id
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
 }
 
 type Gallery {

@@ -38,6 +38,7 @@ type NotableProjects {
 }
 
 input NotableProjectsInput {
+  id: String
   summary: String!
 }
 

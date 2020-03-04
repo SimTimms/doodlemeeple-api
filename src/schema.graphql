@@ -14,6 +14,7 @@ type Mutation {
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
   removeSection(id: String!): Boolean
+  removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): Boolean
 }
 
@@ -84,6 +85,7 @@ type NotableProjects {
 }
 
 input NotableProjectsInput {
+  id: String
   summary: String!
 }
 

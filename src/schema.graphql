@@ -27,6 +27,15 @@ input SectionInput {
   title: String
   summary: String
   gallery: GalleryInput
+  notableProjects: [NotableProjectsInput]
+  testimonials: [TestimonialInput]
+}
+
+input TestimonialInput {
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
 }
 
 type AuthPayload {
@@ -64,9 +73,18 @@ type Section {
   title: String
   summary: String
   gallery: Gallery
-  notableProjects: [String]
+  notableProjects: [NotableProjects]
   testimonials: [Testimonial]
   user: User!
+}
+
+type NotableProjects {
+  id: ID!
+  summary: String!
+}
+
+input NotableProjectsInput {
+  summary: String!
 }
 
 type Testimonial {

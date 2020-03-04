@@ -28,6 +28,17 @@ input SectionInput {
   title: String
   summary: String
   gallery: Gallery
+  notableProjects: NotableProjectsInput
+  testimonials: TestimonialInput
+}
+
+type NotableProjects {
+  id: ID! @id
+  summary: String!
+}
+
+input NotableProjectsInput {
+  summary: String!
 }
 
 type Section {
@@ -35,13 +46,20 @@ type Section {
   title: String
   summary: String
   gallery: Gallery @relation(link: INLINE)
-  notableProjects: [String] @scalarList(strategy: RELATION)
+  notableProjects: [NotableProjects] @relation(link: TABLE)
   testimonials: [Testimonial] @relation(link: TABLE)
   user: User!
 }
 
 type Testimonial {
   id: ID! @id
+  summary: String!
+  images: String
+  name: String
+  status: Boolean
+}
+
+input TestimonialInput {
   summary: String!
   images: String
   name: String

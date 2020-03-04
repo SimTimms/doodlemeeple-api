@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   gallery: (where?: GalleryWhereInput) => Promise<boolean>;
   galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
+  notableProjects: (where?: NotableProjectsWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
   testimonial: (where?: TestimonialWhereInput) => Promise<boolean>;
@@ -83,6 +84,27 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GalleryImageConnectionPromise;
+  notableProjects: (
+    where: NotableProjectsWhereUniqueInput
+  ) => NotableProjectsNullablePromise;
+  notableProjectses: (args?: {
+    where?: NotableProjectsWhereInput;
+    orderBy?: NotableProjectsOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<NotableProjects>;
+  notableProjectsesConnection: (args?: {
+    where?: NotableProjectsWhereInput;
+    orderBy?: NotableProjectsOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => NotableProjectsConnectionPromise;
   notification: (
     where: NotificationWhereUniqueInput
   ) => NotificationNullablePromise;
@@ -205,6 +227,28 @@ export interface Prisma {
   deleteManyGalleryImages: (
     where?: GalleryImageWhereInput
   ) => BatchPayloadPromise;
+  createNotableProjects: (
+    data: NotableProjectsCreateInput
+  ) => NotableProjectsPromise;
+  updateNotableProjects: (args: {
+    data: NotableProjectsUpdateInput;
+    where: NotableProjectsWhereUniqueInput;
+  }) => NotableProjectsPromise;
+  updateManyNotableProjectses: (args: {
+    data: NotableProjectsUpdateManyMutationInput;
+    where?: NotableProjectsWhereInput;
+  }) => BatchPayloadPromise;
+  upsertNotableProjects: (args: {
+    where: NotableProjectsWhereUniqueInput;
+    create: NotableProjectsCreateInput;
+    update: NotableProjectsUpdateInput;
+  }) => NotableProjectsPromise;
+  deleteNotableProjects: (
+    where: NotableProjectsWhereUniqueInput
+  ) => NotableProjectsPromise;
+  deleteManyNotableProjectses: (
+    where?: NotableProjectsWhereInput
+  ) => BatchPayloadPromise;
   createNotification: (data: NotificationCreateInput) => NotificationPromise;
   updateNotification: (args: {
     data: NotificationUpdateInput;
@@ -290,6 +334,9 @@ export interface Subscription {
   galleryImage: (
     where?: GalleryImageSubscriptionWhereInput
   ) => GalleryImageSubscriptionPayloadSubscription;
+  notableProjects: (
+    where?: NotableProjectsSubscriptionWhereInput
+  ) => NotableProjectsSubscriptionPayloadSubscription;
   notification: (
     where?: NotificationSubscriptionWhereInput
   ) => NotificationSubscriptionPayloadSubscription;
@@ -311,6 +358,12 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type NotableProjectsOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "summary_ASC"
+  | "summary_DESC";
 
 export type TestimonialOrderByInput =
   | "id_ASC"
@@ -387,6 +440,40 @@ export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 export type GalleryWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
+
+export interface NotableProjectsWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  AND?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
+  OR?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
+  NOT?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
+}
 
 export interface TestimonialWhereInput {
   id?: Maybe<ID_Input>;
@@ -496,6 +583,9 @@ export interface SectionWhereInput {
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
   gallery?: Maybe<GalleryWhereInput>;
+  notableProjects_every?: Maybe<NotableProjectsWhereInput>;
+  notableProjects_some?: Maybe<NotableProjectsWhereInput>;
+  notableProjects_none?: Maybe<NotableProjectsWhereInput>;
   testimonials_every?: Maybe<TestimonialWhereInput>;
   testimonials_some?: Maybe<TestimonialWhereInput>;
   testimonials_none?: Maybe<TestimonialWhereInput>;
@@ -821,6 +911,10 @@ export type GalleryImageWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export type NotableProjectsWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export type NotificationWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
@@ -855,13 +949,21 @@ export interface SectionCreateWithoutGalleryInput {
   id?: Maybe<ID_Input>;
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
 }
 
-export interface SectionCreatenotableProjectsInput {
-  set?: Maybe<String[] | String>;
+export interface NotableProjectsCreateManyInput {
+  create?: Maybe<NotableProjectsCreateInput[] | NotableProjectsCreateInput>;
+  connect?: Maybe<
+    NotableProjectsWhereUniqueInput[] | NotableProjectsWhereUniqueInput
+  >;
+}
+
+export interface NotableProjectsCreateInput {
+  id?: Maybe<ID_Input>;
+  summary: String;
 }
 
 export interface TestimonialCreateManyInput {
@@ -952,13 +1054,104 @@ export interface SectionUpdateOneWithoutGalleryInput {
 export interface SectionUpdateWithoutGalleryDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
 }
 
-export interface SectionUpdatenotableProjectsInput {
-  set?: Maybe<String[] | String>;
+export interface NotableProjectsUpdateManyInput {
+  create?: Maybe<NotableProjectsCreateInput[] | NotableProjectsCreateInput>;
+  update?: Maybe<
+    | NotableProjectsUpdateWithWhereUniqueNestedInput[]
+    | NotableProjectsUpdateWithWhereUniqueNestedInput
+  >;
+  upsert?: Maybe<
+    | NotableProjectsUpsertWithWhereUniqueNestedInput[]
+    | NotableProjectsUpsertWithWhereUniqueNestedInput
+  >;
+  delete?: Maybe<
+    NotableProjectsWhereUniqueInput[] | NotableProjectsWhereUniqueInput
+  >;
+  connect?: Maybe<
+    NotableProjectsWhereUniqueInput[] | NotableProjectsWhereUniqueInput
+  >;
+  set?: Maybe<
+    NotableProjectsWhereUniqueInput[] | NotableProjectsWhereUniqueInput
+  >;
+  disconnect?: Maybe<
+    NotableProjectsWhereUniqueInput[] | NotableProjectsWhereUniqueInput
+  >;
+  deleteMany?: Maybe<
+    NotableProjectsScalarWhereInput[] | NotableProjectsScalarWhereInput
+  >;
+  updateMany?: Maybe<
+    | NotableProjectsUpdateManyWithWhereNestedInput[]
+    | NotableProjectsUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface NotableProjectsUpdateWithWhereUniqueNestedInput {
+  where: NotableProjectsWhereUniqueInput;
+  data: NotableProjectsUpdateDataInput;
+}
+
+export interface NotableProjectsUpdateDataInput {
+  summary?: Maybe<String>;
+}
+
+export interface NotableProjectsUpsertWithWhereUniqueNestedInput {
+  where: NotableProjectsWhereUniqueInput;
+  update: NotableProjectsUpdateDataInput;
+  create: NotableProjectsCreateInput;
+}
+
+export interface NotableProjectsScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  AND?: Maybe<
+    NotableProjectsScalarWhereInput[] | NotableProjectsScalarWhereInput
+  >;
+  OR?: Maybe<
+    NotableProjectsScalarWhereInput[] | NotableProjectsScalarWhereInput
+  >;
+  NOT?: Maybe<
+    NotableProjectsScalarWhereInput[] | NotableProjectsScalarWhereInput
+  >;
+}
+
+export interface NotableProjectsUpdateManyWithWhereNestedInput {
+  where: NotableProjectsScalarWhereInput;
+  data: NotableProjectsUpdateManyDataInput;
+}
+
+export interface NotableProjectsUpdateManyDataInput {
+  summary?: Maybe<String>;
 }
 
 export interface TestimonialUpdateManyInput {
@@ -1417,6 +1610,14 @@ export interface GalleryImageUpdateManyMutationInput {
   title?: Maybe<String>;
 }
 
+export interface NotableProjectsUpdateInput {
+  summary?: Maybe<String>;
+}
+
+export interface NotableProjectsUpdateManyMutationInput {
+  summary?: Maybe<String>;
+}
+
 export interface NotificationCreateInput {
   id?: Maybe<ID_Input>;
   title: String;
@@ -1458,7 +1659,7 @@ export interface SectionCreateWithoutUserInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
-  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
 }
 
@@ -1534,7 +1735,7 @@ export interface SectionUpdateWithoutUserDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
-  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
 }
 
@@ -1619,7 +1820,6 @@ export interface SectionUpdateManyWithWhereNestedInput {
 export interface SectionUpdateManyDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
 }
 
 export interface UserUpsertWithoutNotificationsInput {
@@ -1640,7 +1840,7 @@ export interface SectionCreateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
-  notableProjects?: Maybe<SectionCreatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
 }
@@ -1649,7 +1849,7 @@ export interface SectionUpdateInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
   gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
-  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
+  notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
 }
@@ -1657,7 +1857,6 @@ export interface SectionUpdateInput {
 export interface SectionUpdateManyMutationInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
-  notableProjects?: Maybe<SectionUpdatenotableProjectsInput>;
 }
 
 export interface TestimonialUpdateInput {
@@ -1740,6 +1939,26 @@ export interface GalleryImageSubscriptionWhereInput {
   >;
   NOT?: Maybe<
     GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
+  >;
+}
+
+export interface NotableProjectsSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<NotableProjectsWhereInput>;
+  AND?: Maybe<
+    | NotableProjectsSubscriptionWhereInput[]
+    | NotableProjectsSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    | NotableProjectsSubscriptionWhereInput[]
+    | NotableProjectsSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    | NotableProjectsSubscriptionWhereInput[]
+    | NotableProjectsSubscriptionWhereInput
   >;
 }
 
@@ -1861,7 +2080,6 @@ export interface Section {
   id: ID_Output;
   title?: String;
   summary?: String;
-  notableProjects: String[];
 }
 
 export interface SectionPromise extends Promise<Section>, Fragmentable {
@@ -1869,7 +2087,15 @@ export interface SectionPromise extends Promise<Section>, Fragmentable {
   title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
-  notableProjects: () => Promise<String[]>;
+  notableProjects: <T = FragmentableArray<NotableProjects>>(args?: {
+    where?: NotableProjectsWhereInput;
+    orderBy?: NotableProjectsOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   testimonials: <T = FragmentableArray<Testimonial>>(args?: {
     where?: TestimonialWhereInput;
     orderBy?: TestimonialOrderByInput;
@@ -1889,7 +2115,17 @@ export interface SectionSubscription
   title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
   gallery: <T = GallerySubscription>() => T;
-  notableProjects: () => Promise<AsyncIterator<String[]>>;
+  notableProjects: <
+    T = Promise<AsyncIterator<NotableProjectsSubscription>>
+  >(args?: {
+    where?: NotableProjectsWhereInput;
+    orderBy?: NotableProjectsOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   testimonials: <T = Promise<AsyncIterator<TestimonialSubscription>>>(args?: {
     where?: TestimonialWhereInput;
     orderBy?: TestimonialOrderByInput;
@@ -1909,7 +2145,15 @@ export interface SectionNullablePromise
   title: () => Promise<String>;
   summary: () => Promise<String>;
   gallery: <T = GalleryPromise>() => T;
-  notableProjects: () => Promise<String[]>;
+  notableProjects: <T = FragmentableArray<NotableProjects>>(args?: {
+    where?: NotableProjectsWhereInput;
+    orderBy?: NotableProjectsOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
   testimonials: <T = FragmentableArray<Testimonial>>(args?: {
     where?: TestimonialWhereInput;
     orderBy?: TestimonialOrderByInput;
@@ -1920,6 +2164,32 @@ export interface SectionNullablePromise
     last?: Int;
   }) => T;
   user: <T = UserPromise>() => T;
+}
+
+export interface NotableProjects {
+  id: ID_Output;
+  summary: String;
+}
+
+export interface NotableProjectsPromise
+  extends Promise<NotableProjects>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
+}
+
+export interface NotableProjectsSubscription
+  extends Promise<AsyncIterator<NotableProjects>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  summary: () => Promise<AsyncIterator<String>>;
+}
+
+export interface NotableProjectsNullablePromise
+  extends Promise<NotableProjects | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
 }
 
 export interface Testimonial {
@@ -2283,6 +2553,62 @@ export interface AggregateGalleryImageSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
+export interface NotableProjectsConnection {
+  pageInfo: PageInfo;
+  edges: NotableProjectsEdge[];
+}
+
+export interface NotableProjectsConnectionPromise
+  extends Promise<NotableProjectsConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<NotableProjectsEdge>>() => T;
+  aggregate: <T = AggregateNotableProjectsPromise>() => T;
+}
+
+export interface NotableProjectsConnectionSubscription
+  extends Promise<AsyncIterator<NotableProjectsConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<NotableProjectsEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateNotableProjectsSubscription>() => T;
+}
+
+export interface NotableProjectsEdge {
+  node: NotableProjects;
+  cursor: String;
+}
+
+export interface NotableProjectsEdgePromise
+  extends Promise<NotableProjectsEdge>,
+    Fragmentable {
+  node: <T = NotableProjectsPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface NotableProjectsEdgeSubscription
+  extends Promise<AsyncIterator<NotableProjectsEdge>>,
+    Fragmentable {
+  node: <T = NotableProjectsSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateNotableProjects {
+  count: Int;
+}
+
+export interface AggregateNotableProjectsPromise
+  extends Promise<AggregateNotableProjects>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateNotableProjectsSubscription
+  extends Promise<AsyncIterator<AggregateNotableProjects>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface NotificationConnection {
   pageInfo: PageInfo;
   edges: NotificationEdge[];
@@ -2610,6 +2936,50 @@ export interface GalleryImagePreviousValuesSubscription
   title: () => Promise<AsyncIterator<String>>;
 }
 
+export interface NotableProjectsSubscriptionPayload {
+  mutation: MutationType;
+  node: NotableProjects;
+  updatedFields: String[];
+  previousValues: NotableProjectsPreviousValues;
+}
+
+export interface NotableProjectsSubscriptionPayloadPromise
+  extends Promise<NotableProjectsSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = NotableProjectsPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = NotableProjectsPreviousValuesPromise>() => T;
+}
+
+export interface NotableProjectsSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<NotableProjectsSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = NotableProjectsSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = NotableProjectsPreviousValuesSubscription>() => T;
+}
+
+export interface NotableProjectsPreviousValues {
+  id: ID_Output;
+  summary: String;
+}
+
+export interface NotableProjectsPreviousValuesPromise
+  extends Promise<NotableProjectsPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  summary: () => Promise<String>;
+}
+
+export interface NotableProjectsPreviousValuesSubscription
+  extends Promise<AsyncIterator<NotableProjectsPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  summary: () => Promise<AsyncIterator<String>>;
+}
+
 export interface NotificationSubscriptionPayload {
   mutation: MutationType;
   node: Notification;
@@ -2698,7 +3068,6 @@ export interface SectionPreviousValues {
   id: ID_Output;
   title?: String;
   summary?: String;
-  notableProjects: String[];
 }
 
 export interface SectionPreviousValuesPromise
@@ -2707,7 +3076,6 @@ export interface SectionPreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   summary: () => Promise<String>;
-  notableProjects: () => Promise<String[]>;
 }
 
 export interface SectionPreviousValuesSubscription
@@ -2716,7 +3084,6 @@ export interface SectionPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
-  notableProjects: () => Promise<AsyncIterator<String[]>>;
 }
 
 export interface TestimonialSubscriptionPayload {
@@ -2852,14 +3219,14 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
-*/
-export type Boolean = boolean;
-
-/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
 export type Int = number;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
 
 /*
 DateTime scalar input type, allowing Date
@@ -2884,6 +3251,10 @@ export const models: Model[] = [
   },
   {
     name: "Notification",
+    embedded: false
+  },
+  {
+    name: "NotableProjects",
     embedded: false
   },
   {

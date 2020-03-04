@@ -59,7 +59,15 @@ async function updateGallerySection(parent, args, context, info) {
     return section;
   } else {
     let imageIds = [];
-    const { gallery, title, summary } = args.section;
+    let testimonialIds = [];
+    const {
+      gallery,
+      title,
+      summary,
+      notableProjects,
+      testimonials,
+    } = args.section;
+
     const { images } = gallery;
 
     for (let i = 0; i < images.length; i++) {
@@ -68,6 +76,15 @@ async function updateGallerySection(parent, args, context, info) {
         img: imageIn.img,
       });
       imageIds.push({ id: imageReturn.id });
+    }
+
+    for (let i = 0; i < testimonials.length; i++) {
+      const testimonialIn = testimonials[i];
+      const testimonialReturn = await context.prisma.createTestimonial({
+        name: testimonialIn.name,
+        summary: testimonialIn.summary,
+      });
+      testimonialIds.push({ id: testimonialReturn.id });
     }
 
     const newGallery = await context.prisma.createGallery({
@@ -79,6 +96,8 @@ async function updateGallerySection(parent, args, context, info) {
       title: title,
       summary: summary,
       gallery: { connect: { id: newGallery.id } },
+      testimonials: { connect: testimonialIds.map(id => id) },
+      notableProjects: notableProjects,
     });
 
     return newSection;
@@ -86,7 +105,6 @@ async function updateGallerySection(parent, args, context, info) {
 }
 
 async function updateSection(parent, args, context, info) {
-  console.log('Gallery Updatse');
   const userId = getUserId(context);
 
   await context.prisma.createNotification({

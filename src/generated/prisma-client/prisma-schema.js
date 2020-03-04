@@ -11,6 +11,10 @@ type AggregateGalleryImage {
   count: Int!
 }
 
+type AggregateNotableProjects {
+  count: Int!
+}
+
 type AggregateNotification {
   count: Int!
 }
@@ -434,6 +438,12 @@ type Mutation {
   upsertGalleryImage(where: GalleryImageWhereUniqueInput!, create: GalleryImageCreateInput!, update: GalleryImageUpdateInput!): GalleryImage!
   deleteGalleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
   deleteManyGalleryImages(where: GalleryImageWhereInput): BatchPayload!
+  createNotableProjects(data: NotableProjectsCreateInput!): NotableProjects!
+  updateNotableProjects(data: NotableProjectsUpdateInput!, where: NotableProjectsWhereUniqueInput!): NotableProjects
+  updateManyNotableProjectses(data: NotableProjectsUpdateManyMutationInput!, where: NotableProjectsWhereInput): BatchPayload!
+  upsertNotableProjects(where: NotableProjectsWhereUniqueInput!, create: NotableProjectsCreateInput!, update: NotableProjectsUpdateInput!): NotableProjects!
+  deleteNotableProjects(where: NotableProjectsWhereUniqueInput!): NotableProjects
+  deleteManyNotableProjectses(where: NotableProjectsWhereInput): BatchPayload!
   createNotification(data: NotificationCreateInput!): Notification!
   updateNotification(data: NotificationUpdateInput!, where: NotificationWhereUniqueInput!): Notification
   updateManyNotifications(data: NotificationUpdateManyMutationInput!, where: NotificationWhereInput): BatchPayload!
@@ -468,6 +478,178 @@ enum MutationType {
 
 interface Node {
   id: ID!
+}
+
+type NotableProjects {
+  id: ID!
+  summary: String!
+}
+
+type NotableProjectsConnection {
+  pageInfo: PageInfo!
+  edges: [NotableProjectsEdge]!
+  aggregate: AggregateNotableProjects!
+}
+
+input NotableProjectsCreateInput {
+  id: ID
+  summary: String!
+}
+
+input NotableProjectsCreateManyInput {
+  create: [NotableProjectsCreateInput!]
+  connect: [NotableProjectsWhereUniqueInput!]
+}
+
+type NotableProjectsEdge {
+  node: NotableProjects!
+  cursor: String!
+}
+
+enum NotableProjectsOrderByInput {
+  id_ASC
+  id_DESC
+  summary_ASC
+  summary_DESC
+}
+
+type NotableProjectsPreviousValues {
+  id: ID!
+  summary: String!
+}
+
+input NotableProjectsScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  AND: [NotableProjectsScalarWhereInput!]
+  OR: [NotableProjectsScalarWhereInput!]
+  NOT: [NotableProjectsScalarWhereInput!]
+}
+
+type NotableProjectsSubscriptionPayload {
+  mutation: MutationType!
+  node: NotableProjects
+  updatedFields: [String!]
+  previousValues: NotableProjectsPreviousValues
+}
+
+input NotableProjectsSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: NotableProjectsWhereInput
+  AND: [NotableProjectsSubscriptionWhereInput!]
+  OR: [NotableProjectsSubscriptionWhereInput!]
+  NOT: [NotableProjectsSubscriptionWhereInput!]
+}
+
+input NotableProjectsUpdateDataInput {
+  summary: String
+}
+
+input NotableProjectsUpdateInput {
+  summary: String
+}
+
+input NotableProjectsUpdateManyDataInput {
+  summary: String
+}
+
+input NotableProjectsUpdateManyInput {
+  create: [NotableProjectsCreateInput!]
+  update: [NotableProjectsUpdateWithWhereUniqueNestedInput!]
+  upsert: [NotableProjectsUpsertWithWhereUniqueNestedInput!]
+  delete: [NotableProjectsWhereUniqueInput!]
+  connect: [NotableProjectsWhereUniqueInput!]
+  set: [NotableProjectsWhereUniqueInput!]
+  disconnect: [NotableProjectsWhereUniqueInput!]
+  deleteMany: [NotableProjectsScalarWhereInput!]
+  updateMany: [NotableProjectsUpdateManyWithWhereNestedInput!]
+}
+
+input NotableProjectsUpdateManyMutationInput {
+  summary: String
+}
+
+input NotableProjectsUpdateManyWithWhereNestedInput {
+  where: NotableProjectsScalarWhereInput!
+  data: NotableProjectsUpdateManyDataInput!
+}
+
+input NotableProjectsUpdateWithWhereUniqueNestedInput {
+  where: NotableProjectsWhereUniqueInput!
+  data: NotableProjectsUpdateDataInput!
+}
+
+input NotableProjectsUpsertWithWhereUniqueNestedInput {
+  where: NotableProjectsWhereUniqueInput!
+  update: NotableProjectsUpdateDataInput!
+  create: NotableProjectsCreateInput!
+}
+
+input NotableProjectsWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  AND: [NotableProjectsWhereInput!]
+  OR: [NotableProjectsWhereInput!]
+  NOT: [NotableProjectsWhereInput!]
+}
+
+input NotableProjectsWhereUniqueInput {
+  id: ID
 }
 
 type Notification {
@@ -813,6 +995,9 @@ type Query {
   galleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
   galleryImages(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GalleryImage]!
   galleryImagesConnection(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryImageConnection!
+  notableProjects(where: NotableProjectsWhereUniqueInput!): NotableProjects
+  notableProjectses(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [NotableProjects]!
+  notableProjectsesConnection(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotableProjectsConnection!
   notification(where: NotificationWhereUniqueInput!): Notification
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification]!
   notificationsConnection(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotificationConnection!
@@ -833,7 +1018,7 @@ type Section {
   title: String
   summary: String
   gallery: Gallery
-  notableProjects: [String!]!
+  notableProjects(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [NotableProjects!]
   testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial!]
   user: User!
 }
@@ -849,7 +1034,7 @@ input SectionCreateInput {
   title: String
   summary: String
   gallery: GalleryCreateOneWithoutSectionInput
-  notableProjects: SectionCreatenotableProjectsInput
+  notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
 }
@@ -857,10 +1042,6 @@ input SectionCreateInput {
 input SectionCreateManyWithoutUserInput {
   create: [SectionCreateWithoutUserInput!]
   connect: [SectionWhereUniqueInput!]
-}
-
-input SectionCreatenotableProjectsInput {
-  set: [String!]
 }
 
 input SectionCreateOneWithoutGalleryInput {
@@ -872,7 +1053,7 @@ input SectionCreateWithoutGalleryInput {
   id: ID
   title: String
   summary: String
-  notableProjects: SectionCreatenotableProjectsInput
+  notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
 }
@@ -882,7 +1063,7 @@ input SectionCreateWithoutUserInput {
   title: String
   summary: String
   gallery: GalleryCreateOneWithoutSectionInput
-  notableProjects: SectionCreatenotableProjectsInput
+  notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
 }
 
@@ -904,7 +1085,6 @@ type SectionPreviousValues {
   id: ID!
   title: String
   summary: String
-  notableProjects: [String!]!
 }
 
 input SectionScalarWhereInput {
@@ -977,7 +1157,7 @@ input SectionUpdateInput {
   title: String
   summary: String
   gallery: GalleryUpdateOneWithoutSectionInput
-  notableProjects: SectionUpdatenotableProjectsInput
+  notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
@@ -985,13 +1165,11 @@ input SectionUpdateInput {
 input SectionUpdateManyDataInput {
   title: String
   summary: String
-  notableProjects: SectionUpdatenotableProjectsInput
 }
 
 input SectionUpdateManyMutationInput {
   title: String
   summary: String
-  notableProjects: SectionUpdatenotableProjectsInput
 }
 
 input SectionUpdateManyWithoutUserInput {
@@ -1011,10 +1189,6 @@ input SectionUpdateManyWithWhereNestedInput {
   data: SectionUpdateManyDataInput!
 }
 
-input SectionUpdatenotableProjectsInput {
-  set: [String!]
-}
-
 input SectionUpdateOneWithoutGalleryInput {
   create: SectionCreateWithoutGalleryInput
   update: SectionUpdateWithoutGalleryDataInput
@@ -1027,7 +1201,7 @@ input SectionUpdateOneWithoutGalleryInput {
 input SectionUpdateWithoutGalleryDataInput {
   title: String
   summary: String
-  notableProjects: SectionUpdatenotableProjectsInput
+  notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
 }
@@ -1036,7 +1210,7 @@ input SectionUpdateWithoutUserDataInput {
   title: String
   summary: String
   gallery: GalleryUpdateOneWithoutSectionInput
-  notableProjects: SectionUpdatenotableProjectsInput
+  notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
 }
 
@@ -1100,6 +1274,9 @@ input SectionWhereInput {
   summary_ends_with: String
   summary_not_ends_with: String
   gallery: GalleryWhereInput
+  notableProjects_every: NotableProjectsWhereInput
+  notableProjects_some: NotableProjectsWhereInput
+  notableProjects_none: NotableProjectsWhereInput
   testimonials_every: TestimonialWhereInput
   testimonials_some: TestimonialWhereInput
   testimonials_none: TestimonialWhereInput
@@ -1116,6 +1293,7 @@ input SectionWhereUniqueInput {
 type Subscription {
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
   galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
+  notableProjects(where: NotableProjectsSubscriptionWhereInput): NotableProjectsSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload
   testimonial(where: TestimonialSubscriptionWhereInput): TestimonialSubscriptionPayload

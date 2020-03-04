@@ -1,7 +1,8 @@
 const { getUserId } = require('../../utils');
+import { createImages, createNotification } from './utils';
+import { UPDATED_PROFILE } from '../../utils/notifications';
 
 async function updateGallerySection(parent, args, context, info) {
-  console.log('Gallery Update');
   const userId = getUserId(context);
   const {
     gallery,
@@ -10,18 +11,15 @@ async function updateGallerySection(parent, args, context, info) {
     notableProjects,
     testimonials,
   } = args.section;
-
-  await context.prisma.createNotification({
-    user: { connect: { id: userId } },
-    title: 'You updated a gallery',
-    message: 'Make sure you showcase your best work',
-    linkTo: '/app/edit-profile',
-    icon: 'contact_mail',
-  });
-
   const sectionExists = await context.prisma.$exists.section({
     id: args.id,
   });
+  const { images } = gallery;
+  let imageIds = [];
+  let testimonialIds = [];
+  let notableIds = [];
+
+  createNotification(UPDATED_PROFILE), userId, context;
 
   const sectionObject = !sectionExists
     ? await context.prisma.createSection({
@@ -33,18 +31,8 @@ async function updateGallerySection(parent, args, context, info) {
         id: args.id,
       });
 
-  let imageIds = [];
-  let testimonialIds = [];
-  let notableIds = [];
+  imageIds = await createImages(images, imageIds, context);
 
-  const { images } = gallery;
-  for (let i = 0; i < images.length; i++) {
-    const imageIn = images[i];
-    const imageReturn = await context.prisma.createGalleryImage({
-      img: imageIn.img,
-    });
-    imageIds.push({ id: imageReturn.id });
-  }
   let galleryObject = sectionObject.gallery ? sectionObject.gallery : null;
 
   if (galleryObject) {
@@ -96,86 +84,6 @@ async function updateGallerySection(parent, args, context, info) {
   });
 
   return section;
-  /*
-  if (sectionExists) {
-  } else {
-    let imageIds = [];
-
-    const {
-      gallery,
-      title,
-      summary,
-      notableProjects,
-      testimonials,
-    } = args.section;
-
-    const { images } = gallery;
-
-    for (let i = 0; i < images.length; i++) {
-      const imageIn = images[i];
-      const imageReturn = await context.prisma.createGalleryImage({
-        img: imageIn.img,
-      });
-      imageIds.push({ id: imageReturn.id });
-    }
-
-    for (let i = 0; i < notableProjects.length; i++) {
-      const notableProjectsIn = notableProjects[i];
-      const projectExists = await context.prisma.$exists.notableProjects({
-        id: notableProjects.id,
-      });
-
-      if (!projectExists) {
-        const notableReturn = await context.prisma.createNotableProject({
-          name: notableProjectsIn.name,
-          summary: notableProjectsIn.summary,
-        });
-        notableIds.push({ id: notableReturn.id });
-      } else {
-        await context.prisma.updateNotableProject(
-          {
-            name: notableProjectsIn.name,
-            summary: notableProjectsIn.summary,
-          },
-          { id: notableProjectsIn.id },
-        );
-        notableIds.push(notableProjectsIn.id);
-      }
-    }
-
-    for (let i = 0; i < testimonials.length; i++) {
-      const testimonialIn = testimonials[i];
-      const testimonialReturn = await context.prisma.createTestimonial({
-        name: testimonialIn.name,
-        summary: testimonialIn.summary,
-      });
-      testimonialIds.push({ id: testimonialReturn.id });
-    }
-
-    for (let i = 0; i < notableProjects.length; i++) {
-      const notableProjectsIn = notableProjects[i];
-      const notableReturn = await context.prisma.createNotableProject({
-        name: notableProjectsIn.name,
-        summary: notableProjectsIn.summary,
-      });
-      notableIds.push({ id: notableReturn.id });
-    }
-
-    const newGallery = await context.prisma.createGallery({
-      images: { connect: imageIds },
-    });
-
-    const newSection = await context.prisma.createSection({
-      user: { connect: { id: userId } },
-      title: title,
-      summary: summary,
-      gallery: { connect: { id: newGallery.id } },
-      testimonials: { connect: testimonialIds.map(id => id) },
-      notableProjects: { connect: notableIds.map(id => id) },
-    });
-
-    return newSection;
-  }*/
 }
 
 async function updateSection(parent, args, context, info) {

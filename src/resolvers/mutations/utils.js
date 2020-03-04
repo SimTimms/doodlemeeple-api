@@ -1,4 +1,4 @@
-export async function createImages(images, imageIds, context) {
+async function createImages(images, imageIds, context) {
   const imageIdArr = Object.assign([], imageIds);
   for (let i = 0; i < images.length; i++) {
     const imageIn = images[i];
@@ -9,8 +9,7 @@ export async function createImages(images, imageIds, context) {
   }
   return imageIdArr;
 }
-
-export async function createNotification(message, userId, context) {
+async function createNotification(message, userId, context) {
   await context.prisma.createNotification({
     user: { connect: { id: userId } },
     title: message.title,
@@ -19,3 +18,8 @@ export async function createNotification(message, userId, context) {
     icon: message.icon,
   });
 }
+
+module.exports = {
+  createNotification,
+  createImages,
+};

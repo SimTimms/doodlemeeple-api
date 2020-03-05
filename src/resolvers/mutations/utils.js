@@ -52,11 +52,11 @@ async function testimonialsCreator(ids, inputArr, context) {
   const idsArr = Object.assign([], ids);
   for (let i = 0; i < inputArr.length; i++) {
     const inputArrItem = inputArr[i];
-    const projectExists = await context.prisma.$exists.testimonial({
+    const exists = await context.prisma.$exists.testimonial({
       id: inputArrItem.id,
     });
 
-    if (!projectExists) {
+    if (!exists) {
       if (inputArr.length < 6) {
         const notableReturn = await context.prisma.createTestimonial({
           name: inputArrItem.name,

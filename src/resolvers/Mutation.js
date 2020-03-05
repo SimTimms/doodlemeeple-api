@@ -26,6 +26,14 @@ async function removeNotableProject(parent, args, context) {
   return true;
 }
 
+async function removeTestimonial(parent, args, context) {
+  await context.prisma.deleteTestimonial({
+    id: args.id,
+  });
+
+  return true;
+}
+
 async function removeNotification(parent, args, context) {
   await context.prisma.deleteNotification({
     id: args.id,
@@ -229,5 +237,6 @@ module.exports = {
   createNotification,
   removeNotification,
   removeNotableProject,
+  removeTestimonial,
   login,
 };

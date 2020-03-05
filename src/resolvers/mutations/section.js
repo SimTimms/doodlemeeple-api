@@ -24,7 +24,7 @@ async function updateGallerySection(parent, args, context, info) {
   let testimonialIds = [];
   let notableIds = [];
 
-  createNotification(UPDATED_PROFILE), userId, context;
+  createNotification(UPDATED_PROFILE, userId, context);
 
   const sectionObject = !sectionExists
     ? await context.prisma.createSection({

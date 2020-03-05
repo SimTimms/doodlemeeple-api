@@ -61,6 +61,7 @@ async function testimonialsCreator(ids, inputArr, context) {
         const notableReturn = await context.prisma.createTestimonial({
           name: inputArrItem.name,
           summary: inputArrItem.summary,
+          image: inputArrItem.image,
         });
         idsArr.push({ id: notableReturn.id });
       }
@@ -69,6 +70,7 @@ async function testimonialsCreator(ids, inputArr, context) {
         data: {
           name: inputArrItem.name,
           summary: inputArrItem.summary,
+          image: inputArrItem.image,
         },
         where: { id: inputArrItem.id },
       });

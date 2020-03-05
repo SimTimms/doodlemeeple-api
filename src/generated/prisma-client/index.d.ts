@@ -370,8 +370,8 @@ export type TestimonialOrderByInput =
   | "id_DESC"
   | "summary_ASC"
   | "summary_DESC"
-  | "images_ASC"
-  | "images_DESC"
+  | "image_ASC"
+  | "image_DESC"
   | "name_ASC"
   | "name_DESC"
   | "status_ASC"
@@ -504,20 +504,20 @@ export interface TestimonialWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
-  images?: Maybe<String>;
-  images_not?: Maybe<String>;
-  images_in?: Maybe<String[] | String>;
-  images_not_in?: Maybe<String[] | String>;
-  images_lt?: Maybe<String>;
-  images_lte?: Maybe<String>;
-  images_gt?: Maybe<String>;
-  images_gte?: Maybe<String>;
-  images_contains?: Maybe<String>;
-  images_not_contains?: Maybe<String>;
-  images_starts_with?: Maybe<String>;
-  images_not_starts_with?: Maybe<String>;
-  images_ends_with?: Maybe<String>;
-  images_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -974,7 +974,7 @@ export interface TestimonialCreateManyInput {
 export interface TestimonialCreateInput {
   id?: Maybe<ID_Input>;
   summary: String;
-  images?: Maybe<String>;
+  image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
 }
@@ -1186,7 +1186,7 @@ export interface TestimonialUpdateWithWhereUniqueNestedInput {
 
 export interface TestimonialUpdateDataInput {
   summary?: Maybe<String>;
-  images?: Maybe<String>;
+  image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
 }
@@ -1226,20 +1226,20 @@ export interface TestimonialScalarWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
-  images?: Maybe<String>;
-  images_not?: Maybe<String>;
-  images_in?: Maybe<String[] | String>;
-  images_not_in?: Maybe<String[] | String>;
-  images_lt?: Maybe<String>;
-  images_lte?: Maybe<String>;
-  images_gt?: Maybe<String>;
-  images_gte?: Maybe<String>;
-  images_contains?: Maybe<String>;
-  images_not_contains?: Maybe<String>;
-  images_starts_with?: Maybe<String>;
-  images_not_starts_with?: Maybe<String>;
-  images_ends_with?: Maybe<String>;
-  images_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
   name?: Maybe<String>;
   name_not?: Maybe<String>;
   name_in?: Maybe<String[] | String>;
@@ -1268,7 +1268,7 @@ export interface TestimonialUpdateManyWithWhereNestedInput {
 
 export interface TestimonialUpdateManyDataInput {
   summary?: Maybe<String>;
-  images?: Maybe<String>;
+  image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
 }
@@ -1861,14 +1861,14 @@ export interface SectionUpdateManyMutationInput {
 
 export interface TestimonialUpdateInput {
   summary?: Maybe<String>;
-  images?: Maybe<String>;
+  image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
 }
 
 export interface TestimonialUpdateManyMutationInput {
   summary?: Maybe<String>;
-  images?: Maybe<String>;
+  image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
 }
@@ -2195,7 +2195,7 @@ export interface NotableProjectsNullablePromise
 export interface Testimonial {
   id: ID_Output;
   summary: String;
-  images?: String;
+  image?: String;
   name?: String;
   status?: Boolean;
 }
@@ -2203,7 +2203,7 @@ export interface Testimonial {
 export interface TestimonialPromise extends Promise<Testimonial>, Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String>;
+  image: () => Promise<String>;
   name: () => Promise<String>;
   status: () => Promise<Boolean>;
 }
@@ -2213,7 +2213,7 @@ export interface TestimonialSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
-  images: () => Promise<AsyncIterator<String>>;
+  image: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   status: () => Promise<AsyncIterator<Boolean>>;
 }
@@ -2223,7 +2223,7 @@ export interface TestimonialNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String>;
+  image: () => Promise<String>;
   name: () => Promise<String>;
   status: () => Promise<Boolean>;
 }
@@ -3114,7 +3114,7 @@ export interface TestimonialSubscriptionPayloadSubscription
 export interface TestimonialPreviousValues {
   id: ID_Output;
   summary: String;
-  images?: String;
+  image?: String;
   name?: String;
   status?: Boolean;
 }
@@ -3124,7 +3124,7 @@ export interface TestimonialPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
-  images: () => Promise<String>;
+  image: () => Promise<String>;
   name: () => Promise<String>;
   status: () => Promise<Boolean>;
 }
@@ -3134,7 +3134,7 @@ export interface TestimonialPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
-  images: () => Promise<AsyncIterator<String>>;
+  image: () => Promise<AsyncIterator<String>>;
   name: () => Promise<AsyncIterator<String>>;
   status: () => Promise<AsyncIterator<Boolean>>;
 }

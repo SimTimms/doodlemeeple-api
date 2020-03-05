@@ -1303,7 +1303,7 @@ type Subscription {
 type Testimonial {
   id: ID!
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -1317,7 +1317,7 @@ type TestimonialConnection {
 input TestimonialCreateInput {
   id: ID
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -1337,8 +1337,8 @@ enum TestimonialOrderByInput {
   id_DESC
   summary_ASC
   summary_DESC
-  images_ASC
-  images_DESC
+  image_ASC
+  image_DESC
   name_ASC
   name_DESC
   status_ASC
@@ -1348,7 +1348,7 @@ enum TestimonialOrderByInput {
 type TestimonialPreviousValues {
   id: ID!
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -1382,20 +1382,20 @@ input TestimonialScalarWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
-  images: String
-  images_not: String
-  images_in: [String!]
-  images_not_in: [String!]
-  images_lt: String
-  images_lte: String
-  images_gt: String
-  images_gte: String
-  images_contains: String
-  images_not_contains: String
-  images_starts_with: String
-  images_not_starts_with: String
-  images_ends_with: String
-  images_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
   name: String
   name_not: String
   name_in: [String!]
@@ -1437,21 +1437,21 @@ input TestimonialSubscriptionWhereInput {
 
 input TestimonialUpdateDataInput {
   summary: String
-  images: String
+  image: String
   name: String
   status: Boolean
 }
 
 input TestimonialUpdateInput {
   summary: String
-  images: String
+  image: String
   name: String
   status: Boolean
 }
 
 input TestimonialUpdateManyDataInput {
   summary: String
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -1470,7 +1470,7 @@ input TestimonialUpdateManyInput {
 
 input TestimonialUpdateManyMutationInput {
   summary: String
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -1520,20 +1520,20 @@ input TestimonialWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
-  images: String
-  images_not: String
-  images_in: [String!]
-  images_not_in: [String!]
-  images_lt: String
-  images_lte: String
-  images_gt: String
-  images_gte: String
-  images_contains: String
-  images_not_contains: String
-  images_starts_with: String
-  images_not_starts_with: String
-  images_ends_with: String
-  images_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
   name: String
   name_not: String
   name_in: [String!]

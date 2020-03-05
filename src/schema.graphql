@@ -33,8 +33,9 @@ input SectionInput {
 }
 
 input TestimonialInput {
+  id: String!
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }
@@ -92,7 +93,7 @@ input NotableProjectsInput {
 type Testimonial {
   id: ID!
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }

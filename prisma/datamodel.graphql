@@ -38,7 +38,7 @@ type NotableProjects {
 }
 
 input NotableProjectsInput {
-  id: String
+  id: String!
   summary: String!
 }
 
@@ -55,14 +55,15 @@ type Section {
 type Testimonial {
   id: ID! @id
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }
 
 input TestimonialInput {
+  id: ID! @id
   summary: String!
-  images: String
+  image: String
   name: String
   status: Boolean
 }

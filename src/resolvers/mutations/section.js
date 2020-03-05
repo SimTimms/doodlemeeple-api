@@ -1,6 +1,11 @@
 const { getUserId } = require('../../utils');
 const { UPDATED_PROFILE } = require('../../utils/notifications');
-const { createImages, createNotification } = require('./utils');
+const {
+  createImages,
+  createNotification,
+  notableProjectsCreator,
+  testimonialsCreator,
+} = require('./utils');
 
 async function updateGallerySection(parent, args, context, info) {
   const userId = getUserId(context);
@@ -45,30 +50,16 @@ async function updateGallerySection(parent, args, context, info) {
     });
   }
   //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
-  for (let i = 0; i < notableProjects.length; i++) {
-    const notableProjectsIn = notableProjects[i];
-    const projectExists = await context.prisma.$exists.notableProjects({
-      id: notableProjectsIn.id,
-    });
-
-    if (!projectExists) {
-      if (notableProjects.length < 6) {
-        const notableReturn = await context.prisma.createNotableProjects({
-          name: notableProjectsIn.name,
-          summary: notableProjectsIn.summary,
-        });
-        notableIds.push({ id: notableReturn.id });
-      }
-    } else {
-      await context.prisma.updateNotableProjects({
-        data: {
-          name: notableProjectsIn.name,
-          summary: notableProjectsIn.summary,
-        },
-        where: { id: notableProjectsIn.id },
-      });
-    }
-  }
+  notableIds = await notableProjectsCreator(
+    notableIds,
+    notableProjects,
+    context,
+  );
+  testimonialIds = await testimonialsCreator(
+    testimonialIds,
+    testimonials,
+    context,
+  );
 
   const section = await context.prisma.updateSection({
     data: {

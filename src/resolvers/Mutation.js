@@ -8,7 +8,7 @@ const {
 } = require('../utils');
 const sgMail = require('@sendgrid/mail');
 const { updateGallerySection, updateSection } = require('./mutations/section');
-const emailAddress = require('../utils/emailAddress');
+const { emailAddress } = require('../utils/emailAddress');
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
@@ -102,6 +102,7 @@ async function passwordForgot(parent, args, context) {
     text: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
     html: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
   };
+
   await sgMail.send(msg);
 
   return true;

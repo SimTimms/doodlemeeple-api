@@ -175,8 +175,8 @@ async function signup(parent, args, context, info) {
       to: user.email,
       from: 'welcome@doodlemeeple.com',
       subject: 'Welcome to DoodleMeeple',
-      text: 'Welcome to DoodleMeeple',
-      html: '<strong>Welcome to DoodleMeeple</strong>',
+      text: `It's great to have you on board, login and set up your profile here: https://doodlemeeple-dev.herokuapps.com`,
+      html: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='https://doodlemeeple-dev.herokuapps.com'>Let's Begin</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
     };
     sgMail.send(msg);
 

@@ -1,6 +1,6 @@
 # The HTTP endpoint for your Prisma API
 #endpoint: ''
-endpoint: https://eu1.prisma.sh/tim-simms-97eabd/doodlemeeple-api/dev
+endpoint: https://aaamj-e728e3b62f.herokuapp.com/default/default
 
 # Points to the file that contains your datamodel
 datamodel: datamodel.graphql

@@ -36,6 +36,6 @@ var models = [
 exports.Prisma = prisma_lib_1.makePrismaClientClass({
   typeDefs,
   models,
-  endpoint: `https://aaamj-e728e3b62f.herokuapp.com/default/default`
+  endpoint: `https://doodlemeeple-e3b23964c7.herokuapp.com`
 });
 exports.prisma = new exports.Prisma();

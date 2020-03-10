@@ -10,6 +10,11 @@ const sgMail = require('@sendgrid/mail');
 const { updateGallerySection, updateSection } = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 
+const mailjet = require('node-mailjet').connect(
+  process.env.MJ_APIKEY_PUBLIC,
+  process.env.MJ_APIKEY_PRIVATE,
+);
+
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
     id: args.id,
@@ -76,7 +81,7 @@ async function updateUser(parent, args, context, info) {
 
   return user;
 }
-
+``;
 async function passwordForgot(parent, args, context) {
   const user = await context.prisma.user({
     email: args.email,
@@ -92,18 +97,33 @@ async function passwordForgot(parent, args, context) {
       id: user.id,
     },
   });
-
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
-  const msg = {
-    to: args.email,
-    from: emailAddress.noreply,
-    subject: 'Reset your DoodleMeeple password',
-    text: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
-    html: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
-  };
-
-  await sgMail.send(msg);
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: 'Reset your DoodleMeeple password',
+        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
+        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
+      },
+    ],
+  });
+  request
+    .then(result => {
+      console.log(result.body);
+    })
+    .catch(err => {
+      console.log(err.statusCode);
+    });
 
   return true;
 }
@@ -136,16 +156,33 @@ async function passwordReset(parent, args, context) {
   });
 
   if (user) {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     const actionLink = `${process.env.EMAIL_URL}`;
-    const msg = {
-      to: user.email,
-      from: 'account@doodlemeeple.com',
-      subject: 'Password has been changed',
-      text: `Your password has been changed, visit ${actionLink}`,
-      html: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
-    };
-    await sgMail.send(msg);
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: emailAddress.noreply,
+            Name: 'DoodleMeeple',
+          },
+          To: [
+            {
+              Email: user.email,
+              Name: user.name,
+            },
+          ],
+          Subject: 'Password has been changed',
+          TextPart: `Your password has been changed, visit ${actionLink}`,
+          HTMLPart: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
+        },
+      ],
+    });
+    request
+      .then(result => {
+        console.log(result.body);
+      })
+      .catch(err => {
+        console.log(err.statusCode);
+      });
 
     return true;
   } else {
@@ -170,15 +207,33 @@ async function signup(parent, args, context, info) {
     const user = await context.prisma.createUser({ ...args, password });
     const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-      to: user.email,
-      from: 'welcome@doodlemeeple.com',
-      subject: 'Welcome to DoodleMeeple',
-      text: `It's great to have you on board, login and set up your profile here: https://doodlemeeple-dev.herokuapps.com`,
-      html: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='https://doodlemeeple-dev.herokuapps.com'>Let's Begin</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
-    };
-    sgMail.send(msg);
+    const request = mailjet.post('send', { version: 'v3.1' }).request({
+      Messages: [
+        {
+          From: {
+            Email: 'welcome@doodlemeeple.com',
+            Name: 'DoodleMeeple',
+          },
+          To: [
+            {
+              Email: args.email,
+              Name: args.name,
+            },
+          ],
+          Subject: 'Welcome to DoodleMeeple',
+          TextPart: `It's great to have you on board, login and set up your profile here: ${emailAddress.appURL}`,
+          HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>Let's Begin</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
+        },
+      ],
+    });
+    request
+      .then(result => {
+        console.log(result.body);
+      })
+      .catch(err => {
+        console.log(err);
+        console.log(err.statusCode);
+      });
 
     await context.prisma.createNotification({
       user: { connect: { id: user.id } },

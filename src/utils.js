@@ -40,6 +40,9 @@ function signupChecks(input) {
   if (input.name.length < 3) {
     return false;
   }
+  if (input.name.length > 32) {
+    return false;
+  }
 
   if (validator.validate(input.name.email)) {
     return false;
@@ -54,6 +57,9 @@ function signupChecks(input) {
 
 function profileCheck(input) {
   if (input.name.length < 3) {
+    return false;
+  }
+  if (input.name.length > 32) {
     return false;
   }
 

@@ -33,6 +33,7 @@ const server = new GraphQLServer({
 server.start();
 
 const customRouter = express.Router();
+
 customRouter.use(bodyParser.urlencoded({ extended: true }));
 customRouter.use(bodyParser.json());
 customRouter.post('/sign_s3', (req, res) => {

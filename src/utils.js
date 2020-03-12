@@ -17,6 +17,21 @@ function getUserId(context) {
   throw new Error('Not authenticated');
 }
 
+function getUserIdWithoutContext(headers) {
+  const Authorization = headers.Authorization;
+
+  if (Authorization) {
+    const token = Authorization.replace('Bearer ', '');
+
+    // @ts-ignore
+    const { userId } = jwt.verify(token, APP_SECRET);
+
+    return userId;
+  }
+
+  throw new Error('Not authenticated');
+}
+
 function signupChecks(input) {
   let passwordSchema = new passwordValidator();
   passwordSchema
@@ -69,6 +84,7 @@ function profileCheck(input) {
 module.exports = {
   APP_SECRET,
   getUserId,
+  getUserIdWithoutContext,
   profileCheck,
   signupChecks,
 };

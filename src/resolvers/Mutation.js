@@ -69,8 +69,8 @@ async function updateUser(parent, args, context, info) {
 
   const user = await context.prisma.updateUser({
     data: {
-      name: args.name,
-      summary: args.summary,
+      name: args.name.replace(/[^A-Za-z0-9 ]/g, ''),
+      summary: args.summary.replace(/[^A-Za-z0-9 \n]/g, ''),
       profileBG: args.profileBG,
       profileImg: args.profileImg,
     },
@@ -118,9 +118,7 @@ async function passwordForgot(parent, args, context) {
     ],
   });
   request
-    .then(result => {
-      console.log(result.body);
-    })
+    .then(result => {})
     .catch(err => {
       console.log(err.statusCode);
     });
@@ -204,7 +202,11 @@ async function signup(parent, args, context, info) {
   const password = await bcrypt.hash(args.password, 10);
 
   try {
-    const user = await context.prisma.createUser({ ...args, password });
+    const user = await context.prisma.createUser({
+      ...args,
+      password,
+      summary: '',
+    });
     const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
     const request = mailjet.post('send', { version: 'v3.1' }).request({

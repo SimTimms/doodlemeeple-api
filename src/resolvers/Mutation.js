@@ -6,7 +6,6 @@ const {
   signupChecks,
   profileCheck,
 } = require('../utils');
-const sgMail = require('@sendgrid/mail');
 const { updateGallerySection, updateSection } = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 

@@ -31,6 +31,7 @@ input SectionInput {
   gallery: GalleryInput
   notableProjects: [NotableProjectsInput]
   testimonials: [TestimonialInput]
+  showreel: String
 }
 
 input TestimonialInput {
@@ -78,6 +79,7 @@ type Section {
   gallery: Gallery
   notableProjects: [NotableProjects]
   testimonials: [Testimonial]
+  showreel: String
   user: User!
 }
 

@@ -1021,6 +1021,7 @@ type Section {
   notableProjects(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [NotableProjects!]
   testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial!]
   user: User!
+  showreel: String
 }
 
 type SectionConnection {
@@ -1037,6 +1038,7 @@ input SectionCreateInput {
   notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
+  showreel: String
 }
 
 input SectionCreateManyWithoutUserInput {
@@ -1056,6 +1058,7 @@ input SectionCreateWithoutGalleryInput {
   notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
+  showreel: String
 }
 
 input SectionCreateWithoutUserInput {
@@ -1065,6 +1068,7 @@ input SectionCreateWithoutUserInput {
   gallery: GalleryCreateOneWithoutSectionInput
   notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
+  showreel: String
 }
 
 type SectionEdge {
@@ -1079,12 +1083,15 @@ enum SectionOrderByInput {
   title_DESC
   summary_ASC
   summary_DESC
+  showreel_ASC
+  showreel_DESC
 }
 
 type SectionPreviousValues {
   id: ID!
   title: String
   summary: String
+  showreel: String
 }
 
 input SectionScalarWhereInput {
@@ -1130,6 +1137,20 @@ input SectionScalarWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
+  showreel: String
+  showreel_not: String
+  showreel_in: [String!]
+  showreel_not_in: [String!]
+  showreel_lt: String
+  showreel_lte: String
+  showreel_gt: String
+  showreel_gte: String
+  showreel_contains: String
+  showreel_not_contains: String
+  showreel_starts_with: String
+  showreel_not_starts_with: String
+  showreel_ends_with: String
+  showreel_not_ends_with: String
   AND: [SectionScalarWhereInput!]
   OR: [SectionScalarWhereInput!]
   NOT: [SectionScalarWhereInput!]
@@ -1160,16 +1181,19 @@ input SectionUpdateInput {
   notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
+  showreel: String
 }
 
 input SectionUpdateManyDataInput {
   title: String
   summary: String
+  showreel: String
 }
 
 input SectionUpdateManyMutationInput {
   title: String
   summary: String
+  showreel: String
 }
 
 input SectionUpdateManyWithoutUserInput {
@@ -1204,6 +1228,7 @@ input SectionUpdateWithoutGalleryDataInput {
   notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
+  showreel: String
 }
 
 input SectionUpdateWithoutUserDataInput {
@@ -1212,6 +1237,7 @@ input SectionUpdateWithoutUserDataInput {
   gallery: GalleryUpdateOneWithoutSectionInput
   notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
+  showreel: String
 }
 
 input SectionUpdateWithWhereUniqueWithoutUserInput {
@@ -1281,6 +1307,20 @@ input SectionWhereInput {
   testimonials_some: TestimonialWhereInput
   testimonials_none: TestimonialWhereInput
   user: UserWhereInput
+  showreel: String
+  showreel_not: String
+  showreel_in: [String!]
+  showreel_not_in: [String!]
+  showreel_lt: String
+  showreel_lte: String
+  showreel_gt: String
+  showreel_gte: String
+  showreel_contains: String
+  showreel_not_contains: String
+  showreel_starts_with: String
+  showreel_not_starts_with: String
+  showreel_ends_with: String
+  showreel_not_ends_with: String
   AND: [SectionWhereInput!]
   OR: [SectionWhereInput!]
   NOT: [SectionWhereInput!]

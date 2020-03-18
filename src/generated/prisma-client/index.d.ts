@@ -383,7 +383,9 @@ export type SectionOrderByInput =
   | "title_ASC"
   | "title_DESC"
   | "summary_ASC"
-  | "summary_DESC";
+  | "summary_DESC"
+  | "showreel_ASC"
+  | "showreel_DESC";
 
 export type NotificationOrderByInput =
   | "id_ASC"
@@ -590,6 +592,20 @@ export interface SectionWhereInput {
   testimonials_some?: Maybe<TestimonialWhereInput>;
   testimonials_none?: Maybe<TestimonialWhereInput>;
   user?: Maybe<UserWhereInput>;
+  showreel?: Maybe<String>;
+  showreel_not?: Maybe<String>;
+  showreel_in?: Maybe<String[] | String>;
+  showreel_not_in?: Maybe<String[] | String>;
+  showreel_lt?: Maybe<String>;
+  showreel_lte?: Maybe<String>;
+  showreel_gt?: Maybe<String>;
+  showreel_gte?: Maybe<String>;
+  showreel_contains?: Maybe<String>;
+  showreel_not_contains?: Maybe<String>;
+  showreel_starts_with?: Maybe<String>;
+  showreel_not_starts_with?: Maybe<String>;
+  showreel_ends_with?: Maybe<String>;
+  showreel_not_ends_with?: Maybe<String>;
   AND?: Maybe<SectionWhereInput[] | SectionWhereInput>;
   OR?: Maybe<SectionWhereInput[] | SectionWhereInput>;
   NOT?: Maybe<SectionWhereInput[] | SectionWhereInput>;
@@ -952,6 +968,7 @@ export interface SectionCreateWithoutGalleryInput {
   notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
+  showreel?: Maybe<String>;
 }
 
 export interface NotableProjectsCreateManyInput {
@@ -1057,6 +1074,7 @@ export interface SectionUpdateWithoutGalleryDataInput {
   notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
+  showreel?: Maybe<String>;
 }
 
 export interface NotableProjectsUpdateManyInput {
@@ -1661,6 +1679,7 @@ export interface SectionCreateWithoutUserInput {
   gallery?: Maybe<GalleryCreateOneWithoutSectionInput>;
   notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
+  showreel?: Maybe<String>;
 }
 
 export interface GalleryCreateOneWithoutSectionInput {
@@ -1737,6 +1756,7 @@ export interface SectionUpdateWithoutUserDataInput {
   gallery?: Maybe<GalleryUpdateOneWithoutSectionInput>;
   notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
+  showreel?: Maybe<String>;
 }
 
 export interface GalleryUpdateOneWithoutSectionInput {
@@ -1807,6 +1827,20 @@ export interface SectionScalarWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
+  showreel?: Maybe<String>;
+  showreel_not?: Maybe<String>;
+  showreel_in?: Maybe<String[] | String>;
+  showreel_not_in?: Maybe<String[] | String>;
+  showreel_lt?: Maybe<String>;
+  showreel_lte?: Maybe<String>;
+  showreel_gt?: Maybe<String>;
+  showreel_gte?: Maybe<String>;
+  showreel_contains?: Maybe<String>;
+  showreel_not_contains?: Maybe<String>;
+  showreel_starts_with?: Maybe<String>;
+  showreel_not_starts_with?: Maybe<String>;
+  showreel_ends_with?: Maybe<String>;
+  showreel_not_ends_with?: Maybe<String>;
   AND?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
   OR?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
   NOT?: Maybe<SectionScalarWhereInput[] | SectionScalarWhereInput>;
@@ -1820,6 +1854,7 @@ export interface SectionUpdateManyWithWhereNestedInput {
 export interface SectionUpdateManyDataInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  showreel?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutNotificationsInput {
@@ -1843,6 +1878,7 @@ export interface SectionCreateInput {
   notableProjects?: Maybe<NotableProjectsCreateManyInput>;
   testimonials?: Maybe<TestimonialCreateManyInput>;
   user: UserCreateOneWithoutSectionsInput;
+  showreel?: Maybe<String>;
 }
 
 export interface SectionUpdateInput {
@@ -1852,11 +1888,13 @@ export interface SectionUpdateInput {
   notableProjects?: Maybe<NotableProjectsUpdateManyInput>;
   testimonials?: Maybe<TestimonialUpdateManyInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutSectionsInput>;
+  showreel?: Maybe<String>;
 }
 
 export interface SectionUpdateManyMutationInput {
   title?: Maybe<String>;
   summary?: Maybe<String>;
+  showreel?: Maybe<String>;
 }
 
 export interface TestimonialUpdateInput {
@@ -2080,6 +2118,7 @@ export interface Section {
   id: ID_Output;
   title?: String;
   summary?: String;
+  showreel?: String;
 }
 
 export interface SectionPromise extends Promise<Section>, Fragmentable {
@@ -2106,6 +2145,7 @@ export interface SectionPromise extends Promise<Section>, Fragmentable {
     last?: Int;
   }) => T;
   user: <T = UserPromise>() => T;
+  showreel: () => Promise<String>;
 }
 
 export interface SectionSubscription
@@ -2136,6 +2176,7 @@ export interface SectionSubscription
     last?: Int;
   }) => T;
   user: <T = UserSubscription>() => T;
+  showreel: () => Promise<AsyncIterator<String>>;
 }
 
 export interface SectionNullablePromise
@@ -2164,6 +2205,7 @@ export interface SectionNullablePromise
     last?: Int;
   }) => T;
   user: <T = UserPromise>() => T;
+  showreel: () => Promise<String>;
 }
 
 export interface NotableProjects {
@@ -3068,6 +3110,7 @@ export interface SectionPreviousValues {
   id: ID_Output;
   title?: String;
   summary?: String;
+  showreel?: String;
 }
 
 export interface SectionPreviousValuesPromise
@@ -3076,6 +3119,7 @@ export interface SectionPreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   summary: () => Promise<String>;
+  showreel: () => Promise<String>;
 }
 
 export interface SectionPreviousValuesSubscription
@@ -3084,6 +3128,7 @@ export interface SectionPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
+  showreel: () => Promise<AsyncIterator<String>>;
 }
 
 export interface TestimonialSubscriptionPayload {

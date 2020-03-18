@@ -30,6 +30,7 @@ input SectionInput {
   gallery: Gallery
   notableProjects: NotableProjectsInput
   testimonials: TestimonialInput
+  showreel: String
 }
 
 type NotableProjects {
@@ -50,6 +51,7 @@ type Section {
   notableProjects: [NotableProjects] @relation(link: TABLE)
   testimonials: [Testimonial] @relation(link: TABLE)
   user: User!
+  showreel: String
 }
 
 type Testimonial {

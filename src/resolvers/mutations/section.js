@@ -16,6 +16,7 @@ async function updateGallerySection(parent, args, context, info) {
     notableProjects,
     testimonials,
     showreel,
+    type,
   } = args.section;
   const sectionExists = await context.prisma.$exists.section({
     id: args.id,
@@ -70,6 +71,7 @@ async function updateGallerySection(parent, args, context, info) {
       testimonials: { connect: testimonialIds.map(id => id) },
       notableProjects: { connect: notableIds.map(id => id) },
       showreel,
+      type,
     },
     where: {
       id: sectionObject.id,

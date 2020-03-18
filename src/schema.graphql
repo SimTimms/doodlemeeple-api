@@ -32,6 +32,7 @@ input SectionInput {
   notableProjects: [NotableProjectsInput]
   testimonials: [TestimonialInput]
   showreel: String
+  type: String
 }
 
 input TestimonialInput {

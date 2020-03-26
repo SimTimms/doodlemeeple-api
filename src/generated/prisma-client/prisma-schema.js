@@ -1607,7 +1607,9 @@ type User {
   password: String!
   keywords: [String!]!
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section!]
@@ -1628,7 +1630,9 @@ input UserCreateInput {
   password: String!
   keywords: UserCreatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: SectionCreateManyWithoutUserInput
@@ -1657,7 +1661,9 @@ input UserCreateWithoutNotificationsInput {
   password: String!
   keywords: UserCreatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: SectionCreateManyWithoutUserInput
@@ -1671,7 +1677,9 @@ input UserCreateWithoutSectionsInput {
   password: String!
   keywords: UserCreatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   notifications: NotificationCreateManyWithoutUserInput
@@ -1695,8 +1703,12 @@ enum UserOrderByInput {
   password_DESC
   profileImg_ASC
   profileImg_DESC
+  profileImgStyle_ASC
+  profileImgStyle_DESC
   profileBG_ASC
   profileBG_DESC
+  profileBGStyle_ASC
+  profileBGStyle_DESC
   summary_ASC
   summary_DESC
   location_ASC
@@ -1711,7 +1723,9 @@ type UserPreviousValues {
   password: String!
   keywords: [String!]!
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
 }
@@ -1741,7 +1755,9 @@ input UserUpdateInput {
   password: String
   keywords: UserUpdatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: SectionUpdateManyWithoutUserInput
@@ -1759,7 +1775,9 @@ input UserUpdateManyMutationInput {
   password: String
   keywords: UserUpdatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
 }
@@ -1785,7 +1803,9 @@ input UserUpdateWithoutNotificationsDataInput {
   password: String
   keywords: UserUpdatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: SectionUpdateManyWithoutUserInput
@@ -1798,7 +1818,9 @@ input UserUpdateWithoutSectionsDataInput {
   password: String
   keywords: UserUpdatekeywordsInput
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   notifications: NotificationUpdateManyWithoutUserInput
@@ -1899,6 +1921,20 @@ input UserWhereInput {
   profileImg_not_starts_with: String
   profileImg_ends_with: String
   profileImg_not_ends_with: String
+  profileImgStyle: String
+  profileImgStyle_not: String
+  profileImgStyle_in: [String!]
+  profileImgStyle_not_in: [String!]
+  profileImgStyle_lt: String
+  profileImgStyle_lte: String
+  profileImgStyle_gt: String
+  profileImgStyle_gte: String
+  profileImgStyle_contains: String
+  profileImgStyle_not_contains: String
+  profileImgStyle_starts_with: String
+  profileImgStyle_not_starts_with: String
+  profileImgStyle_ends_with: String
+  profileImgStyle_not_ends_with: String
   profileBG: String
   profileBG_not: String
   profileBG_in: [String!]
@@ -1913,6 +1949,20 @@ input UserWhereInput {
   profileBG_not_starts_with: String
   profileBG_ends_with: String
   profileBG_not_ends_with: String
+  profileBGStyle: String
+  profileBGStyle_not: String
+  profileBGStyle_in: [String!]
+  profileBGStyle_not_in: [String!]
+  profileBGStyle_lt: String
+  profileBGStyle_lte: String
+  profileBGStyle_gt: String
+  profileBGStyle_gte: String
+  profileBGStyle_contains: String
+  profileBGStyle_not_contains: String
+  profileBGStyle_starts_with: String
+  profileBGStyle_not_starts_with: String
+  profileBGStyle_ends_with: String
+  profileBGStyle_not_ends_with: String
   summary: String
   summary_not: String
   summary_in: [String!]

@@ -65,13 +65,16 @@ async function updateUser(parent, args, context, info) {
     linkTo: '/app/edit-profile',
     icon: 'contact_mail',
   });
+  console.log(args);
 
   const user = await context.prisma.updateUser({
     data: {
       name: args.name.replace(/[^A-Za-z0-9 ]/g, ''),
       summary: args.summary.replace(/[^A-Za-z0-9 \n]/g, ''),
       profileBG: args.profileBG,
+      profileBGStyle: args.profileBGStyle,
       profileImg: args.profileImg,
+      profileImgStyle: args.profileImgStyle,
     },
     where: {
       id: userId,
@@ -80,7 +83,7 @@ async function updateUser(parent, args, context, info) {
 
   return user;
 }
-``;
+
 async function passwordForgot(parent, args, context) {
   const user = await context.prisma.user({
     email: args.email,

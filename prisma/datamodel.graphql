@@ -6,7 +6,9 @@ type User {
   password: String!
   keywords: [String] @scalarList(strategy: RELATION)
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: [Section!]

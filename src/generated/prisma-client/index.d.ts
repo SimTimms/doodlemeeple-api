@@ -430,8 +430,12 @@ export type UserOrderByInput =
   | "password_DESC"
   | "profileImg_ASC"
   | "profileImg_DESC"
+  | "profileImgStyle_ASC"
+  | "profileImgStyle_DESC"
   | "profileBG_ASC"
   | "profileBG_DESC"
+  | "profileBGStyle_ASC"
+  | "profileBGStyle_DESC"
   | "summary_ASC"
   | "summary_DESC"
   | "location_ASC"
@@ -783,6 +787,20 @@ export interface UserWhereInput {
   profileImg_not_starts_with?: Maybe<String>;
   profileImg_ends_with?: Maybe<String>;
   profileImg_not_ends_with?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
+  profileImgStyle_not?: Maybe<String>;
+  profileImgStyle_in?: Maybe<String[] | String>;
+  profileImgStyle_not_in?: Maybe<String[] | String>;
+  profileImgStyle_lt?: Maybe<String>;
+  profileImgStyle_lte?: Maybe<String>;
+  profileImgStyle_gt?: Maybe<String>;
+  profileImgStyle_gte?: Maybe<String>;
+  profileImgStyle_contains?: Maybe<String>;
+  profileImgStyle_not_contains?: Maybe<String>;
+  profileImgStyle_starts_with?: Maybe<String>;
+  profileImgStyle_not_starts_with?: Maybe<String>;
+  profileImgStyle_ends_with?: Maybe<String>;
+  profileImgStyle_not_ends_with?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBG_not?: Maybe<String>;
   profileBG_in?: Maybe<String[] | String>;
@@ -797,6 +815,20 @@ export interface UserWhereInput {
   profileBG_not_starts_with?: Maybe<String>;
   profileBG_ends_with?: Maybe<String>;
   profileBG_not_ends_with?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
+  profileBGStyle_not?: Maybe<String>;
+  profileBGStyle_in?: Maybe<String[] | String>;
+  profileBGStyle_not_in?: Maybe<String[] | String>;
+  profileBGStyle_lt?: Maybe<String>;
+  profileBGStyle_lte?: Maybe<String>;
+  profileBGStyle_gt?: Maybe<String>;
+  profileBGStyle_gte?: Maybe<String>;
+  profileBGStyle_contains?: Maybe<String>;
+  profileBGStyle_not_contains?: Maybe<String>;
+  profileBGStyle_starts_with?: Maybe<String>;
+  profileBGStyle_not_starts_with?: Maybe<String>;
+  profileBGStyle_ends_with?: Maybe<String>;
+  profileBGStyle_not_ends_with?: Maybe<String>;
   summary?: Maybe<String>;
   summary_not?: Maybe<String>;
   summary_in?: Maybe<String[] | String>;
@@ -1009,7 +1041,9 @@ export interface UserCreateWithoutSectionsInput {
   password: String;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
@@ -1305,7 +1339,9 @@ export interface UserUpdateWithoutSectionsDataInput {
   password?: Maybe<String>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
@@ -1659,7 +1695,9 @@ export interface UserCreateWithoutNotificationsInput {
   password: String;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
@@ -1716,7 +1754,9 @@ export interface UserUpdateWithoutNotificationsDataInput {
   password?: Maybe<String>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
@@ -1919,7 +1959,9 @@ export interface UserCreateInput {
   password: String;
   keywords?: Maybe<UserCreatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
@@ -1933,7 +1975,9 @@ export interface UserUpdateInput {
   password?: Maybe<String>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
@@ -1947,7 +1991,9 @@ export interface UserUpdateManyMutationInput {
   password?: Maybe<String>;
   keywords?: Maybe<UserUpdatekeywordsInput>;
   profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
 }
@@ -2278,7 +2324,9 @@ export interface User {
   password: String;
   keywords: String[];
   profileImg?: String;
+  profileImgStyle?: String;
   profileBG?: String;
+  profileBGStyle?: String;
   summary?: String;
   location?: String;
 }
@@ -2291,7 +2339,9 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   password: () => Promise<String>;
   keywords: () => Promise<String[]>;
   profileImg: () => Promise<String>;
+  profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
+  profileBGStyle: () => Promise<String>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
@@ -2324,7 +2374,9 @@ export interface UserSubscription
   password: () => Promise<AsyncIterator<String>>;
   keywords: () => Promise<AsyncIterator<String[]>>;
   profileImg: () => Promise<AsyncIterator<String>>;
+  profileImgStyle: () => Promise<AsyncIterator<String>>;
   profileBG: () => Promise<AsyncIterator<String>>;
+  profileBGStyle: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
   sections: <T = Promise<AsyncIterator<SectionSubscription>>>(args?: {
@@ -2357,7 +2409,9 @@ export interface UserNullablePromise
   password: () => Promise<String>;
   keywords: () => Promise<String[]>;
   profileImg: () => Promise<String>;
+  profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
+  profileBGStyle: () => Promise<String>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
@@ -3217,7 +3271,9 @@ export interface UserPreviousValues {
   password: String;
   keywords: String[];
   profileImg?: String;
+  profileImgStyle?: String;
   profileBG?: String;
+  profileBGStyle?: String;
   summary?: String;
   location?: String;
 }
@@ -3232,7 +3288,9 @@ export interface UserPreviousValuesPromise
   password: () => Promise<String>;
   keywords: () => Promise<String[]>;
   profileImg: () => Promise<String>;
+  profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
+  profileBGStyle: () => Promise<String>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
 }
@@ -3247,7 +3305,9 @@ export interface UserPreviousValuesSubscription
   password: () => Promise<AsyncIterator<String>>;
   keywords: () => Promise<AsyncIterator<String[]>>;
   profileImg: () => Promise<AsyncIterator<String>>;
+  profileImgStyle: () => Promise<AsyncIterator<String>>;
   profileBG: () => Promise<AsyncIterator<String>>;
+  profileBGStyle: () => Promise<AsyncIterator<String>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
 }

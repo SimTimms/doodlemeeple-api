@@ -8,7 +8,9 @@ type Mutation {
     name: String!
     summary: String
     profileBG: String
+    profileBGStyle: String
     profileImg: String
+    profileImgStyle: String
     sections: [SectionInput]
   ): User
   updateSection(id: String!, section: SectionInput): Section
@@ -55,7 +57,9 @@ type User {
   email: String!
   keywords: [String]
   profileImg: String
+  profileImgStyle: String
   profileBG: String
+  profileBGStyle: String
   summary: String
   location: String
   sections: [Section!]

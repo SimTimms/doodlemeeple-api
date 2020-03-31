@@ -12,12 +12,13 @@ type Mutation {
     profileImg: String
     profileImgStyle: String
     sections: [SectionInput]
+    autosave: Boolean
   ): User
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
-  removeNotification(id: String!): Boolean
+  removeNotification(id: String!): String
   removeTestimonial(id: String!): Boolean
 }
 
@@ -60,6 +61,7 @@ type User {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections: [Section!]

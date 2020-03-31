@@ -30,7 +30,7 @@ async function getNotifications(parent, args, context) {
       },
     },
     skip: 0,
-    first: 20,
+    first: 5,
   });
 
   return notifications;

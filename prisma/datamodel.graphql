@@ -9,6 +9,7 @@ type User {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean @default(value: true)
   summary: String
   location: String
   sections: [Section!]

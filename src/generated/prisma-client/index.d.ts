@@ -436,6 +436,8 @@ export type UserOrderByInput =
   | "profileBG_DESC"
   | "profileBGStyle_ASC"
   | "profileBGStyle_DESC"
+  | "autosave_ASC"
+  | "autosave_DESC"
   | "summary_ASC"
   | "summary_DESC"
   | "location_ASC"
@@ -829,6 +831,8 @@ export interface UserWhereInput {
   profileBGStyle_not_starts_with?: Maybe<String>;
   profileBGStyle_ends_with?: Maybe<String>;
   profileBGStyle_not_ends_with?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
+  autosave_not?: Maybe<Boolean>;
   summary?: Maybe<String>;
   summary_not?: Maybe<String>;
   summary_in?: Maybe<String[] | String>;
@@ -1044,6 +1048,7 @@ export interface UserCreateWithoutSectionsInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
@@ -1342,6 +1347,7 @@ export interface UserUpdateWithoutSectionsDataInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
@@ -1698,6 +1704,7 @@ export interface UserCreateWithoutNotificationsInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
@@ -1757,6 +1764,7 @@ export interface UserUpdateWithoutNotificationsDataInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
@@ -1962,6 +1970,7 @@ export interface UserCreateInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
@@ -1978,6 +1987,7 @@ export interface UserUpdateInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
@@ -1994,6 +2004,7 @@ export interface UserUpdateManyMutationInput {
   profileImgStyle?: Maybe<String>;
   profileBG?: Maybe<String>;
   profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
 }
@@ -2327,6 +2338,7 @@ export interface User {
   profileImgStyle?: String;
   profileBG?: String;
   profileBGStyle?: String;
+  autosave?: Boolean;
   summary?: String;
   location?: String;
 }
@@ -2342,6 +2354,7 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
   profileBGStyle: () => Promise<String>;
+  autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
@@ -2377,6 +2390,7 @@ export interface UserSubscription
   profileImgStyle: () => Promise<AsyncIterator<String>>;
   profileBG: () => Promise<AsyncIterator<String>>;
   profileBGStyle: () => Promise<AsyncIterator<String>>;
+  autosave: () => Promise<AsyncIterator<Boolean>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
   sections: <T = Promise<AsyncIterator<SectionSubscription>>>(args?: {
@@ -2412,6 +2426,7 @@ export interface UserNullablePromise
   profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
   profileBGStyle: () => Promise<String>;
+  autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
@@ -3274,6 +3289,7 @@ export interface UserPreviousValues {
   profileImgStyle?: String;
   profileBG?: String;
   profileBGStyle?: String;
+  autosave?: Boolean;
   summary?: String;
   location?: String;
 }
@@ -3291,6 +3307,7 @@ export interface UserPreviousValuesPromise
   profileImgStyle: () => Promise<String>;
   profileBG: () => Promise<String>;
   profileBGStyle: () => Promise<String>;
+  autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
 }
@@ -3308,6 +3325,7 @@ export interface UserPreviousValuesSubscription
   profileImgStyle: () => Promise<AsyncIterator<String>>;
   profileBG: () => Promise<AsyncIterator<String>>;
   profileBGStyle: () => Promise<AsyncIterator<String>>;
+  autosave: () => Promise<AsyncIterator<Boolean>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
 }

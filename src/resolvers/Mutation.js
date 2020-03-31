@@ -43,7 +43,7 @@ async function removeNotification(parent, args, context) {
     id: args.id,
   });
 
-  return true;
+  return args.id;
 }
 
 async function updateUser(parent, args, context, info) {
@@ -58,14 +58,19 @@ async function updateUser(parent, args, context, info) {
 
   const userId = getUserId(context);
 
-  await context.prisma.createNotification({
-    user: { connect: { id: userId } },
+  const exists = await context.prisma.$exists.notification({
+    user: { id: userId },
     title: 'You updated your profile',
-    message: 'Nice Work! Keep your profile up-to-date',
-    linkTo: '/app/edit-profile',
-    icon: 'contact_mail',
   });
-  console.log(args);
+
+  !exists &&
+    (await context.prisma.createNotification({
+      user: { connect: { id: userId } },
+      title: 'You updated your profile',
+      message: 'Nice Work! Keep your profile up-to-date',
+      linkTo: '/app/edit-profile',
+      icon: 'contact_mail',
+    }));
 
   const user = await context.prisma.updateUser({
     data: {
@@ -75,6 +80,7 @@ async function updateUser(parent, args, context, info) {
       profileBGStyle: args.profileBGStyle,
       profileImg: args.profileImg,
       profileImgStyle: args.profileImgStyle,
+      autosave: args.autosave,
     },
     where: {
       id: userId,

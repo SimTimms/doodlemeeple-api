@@ -1610,6 +1610,7 @@ type User {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section!]
@@ -1633,6 +1634,7 @@ input UserCreateInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections: SectionCreateManyWithoutUserInput
@@ -1664,6 +1666,7 @@ input UserCreateWithoutNotificationsInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections: SectionCreateManyWithoutUserInput
@@ -1680,6 +1683,7 @@ input UserCreateWithoutSectionsInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   notifications: NotificationCreateManyWithoutUserInput
@@ -1709,6 +1713,8 @@ enum UserOrderByInput {
   profileBG_DESC
   profileBGStyle_ASC
   profileBGStyle_DESC
+  autosave_ASC
+  autosave_DESC
   summary_ASC
   summary_DESC
   location_ASC
@@ -1726,6 +1732,7 @@ type UserPreviousValues {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
 }
@@ -1758,6 +1765,7 @@ input UserUpdateInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections: SectionUpdateManyWithoutUserInput
@@ -1778,6 +1786,7 @@ input UserUpdateManyMutationInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
 }
@@ -1806,6 +1815,7 @@ input UserUpdateWithoutNotificationsDataInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   sections: SectionUpdateManyWithoutUserInput
@@ -1821,6 +1831,7 @@ input UserUpdateWithoutSectionsDataInput {
   profileImgStyle: String
   profileBG: String
   profileBGStyle: String
+  autosave: Boolean
   summary: String
   location: String
   notifications: NotificationUpdateManyWithoutUserInput
@@ -1963,6 +1974,8 @@ input UserWhereInput {
   profileBGStyle_not_starts_with: String
   profileBGStyle_ends_with: String
   profileBGStyle_not_ends_with: String
+  autosave: Boolean
+  autosave_not: Boolean
   summary: String
   summary_not: String
   summary_in: [String!]

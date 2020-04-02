@@ -1022,6 +1022,7 @@ type Section {
   testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial!]
   user: User!
   showreel: String
+  type: String
 }
 
 type SectionConnection {
@@ -1039,6 +1040,7 @@ input SectionCreateInput {
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
   showreel: String
+  type: String
 }
 
 input SectionCreateManyWithoutUserInput {
@@ -1059,6 +1061,7 @@ input SectionCreateWithoutGalleryInput {
   testimonials: TestimonialCreateManyInput
   user: UserCreateOneWithoutSectionsInput!
   showreel: String
+  type: String
 }
 
 input SectionCreateWithoutUserInput {
@@ -1069,6 +1072,7 @@ input SectionCreateWithoutUserInput {
   notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   showreel: String
+  type: String
 }
 
 type SectionEdge {
@@ -1085,6 +1089,8 @@ enum SectionOrderByInput {
   summary_DESC
   showreel_ASC
   showreel_DESC
+  type_ASC
+  type_DESC
 }
 
 type SectionPreviousValues {
@@ -1092,6 +1098,7 @@ type SectionPreviousValues {
   title: String
   summary: String
   showreel: String
+  type: String
 }
 
 input SectionScalarWhereInput {
@@ -1151,6 +1158,20 @@ input SectionScalarWhereInput {
   showreel_not_starts_with: String
   showreel_ends_with: String
   showreel_not_ends_with: String
+  type: String
+  type_not: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_lt: String
+  type_lte: String
+  type_gt: String
+  type_gte: String
+  type_contains: String
+  type_not_contains: String
+  type_starts_with: String
+  type_not_starts_with: String
+  type_ends_with: String
+  type_not_ends_with: String
   AND: [SectionScalarWhereInput!]
   OR: [SectionScalarWhereInput!]
   NOT: [SectionScalarWhereInput!]
@@ -1182,18 +1203,21 @@ input SectionUpdateInput {
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
   showreel: String
+  type: String
 }
 
 input SectionUpdateManyDataInput {
   title: String
   summary: String
   showreel: String
+  type: String
 }
 
 input SectionUpdateManyMutationInput {
   title: String
   summary: String
   showreel: String
+  type: String
 }
 
 input SectionUpdateManyWithoutUserInput {
@@ -1229,6 +1253,7 @@ input SectionUpdateWithoutGalleryDataInput {
   testimonials: TestimonialUpdateManyInput
   user: UserUpdateOneRequiredWithoutSectionsInput
   showreel: String
+  type: String
 }
 
 input SectionUpdateWithoutUserDataInput {
@@ -1238,6 +1263,7 @@ input SectionUpdateWithoutUserDataInput {
   notableProjects: NotableProjectsUpdateManyInput
   testimonials: TestimonialUpdateManyInput
   showreel: String
+  type: String
 }
 
 input SectionUpdateWithWhereUniqueWithoutUserInput {
@@ -1321,6 +1347,20 @@ input SectionWhereInput {
   showreel_not_starts_with: String
   showreel_ends_with: String
   showreel_not_ends_with: String
+  type: String
+  type_not: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_lt: String
+  type_lte: String
+  type_gt: String
+  type_gte: String
+  type_contains: String
+  type_not_contains: String
+  type_starts_with: String
+  type_not_starts_with: String
+  type_ends_with: String
+  type_not_ends_with: String
   AND: [SectionWhereInput!]
   OR: [SectionWhereInput!]
   NOT: [SectionWhereInput!]

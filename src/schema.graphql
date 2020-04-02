@@ -88,6 +88,7 @@ type Section {
   testimonials: [Testimonial]
   showreel: String
   user: User!
+  type: String
 }
 
 type NotableProjects {

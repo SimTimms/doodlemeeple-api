@@ -10,13 +10,19 @@ async function createImages(images, imageIds, context) {
   return imageIdArr;
 }
 async function createNotification(message, userId, context) {
-  await context.prisma.createNotification({
-    user: { connect: { id: userId } },
+  const exists = await context.prisma.$exists.notification({
+    user: { id: userId },
     title: message.title,
-    message: message.message,
-    linkTo: message.linkTo,
-    icon: message.icon,
   });
+
+  !exists &&
+    (await context.prisma.createNotification({
+      user: { connect: { id: userId } },
+      title: message.title,
+      message: message.message,
+      linkTo: message.linkTo,
+      icon: message.icon,
+    }));
 }
 
 async function notableProjectsCreator(ids, notableProjects, context) {

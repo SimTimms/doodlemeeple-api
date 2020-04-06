@@ -11,8 +11,29 @@ async function getSections(parent, args, context) {
   });
   return sections;
 }
+async function sectionsPreview(parent, args, context) {
+  const userId = args.userId;
+  const sections = await context.prisma.sections({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+  });
+  return sections;
+}
 async function profile(parent, args, context, info) {
   const userId = getUserId(context);
+
+  const profile = await context.prisma.user({
+    id: userId,
+  });
+
+  return profile;
+}
+
+async function profilePreview(parent, args, context, info) {
+  const userId = args.userId;
 
   const profile = await context.prisma.user({
     id: userId,
@@ -52,4 +73,6 @@ module.exports = {
   getNotifications,
   getSections,
   getTestimonials,
+  profilePreview,
+  sectionsPreview,
 };

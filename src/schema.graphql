@@ -28,6 +28,8 @@ type Mutation {
 
 type Query {
   profile: User!
+  profilePreview(userId: String!): User!
+  sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
   getSections: [Section!]
   getTestimonials(sectionId: String!): [Section!]

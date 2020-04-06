@@ -64,12 +64,12 @@ async function testimonialsCreator(ids, inputArr, context) {
 
     if (!exists) {
       if (inputArr.length < 6) {
-        const notableReturn = await context.prisma.createTestimonial({
+        const testimonialReturn = await context.prisma.createTestimonial({
           name: inputArrItem.name,
           summary: inputArrItem.summary,
           image: inputArrItem.image,
         });
-        idsArr.push({ id: notableReturn.id });
+        idsArr.push({ id: testimonialReturn.id });
       }
     } else {
       await context.prisma.updateTestimonial({

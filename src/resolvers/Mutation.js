@@ -6,7 +6,11 @@ const {
   signupChecks,
   profileCheck,
 } = require('../utils');
-const { updateGallerySection, updateSection } = require('./mutations/section');
+const {
+  updateGallerySection,
+  updateSection,
+  updateTestimonial,
+} = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 
 const mailjet = require('node-mailjet').connect(
@@ -299,6 +303,7 @@ module.exports = {
   updateUser,
   updateSection,
   updateGallerySection,
+  updateTestimonial,
   removeSection,
   createNotification,
   removeNotification,

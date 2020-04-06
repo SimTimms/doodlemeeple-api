@@ -32,7 +32,6 @@ input SectionInput {
   summary: String
   gallery: Gallery
   notableProjects: NotableProjectsInput
-  testimonials: TestimonialInput
   showreel: String
   type: String
 }

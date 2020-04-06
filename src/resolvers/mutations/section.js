@@ -7,6 +7,66 @@ const {
   testimonialsCreator,
 } = require('./utils');
 
+async function updateTestimonial(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const { testimonial, sectionId } = args;
+
+  const testimonialExists = await context.prisma.$exists.testimonial({
+    id: testimonial.id,
+  });
+
+  if (testimonialExists) {
+    await context.prisma.updateTestimonial({
+      data: {
+        name: testimonial.name,
+        summary: testimonial.summary,
+        image: testimonial.image,
+      },
+      where: {
+        id: testimonial.id,
+      },
+    });
+  } else {
+    const sectionExists = await context.prisma.$exists.testimonial({
+      id: sectionId,
+    });
+
+    const sectionObject = !sectionExists
+      ? await context.prisma.createSection({
+          user: { connect: { id: userId } },
+          title: '',
+          summary: '',
+        })
+      : await context.prisma.section({
+          id: args.id,
+        });
+
+    const testimonialReturn = await context.prisma.createTestimonial({
+      data: {
+        name: testimonial.name,
+        summary: testimonial.summary,
+        image: testimonial.image,
+      },
+    });
+    const idsArr = testimonialReturn.testimonials;
+    idsArr.push({ id: testimonialReturn.id });
+    console.log(idsArr);
+  }
+  /*
+
+  const section = await context.prisma.updateSection({
+    data: {
+      testimonials: { connect: testimonialIds.map(id => id) },
+    },
+    where: {
+      id: sectionObject.id,
+    },
+  });
+*/
+  return testimonial;
+}
+
 async function updateGallerySection(parent, args, context, info) {
   const userId = getUserId(context);
   const {
@@ -124,4 +184,5 @@ async function updateSection(parent, args, context, info) {
 module.exports = {
   updateGallerySection,
   updateSection,
+  updateTestimonial,
 };

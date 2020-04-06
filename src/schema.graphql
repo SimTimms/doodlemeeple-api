@@ -16,6 +16,10 @@ type Mutation {
   ): User
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
+  updateTestimonial(
+    testimonial: TestimonialInput!
+    sectionId: String!
+  ): Testimonial
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): String
@@ -26,6 +30,7 @@ type Query {
   profile: User!
   getNotifications: [Notification!]
   getSections: [Section!]
+  getTestimonials(sectionId: String!): [Section!]
 }
 
 input SectionInput {
@@ -33,7 +38,6 @@ input SectionInput {
   summary: String
   gallery: GalleryInput
   notableProjects: [NotableProjectsInput]
-  testimonials: [TestimonialInput]
   showreel: String
   type: String
 }

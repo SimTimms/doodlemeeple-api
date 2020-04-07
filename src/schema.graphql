@@ -40,6 +40,7 @@ input SectionInput {
   summary: String
   gallery: GalleryInput
   notableProjects: [NotableProjectsInput]
+  testimonials: [TestimonialInput]
   showreel: String
   type: String
 }

@@ -363,7 +363,11 @@ export type NotableProjectsOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "summary_ASC"
-  | "summary_DESC";
+  | "summary_DESC"
+  | "image_ASC"
+  | "image_DESC"
+  | "name_ASC"
+  | "name_DESC";
 
 export type TestimonialOrderByInput =
   | "id_ASC"
@@ -480,6 +484,34 @@ export interface NotableProjectsWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
   AND?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
   OR?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
   NOT?: Maybe<NotableProjectsWhereInput[] | NotableProjectsWhereInput>;
@@ -1033,7 +1065,9 @@ export interface NotableProjectsCreateManyInput {
 
 export interface NotableProjectsCreateInput {
   id?: Maybe<ID_Input>;
-  summary: String;
+  summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
 }
 
 export interface TestimonialCreateManyInput {
@@ -1043,7 +1077,7 @@ export interface TestimonialCreateManyInput {
 
 export interface TestimonialCreateInput {
   id?: Maybe<ID_Input>;
-  summary: String;
+  summary?: Maybe<String>;
   image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
@@ -1172,6 +1206,8 @@ export interface NotableProjectsUpdateWithWhereUniqueNestedInput {
 
 export interface NotableProjectsUpdateDataInput {
   summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
 }
 
 export interface NotableProjectsUpsertWithWhereUniqueNestedInput {
@@ -1209,6 +1245,34 @@ export interface NotableProjectsScalarWhereInput {
   summary_not_starts_with?: Maybe<String>;
   summary_ends_with?: Maybe<String>;
   summary_not_ends_with?: Maybe<String>;
+  image?: Maybe<String>;
+  image_not?: Maybe<String>;
+  image_in?: Maybe<String[] | String>;
+  image_not_in?: Maybe<String[] | String>;
+  image_lt?: Maybe<String>;
+  image_lte?: Maybe<String>;
+  image_gt?: Maybe<String>;
+  image_gte?: Maybe<String>;
+  image_contains?: Maybe<String>;
+  image_not_contains?: Maybe<String>;
+  image_starts_with?: Maybe<String>;
+  image_not_starts_with?: Maybe<String>;
+  image_ends_with?: Maybe<String>;
+  image_not_ends_with?: Maybe<String>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
   AND?: Maybe<
     NotableProjectsScalarWhereInput[] | NotableProjectsScalarWhereInput
   >;
@@ -1227,6 +1291,8 @@ export interface NotableProjectsUpdateManyWithWhereNestedInput {
 
 export interface NotableProjectsUpdateManyDataInput {
   summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
 }
 
 export interface TestimonialUpdateManyInput {
@@ -1690,10 +1756,14 @@ export interface GalleryImageUpdateManyMutationInput {
 
 export interface NotableProjectsUpdateInput {
   summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
 }
 
 export interface NotableProjectsUpdateManyMutationInput {
   summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
 }
 
 export interface NotificationCreateInput {
@@ -2309,7 +2379,9 @@ export interface SectionNullablePromise
 
 export interface NotableProjects {
   id: ID_Output;
-  summary: String;
+  summary?: String;
+  image?: String;
+  name?: String;
 }
 
 export interface NotableProjectsPromise
@@ -2317,6 +2389,8 @@ export interface NotableProjectsPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
+  image: () => Promise<String>;
+  name: () => Promise<String>;
 }
 
 export interface NotableProjectsSubscription
@@ -2324,6 +2398,8 @@ export interface NotableProjectsSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
+  image: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
 }
 
 export interface NotableProjectsNullablePromise
@@ -2331,11 +2407,13 @@ export interface NotableProjectsNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
+  image: () => Promise<String>;
+  name: () => Promise<String>;
 }
 
 export interface Testimonial {
   id: ID_Output;
-  summary: String;
+  summary?: String;
   image?: String;
   name?: String;
   status?: Boolean;
@@ -3116,7 +3194,9 @@ export interface NotableProjectsSubscriptionPayloadSubscription
 
 export interface NotableProjectsPreviousValues {
   id: ID_Output;
-  summary: String;
+  summary?: String;
+  image?: String;
+  name?: String;
 }
 
 export interface NotableProjectsPreviousValuesPromise
@@ -3124,6 +3204,8 @@ export interface NotableProjectsPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   summary: () => Promise<String>;
+  image: () => Promise<String>;
+  name: () => Promise<String>;
 }
 
 export interface NotableProjectsPreviousValuesSubscription
@@ -3131,6 +3213,8 @@ export interface NotableProjectsPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   summary: () => Promise<AsyncIterator<String>>;
+  image: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
 }
 
 export interface NotificationSubscriptionPayload {
@@ -3272,7 +3356,7 @@ export interface TestimonialSubscriptionPayloadSubscription
 
 export interface TestimonialPreviousValues {
   id: ID_Output;
-  summary: String;
+  summary?: String;
   image?: String;
   name?: String;
   status?: Boolean;

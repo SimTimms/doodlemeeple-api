@@ -482,7 +482,9 @@ interface Node {
 
 type NotableProjects {
   id: ID!
-  summary: String!
+  summary: String
+  image: String
+  name: String
 }
 
 type NotableProjectsConnection {
@@ -493,7 +495,9 @@ type NotableProjectsConnection {
 
 input NotableProjectsCreateInput {
   id: ID
-  summary: String!
+  summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsCreateManyInput {
@@ -511,11 +515,17 @@ enum NotableProjectsOrderByInput {
   id_DESC
   summary_ASC
   summary_DESC
+  image_ASC
+  image_DESC
+  name_ASC
+  name_DESC
 }
 
 type NotableProjectsPreviousValues {
   id: ID!
-  summary: String!
+  summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsScalarWhereInput {
@@ -547,6 +557,34 @@ input NotableProjectsScalarWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
   AND: [NotableProjectsScalarWhereInput!]
   OR: [NotableProjectsScalarWhereInput!]
   NOT: [NotableProjectsScalarWhereInput!]
@@ -572,14 +610,20 @@ input NotableProjectsSubscriptionWhereInput {
 
 input NotableProjectsUpdateDataInput {
   summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsUpdateInput {
   summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsUpdateManyDataInput {
   summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsUpdateManyInput {
@@ -596,6 +640,8 @@ input NotableProjectsUpdateManyInput {
 
 input NotableProjectsUpdateManyMutationInput {
   summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsUpdateManyWithWhereNestedInput {
@@ -643,6 +689,34 @@ input NotableProjectsWhereInput {
   summary_not_starts_with: String
   summary_ends_with: String
   summary_not_ends_with: String
+  image: String
+  image_not: String
+  image_in: [String!]
+  image_not_in: [String!]
+  image_lt: String
+  image_lte: String
+  image_gt: String
+  image_gte: String
+  image_contains: String
+  image_not_contains: String
+  image_starts_with: String
+  image_not_starts_with: String
+  image_ends_with: String
+  image_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
   AND: [NotableProjectsWhereInput!]
   OR: [NotableProjectsWhereInput!]
   NOT: [NotableProjectsWhereInput!]
@@ -1382,7 +1456,7 @@ type Subscription {
 
 type Testimonial {
   id: ID!
-  summary: String!
+  summary: String
   image: String
   name: String
   status: Boolean
@@ -1396,7 +1470,7 @@ type TestimonialConnection {
 
 input TestimonialCreateInput {
   id: ID
-  summary: String!
+  summary: String
   image: String
   name: String
   status: Boolean
@@ -1427,7 +1501,7 @@ enum TestimonialOrderByInput {
 
 type TestimonialPreviousValues {
   id: ID!
-  summary: String!
+  summary: String
   image: String
   name: String
   status: Boolean

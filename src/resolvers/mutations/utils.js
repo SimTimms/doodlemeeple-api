@@ -38,6 +38,7 @@ async function notableProjectsCreator(ids, notableProjects, context) {
         const notableReturn = await context.prisma.createNotableProjects({
           name: notableProjectsIn.name,
           summary: notableProjectsIn.summary,
+          image: notableProjectsIn.image,
         });
         notableIdsArr.push({ id: notableReturn.id });
       }
@@ -46,6 +47,7 @@ async function notableProjectsCreator(ids, notableProjects, context) {
         data: {
           name: notableProjectsIn.name,
           summary: notableProjectsIn.summary,
+          image: notableProjectsIn.image,
         },
         where: { id: notableProjectsIn.id },
       });

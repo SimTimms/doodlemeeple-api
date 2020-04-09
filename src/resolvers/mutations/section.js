@@ -7,14 +7,74 @@ const {
   testimonialsCreator,
 } = require('./utils');
 
+async function updateProject(parent, args, context, info) {
+  const userId = getUserId(context);
+  const { project, sectionId } = args;
+  const projectExists = await context.prisma.$exists.notableProjects({
+    id: project.id,
+  });
+  let setProjectId = '';
+  let setSectionId = '';
+
+  if (projectExists) {
+    await context.prisma.updateNotableProjects({
+      data: {
+        name: project.name,
+        summary: project.summary,
+        image: project.image,
+      },
+      where: {
+        id: project.id,
+      },
+    });
+
+    setProjectId = project.id;
+    setSectionId = sectionId;
+  } else {
+    const sectionExists = await context.prisma.$exists.section({
+      id: sectionId,
+    });
+
+    const sectionObject = !sectionExists
+      ? await context.prisma.createSection({
+          user: { connect: { id: userId } },
+          title: '',
+          summary: '',
+          notableProjects: [],
+        })
+      : await context.prisma.section({
+          id: args.sectionId,
+        });
+
+    const projectReturn = await context.prisma.createNotableProjects({
+      name: project.name,
+      summary: project.summary,
+      image: project.image,
+    });
+
+    setProjectId = projectReturn.id;
+    setSectionId = sectionObject.id;
+  }
+
+  await context.prisma.updateSection({
+    data: {
+      notableProjects: { connect: [{ id: setProjectId }] },
+    },
+    where: {
+      id: setSectionId,
+    },
+  });
+
+  return project;
+}
 async function updateTestimonial(parent, args, context, info) {
   const userId = getUserId(context);
-
   const { testimonial, sectionId } = args;
-
   const testimonialExists = await context.prisma.$exists.testimonial({
     id: testimonial.id,
   });
+  let setTestimonialId = '';
+  let setSectionId = '';
 
   if (testimonialExists) {
     await context.prisma.updateTestimonial({
@@ -27,8 +87,11 @@ async function updateTestimonial(parent, args, context, info) {
         id: testimonial.id,
       },
     });
+
+    setTestimonialId = testimonial.id;
+    setSectionId = sectionId;
   } else {
-    const sectionExists = await context.prisma.$exists.testimonial({
+    const sectionExists = await context.prisma.$exists.section({
       id: sectionId,
     });
 
@@ -37,37 +100,36 @@ async function updateTestimonial(parent, args, context, info) {
           user: { connect: { id: userId } },
           title: '',
           summary: '',
+          testimonialtestimonials: [],
         })
       : await context.prisma.section({
-          id: args.id,
+          id: args.sectionId,
         });
 
     const testimonialReturn = await context.prisma.createTestimonial({
-      data: {
-        name: testimonial.name,
-        summary: testimonial.summary,
-        image: testimonial.image,
-      },
+      name: testimonial.name,
+      summary: testimonial.summary,
+      image: testimonial.image,
     });
-    const idsArr = testimonialReturn.testimonials;
-    idsArr.push({ id: testimonialReturn.id });
-    console.log(idsArr);
-  }
-  /*
 
-  const section = await context.prisma.updateSection({
+    setTestimonialId = testimonialReturn.id;
+    setSectionId = sectionObject.id;
+  }
+
+  await context.prisma.updateSection({
     data: {
-      testimonials: { connect: testimonialIds.map(id => id) },
+      testimonials: { connect: [{ id: setTestimonialId }] },
     },
     where: {
-      id: sectionObject.id,
+      id: setSectionId,
     },
   });
-*/
+
   return testimonial;
 }
 
 async function updateGallerySection(parent, args, context, info) {
+  console.log(args.section);
   const userId = getUserId(context);
   const {
     gallery,
@@ -112,11 +174,13 @@ async function updateGallerySection(parent, args, context, info) {
     });
   }
   //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
+
   notableIds = await notableProjectsCreator(
     notableIds,
     notableProjects,
     context,
   );
+
   testimonialIds = await testimonialsCreator(
     testimonialIds,
     testimonials,
@@ -128,8 +192,8 @@ async function updateGallerySection(parent, args, context, info) {
       title: title,
       summary: summary,
       gallery: { connect: { id: galleryObject.id } },
-      testimonials: { connect: testimonialIds.map(id => id) },
-      notableProjects: { connect: notableIds.map(id => id) },
+      testimonials: { connect: testimonialIds.map((id) => id) },
+      notableProjects: { connect: notableIds.map((id) => id) },
       showreel,
       type,
     },
@@ -185,4 +249,5 @@ module.exports = {
   updateGallerySection,
   updateSection,
   updateTestimonial,
+  updateProject,
 };

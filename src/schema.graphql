@@ -20,10 +20,12 @@ type Mutation {
     testimonial: TestimonialInput!
     sectionId: String!
   ): Testimonial
+  updateProject(project: NotableProjectsInput!, sectionId: String!): Testimonial
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): String
   removeTestimonial(id: String!): Boolean
+  removeProject(id: String!): Boolean
 }
 
 type Query {
@@ -47,7 +49,7 @@ input SectionInput {
 
 input TestimonialInput {
   id: String!
-  summary: String!
+  summary: String
   image: String
   name: String
   status: Boolean
@@ -100,17 +102,21 @@ type Section {
 
 type NotableProjects {
   id: ID!
-  summary: String!
+  summary: String
+  image: String
+  name: String
 }
 
 input NotableProjectsInput {
   id: String
-  summary: String!
+  summary: String
+  image: String
+  name: String
 }
 
 type Testimonial {
   id: ID!
-  summary: String!
+  summary: String
   image: String
   name: String
   status: Boolean

@@ -10,6 +10,7 @@ const {
   updateGallerySection,
   updateSection,
   updateTestimonial,
+  updateProject,
 } = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 
@@ -36,6 +37,14 @@ async function removeNotableProject(parent, args, context) {
 
 async function removeTestimonial(parent, args, context) {
   await context.prisma.deleteTestimonial({
+    id: args.id,
+  });
+
+  return true;
+}
+
+async function removeProject(parent, args, context) {
+  await context.prisma.deleteNotableProjects({
     id: args.id,
   });
 
@@ -124,14 +133,20 @@ async function passwordForgot(parent, args, context) {
           },
         ],
         Subject: 'Reset your DoodleMeeple password',
-        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
-        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
+        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${
+          emailAddress.tech
+        }. ${emailAddress.signoffPain}`,
+        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${
+          emailAddress.signoffHTML
+        }</p><p style="font-size:10px">If this was not you contact <a href='${
+          emailAddress.tech
+        }'>${emailAddress.tech}</a></p>`,
       },
     ],
   });
   request
-    .then(result => {})
-    .catch(err => {
+    .then((result) => {})
+    .catch((err) => {
       console.log(err.statusCode);
     });
 
@@ -187,10 +202,10 @@ async function passwordReset(parent, args, context) {
       ],
     });
     request
-      .then(result => {
+      .then((result) => {
         console.log(result.body);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err.statusCode);
       });
 
@@ -235,16 +250,24 @@ async function signup(parent, args, context, info) {
             },
           ],
           Subject: 'Welcome to DoodleMeeple',
-          TextPart: `It's great to have you on board, login and set up your profile here: ${emailAddress.appURL}`,
-          HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>Let's Begin</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
+          TextPart: `It's great to have you on board, login and set up your profile here: ${
+            emailAddress.appURL
+          }`,
+          HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
+            emailAddress.appURL
+          }'>Let's Begin</a><br/><br/></strong></p><p>${
+            emailAddress.signoffHTML
+          }</p><p style="font-size:10px">If this was not you contact <a href='${
+            emailAddress.tech
+          }'>${emailAddress.tech}</a></p>`,
         },
       ],
     });
     request
-      .then(result => {
+      .then((result) => {
         console.log(result.body);
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         console.log(err.statusCode);
       });
@@ -304,10 +327,12 @@ module.exports = {
   updateSection,
   updateGallerySection,
   updateTestimonial,
+  updateProject,
   removeSection,
   createNotification,
   removeNotification,
   removeNotableProject,
   removeTestimonial,
+  removeProject,
   login,
 };

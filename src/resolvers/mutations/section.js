@@ -4,14 +4,14 @@ const {
   createImages,
   createNotification,
   notableProjectsCreator,
-  testimonialsCreator,
+  testimonialsCreator
 } = require('./utils');
 
 async function updateProject(parent, args, context, info) {
   const userId = getUserId(context);
   const { project, sectionId } = args;
   const projectExists = await context.prisma.$exists.notableProjects({
-    id: project.id,
+    id: project.id
   });
   let setProjectId = '';
   let setSectionId = '';
@@ -21,18 +21,18 @@ async function updateProject(parent, args, context, info) {
       data: {
         name: project.name,
         summary: project.summary,
-        image: project.image,
+        image: project.image
       },
       where: {
-        id: project.id,
-      },
+        id: project.id
+      }
     });
 
     setProjectId = project.id;
     setSectionId = sectionId;
   } else {
     const sectionExists = await context.prisma.$exists.section({
-      id: sectionId,
+      id: sectionId
     });
 
     const sectionObject = !sectionExists
@@ -40,16 +40,16 @@ async function updateProject(parent, args, context, info) {
           user: { connect: { id: userId } },
           title: '',
           summary: '',
-          notableProjects: [],
+          notableProjects: []
         })
       : await context.prisma.section({
-          id: args.sectionId,
+          id: args.sectionId
         });
 
     const projectReturn = await context.prisma.createNotableProjects({
       name: project.name,
       summary: project.summary,
-      image: project.image,
+      image: project.image
     });
 
     setProjectId = projectReturn.id;
@@ -58,20 +58,20 @@ async function updateProject(parent, args, context, info) {
 
   await context.prisma.updateSection({
     data: {
-      notableProjects: { connect: [{ id: setProjectId }] },
+      notableProjects: { connect: [{ id: setProjectId }] }
     },
     where: {
-      id: setSectionId,
-    },
+      id: setSectionId
+    }
   });
 
-  return project;
+  return setProjectId;
 }
 async function updateTestimonial(parent, args, context, info) {
   const userId = getUserId(context);
   const { testimonial, sectionId } = args;
   const testimonialExists = await context.prisma.$exists.testimonial({
-    id: testimonial.id,
+    id: testimonial.id
   });
   let setTestimonialId = '';
   let setSectionId = '';
@@ -81,18 +81,18 @@ async function updateTestimonial(parent, args, context, info) {
       data: {
         name: testimonial.name,
         summary: testimonial.summary,
-        image: testimonial.image,
+        image: testimonial.image
       },
       where: {
-        id: testimonial.id,
-      },
+        id: testimonial.id
+      }
     });
 
     setTestimonialId = testimonial.id;
     setSectionId = sectionId;
   } else {
     const sectionExists = await context.prisma.$exists.section({
-      id: sectionId,
+      id: sectionId
     });
 
     const sectionObject = !sectionExists
@@ -100,16 +100,16 @@ async function updateTestimonial(parent, args, context, info) {
           user: { connect: { id: userId } },
           title: '',
           summary: '',
-          testimonialtestimonials: [],
+          testimonialtestimonials: []
         })
       : await context.prisma.section({
-          id: args.sectionId,
+          id: args.sectionId
         });
 
     const testimonialReturn = await context.prisma.createTestimonial({
       name: testimonial.name,
       summary: testimonial.summary,
-      image: testimonial.image,
+      image: testimonial.image
     });
 
     setTestimonialId = testimonialReturn.id;
@@ -118,11 +118,11 @@ async function updateTestimonial(parent, args, context, info) {
 
   await context.prisma.updateSection({
     data: {
-      testimonials: { connect: [{ id: setTestimonialId }] },
+      testimonials: { connect: [{ id: setTestimonialId }] }
     },
     where: {
-      id: setSectionId,
-    },
+      id: setSectionId
+    }
   });
 
   return testimonial;
@@ -138,10 +138,10 @@ async function updateGallerySection(parent, args, context, info) {
     notableProjects,
     testimonials,
     showreel,
-    type,
+    type
   } = args.section;
   const sectionExists = await context.prisma.$exists.section({
-    id: args.id,
+    id: args.id
   });
   const { images } = gallery;
   let imageIds = [];
@@ -154,10 +154,10 @@ async function updateGallerySection(parent, args, context, info) {
     ? await context.prisma.createSection({
         user: { connect: { id: userId } },
         title: '',
-        summary: '',
+        summary: ''
       })
     : await context.prisma.section({
-        id: args.id,
+        id: args.id
       });
 
   imageIds = await createImages(images, imageIds, context);
@@ -166,11 +166,11 @@ async function updateGallerySection(parent, args, context, info) {
 
   if (galleryObject) {
     await context.prisma.updateGallery({
-      images: { connect: imageIds },
+      images: { connect: imageIds }
     });
   } else {
     galleryObject = await context.prisma.createGallery({
-      images: { connect: imageIds },
+      images: { connect: imageIds }
     });
   }
   //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
@@ -178,13 +178,13 @@ async function updateGallerySection(parent, args, context, info) {
   notableIds = await notableProjectsCreator(
     notableIds,
     notableProjects,
-    context,
+    context
   );
 
   testimonialIds = await testimonialsCreator(
     testimonialIds,
     testimonials,
-    context,
+    context
   );
 
   const section = await context.prisma.updateSection({
@@ -192,14 +192,14 @@ async function updateGallerySection(parent, args, context, info) {
       title: title,
       summary: summary,
       gallery: { connect: { id: galleryObject.id } },
-      testimonials: { connect: testimonialIds.map((id) => id) },
-      notableProjects: { connect: notableIds.map((id) => id) },
+      testimonials: { connect: testimonialIds.map(id => id) },
+      notableProjects: { connect: notableIds.map(id => id) },
       showreel,
-      type,
+      type
     },
     where: {
-      id: sectionObject.id,
-    },
+      id: sectionObject.id
+    }
   });
 
   return section;
@@ -213,22 +213,22 @@ async function updateSection(parent, args, context, info) {
     title: 'Profile Updated!',
     message: "It's good that you did that",
     linkTo: '/app/edit-profile',
-    icon: 'contact_mail',
+    icon: 'contact_mail'
   });
 
   const sectionExists = await context.prisma.$exists.section({
-    id: args.id,
+    id: args.id
   });
 
   if (sectionExists) {
     const section = await context.prisma.updateSection({
       data: {
         title: args.section.title,
-        summary: args.section.summary,
+        summary: args.section.summary
       },
       where: {
-        id: args.id,
-      },
+        id: args.id
+      }
     });
 
     return section;
@@ -238,7 +238,7 @@ async function updateSection(parent, args, context, info) {
     const newSection = await context.prisma.createSection({
       user: { connect: { id: userId } },
       title: title,
-      summary: summary,
+      summary: summary
     });
 
     return newSection;
@@ -249,5 +249,5 @@ module.exports = {
   updateGallerySection,
   updateSection,
   updateTestimonial,
-  updateProject,
+  updateProject
 };

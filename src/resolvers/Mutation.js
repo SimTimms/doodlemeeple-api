@@ -4,24 +4,24 @@ const {
   APP_SECRET,
   getUserId,
   signupChecks,
-  profileCheck,
+  profileCheck
 } = require('../utils');
 const {
   updateGallerySection,
   updateSection,
   updateTestimonial,
-  updateProject,
+  updateProject
 } = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 
 const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PUBLIC,
-  process.env.MJ_APIKEY_PRIVATE,
+  process.env.MJ_APIKEY_PRIVATE
 );
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
-    id: args.id,
+    id: args.id
   });
 
   return true;
@@ -29,7 +29,7 @@ async function removeSection(parent, args, context) {
 
 async function removeNotableProject(parent, args, context) {
   await context.prisma.deleteNotableProjects({
-    id: args.id,
+    id: args.id
   });
 
   return true;
@@ -37,15 +37,16 @@ async function removeNotableProject(parent, args, context) {
 
 async function removeTestimonial(parent, args, context) {
   await context.prisma.deleteTestimonial({
-    id: args.id,
+    id: args.id
   });
 
   return true;
 }
 
 async function removeProject(parent, args, context) {
+  console.log(args);
   await context.prisma.deleteNotableProjects({
-    id: args.id,
+    id: args.id
   });
 
   return true;
@@ -53,7 +54,7 @@ async function removeProject(parent, args, context) {
 
 async function removeNotification(parent, args, context) {
   await context.prisma.deleteNotification({
-    id: args.id,
+    id: args.id
   });
 
   return args.id;
@@ -62,7 +63,7 @@ async function removeNotification(parent, args, context) {
 async function updateUser(parent, args, context, info) {
   const validSubmission = profileCheck({
     name: args.name,
-    summary: args.summary,
+    summary: args.summary
   });
 
   if (validSubmission === false) {
@@ -73,7 +74,7 @@ async function updateUser(parent, args, context, info) {
 
   const exists = await context.prisma.$exists.notification({
     user: { id: userId },
-    title: 'You updated your profile',
+    title: 'You updated your profile'
   });
 
   !exists &&
@@ -82,7 +83,7 @@ async function updateUser(parent, args, context, info) {
       title: 'You updated your profile',
       message: 'Nice Work! Keep your profile up-to-date',
       linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
+      icon: 'contact_mail'
     }));
 
   const user = await context.prisma.updateUser({
@@ -93,11 +94,11 @@ async function updateUser(parent, args, context, info) {
       profileBGStyle: args.profileBGStyle,
       profileImg: args.profileImg,
       profileImgStyle: args.profileImgStyle,
-      autosave: args.autosave,
+      autosave: args.autosave
     },
     where: {
-      id: userId,
-    },
+      id: userId
+    }
   });
 
   return user;
@@ -105,18 +106,18 @@ async function updateUser(parent, args, context, info) {
 
 async function passwordForgot(parent, args, context) {
   const user = await context.prisma.user({
-    email: args.email,
+    email: args.email
   });
 
   const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
   await context.prisma.updateUser({
     data: {
-      resetToken: token,
+      resetToken: token
     },
     where: {
-      id: user.id,
-    },
+      id: user.id
+    }
   });
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
   const request = mailjet.post('send', { version: 'v3.1' }).request({
@@ -124,13 +125,13 @@ async function passwordForgot(parent, args, context) {
       {
         From: {
           Email: emailAddress.noreply,
-          Name: 'DoodleMeeple',
+          Name: 'DoodleMeeple'
         },
         To: [
           {
             Email: user.email,
-            Name: user.name,
-          },
+            Name: user.name
+          }
         ],
         Subject: 'Reset your DoodleMeeple password',
         TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${
@@ -140,13 +141,13 @@ async function passwordForgot(parent, args, context) {
           emailAddress.signoffHTML
         }</p><p style="font-size:10px">If this was not you contact <a href='${
           emailAddress.tech
-        }'>${emailAddress.tech}</a></p>`,
-      },
-    ],
+        }'>${emailAddress.tech}</a></p>`
+      }
+    ]
   });
   request
-    .then((result) => {})
-    .catch((err) => {
+    .then(result => {})
+    .catch(err => {
       console.log(err.statusCode);
     });
 
@@ -155,13 +156,13 @@ async function passwordForgot(parent, args, context) {
 
 async function passwordReset(parent, args, context) {
   const user = await context.prisma.user({
-    resetToken: args.token,
+    resetToken: args.token
   });
 
   const validSubmission = signupChecks({
     password: args.password,
     name: user.name,
-    email: user.email,
+    email: user.email
   });
 
   if (validSubmission === false) {
@@ -173,11 +174,11 @@ async function passwordReset(parent, args, context) {
   await context.prisma.updateUser({
     data: {
       resetToken: null,
-      password: password,
+      password: password
     },
     where: {
-      id: user.id,
-    },
+      id: user.id
+    }
   });
 
   if (user) {
@@ -187,25 +188,25 @@ async function passwordReset(parent, args, context) {
         {
           From: {
             Email: emailAddress.noreply,
-            Name: 'DoodleMeeple',
+            Name: 'DoodleMeeple'
           },
           To: [
             {
               Email: user.email,
-              Name: user.name,
-            },
+              Name: user.name
+            }
           ],
           Subject: 'Password has been changed',
           TextPart: `Your password has been changed, visit ${actionLink}`,
-          HTMLPart: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
-        },
-      ],
+          HTMLPart: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`
+        }
+      ]
     });
     request
-      .then((result) => {
+      .then(result => {
         console.log(result.body);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err.statusCode);
       });
 
@@ -219,7 +220,7 @@ async function signup(parent, args, context, info) {
   const validSubmission = signupChecks({
     password: args.password,
     name: args.name,
-    email: args.email,
+    email: args.email
   });
 
   if (validSubmission === false) {
@@ -232,7 +233,7 @@ async function signup(parent, args, context, info) {
     const user = await context.prisma.createUser({
       ...args,
       password,
-      summary: '',
+      summary: ''
     });
     const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
@@ -241,13 +242,13 @@ async function signup(parent, args, context, info) {
         {
           From: {
             Email: 'welcome@doodlemeeple.com',
-            Name: 'DoodleMeeple',
+            Name: 'DoodleMeeple'
           },
           To: [
             {
               Email: args.email,
-              Name: args.name,
-            },
+              Name: args.name
+            }
           ],
           Subject: 'Welcome to DoodleMeeple',
           TextPart: `It's great to have you on board, login and set up your profile here: ${
@@ -259,15 +260,15 @@ async function signup(parent, args, context, info) {
             emailAddress.signoffHTML
           }</p><p style="font-size:10px">If this was not you contact <a href='${
             emailAddress.tech
-          }'>${emailAddress.tech}</a></p>`,
-        },
-      ],
+          }'>${emailAddress.tech}</a></p>`
+        }
+      ]
     });
     request
-      .then((result) => {
+      .then(result => {
         console.log(result.body);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         console.log(err.statusCode);
       });
@@ -277,12 +278,12 @@ async function signup(parent, args, context, info) {
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
       linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
+      icon: 'contact_mail'
     });
 
     return {
       token,
-      user,
+      user
     };
   } catch (error) {
     throw new Error(error);
@@ -294,7 +295,7 @@ function createNotification(parent, args, context) {
 
   return context.prisma.createNotification({
     user: { connect: { id: userId } },
-    message: args.message,
+    message: args.message
   });
 }
 
@@ -315,7 +316,7 @@ async function login(parent, args, context, info) {
   // 3
   return {
     token,
-    user,
+    user
   };
 }
 
@@ -334,5 +335,5 @@ module.exports = {
   removeNotableProject,
   removeTestimonial,
   removeProject,
-  login,
+  login
 };

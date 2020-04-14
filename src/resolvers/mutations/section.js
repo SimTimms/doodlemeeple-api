@@ -65,8 +65,52 @@ async function updateProject(parent, args, context, info) {
     }
   });
 
+  return project.id;
+}
+
+async function createProject(parent, args, context, info) {
+  const userId = getUserId(context);
+  const { project, sectionId } = args;
+
+  let setProjectId = '';
+  let setSectionId = '';
+
+  const sectionExists = await context.prisma.$exists.section({
+    id: sectionId
+  });
+
+  const sectionObject = !sectionExists
+    ? await context.prisma.createSection({
+        user: { connect: { id: userId } },
+        title: '',
+        summary: '',
+        notableProjects: []
+      })
+    : await context.prisma.section({
+        id: args.sectionId
+      });
+
+  const projectReturn = await context.prisma.createNotableProjects({
+    name: project.name,
+    summary: project.summary,
+    image: project.image
+  });
+
+  setProjectId = projectReturn.id;
+  setSectionId = sectionObject.id;
+
+  await context.prisma.updateSection({
+    data: {
+      notableProjects: { connect: [{ id: setProjectId }] }
+    },
+    where: {
+      id: setSectionId
+    }
+  });
+
   return setProjectId;
 }
+
 async function updateTestimonial(parent, args, context, info) {
   const userId = getUserId(context);
   const { testimonial, sectionId } = args;
@@ -249,5 +293,6 @@ module.exports = {
   updateGallerySection,
   updateSection,
   updateTestimonial,
-  updateProject
+  updateProject,
+  createProject
 };

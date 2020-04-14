@@ -10,7 +10,8 @@ const {
   updateGallerySection,
   updateSection,
   updateTestimonial,
-  updateProject
+  updateProject,
+  createProject
 } = require('./mutations/section');
 const { emailAddress } = require('../utils/emailAddress');
 
@@ -329,6 +330,7 @@ module.exports = {
   updateGallerySection,
   updateTestimonial,
   updateProject,
+  createProject,
   removeSection,
   createNotification,
   removeNotification,

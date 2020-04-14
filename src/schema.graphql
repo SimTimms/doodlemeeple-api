@@ -21,6 +21,7 @@ type Mutation {
     sectionId: String!
   ): Testimonial
   updateProject(project: NotableProjectsInput!, sectionId: String!): String
+  createProject(project: NotableProjectsInput!, sectionId: String!): String
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): String

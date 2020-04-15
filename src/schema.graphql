@@ -20,6 +20,8 @@ type Mutation {
     testimonial: TestimonialInput!
     sectionId: String!
   ): Testimonial
+
+  createTestimonial(testimonial: TestimonialInput!, sectionId: String!): String
   updateProject(project: NotableProjectsInput!, sectionId: String!): String
   createProject(project: NotableProjectsInput!, sectionId: String!): String
   removeSection(id: String!): Boolean

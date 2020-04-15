@@ -10,6 +10,7 @@ const {
   updateGallerySection,
   updateSection,
   updateTestimonial,
+  createTestimonial,
   updateProject,
   createProject
 } = require('./mutations/section');
@@ -45,7 +46,6 @@ async function removeTestimonial(parent, args, context) {
 }
 
 async function removeProject(parent, args, context) {
-  console.log(args);
   await context.prisma.deleteNotableProjects({
     id: args.id
   });
@@ -329,6 +329,7 @@ module.exports = {
   updateSection,
   updateGallerySection,
   updateTestimonial,
+  createTestimonial,
   updateProject,
   createProject,
   removeSection,

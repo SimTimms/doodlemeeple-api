@@ -1,6 +1,6 @@
 const { getUserId } = require('../../../utils');
 
-export async function updateProject(parent, args, context, info) {
+async function updateProject(parent, args, context, info) {
   const userId = getUserId(context);
   const { project, sectionId } = args;
   const projectExists = await context.prisma.$exists.notableProjects({
@@ -61,7 +61,7 @@ export async function updateProject(parent, args, context, info) {
   return project.id;
 }
 
-export async function createProject(parent, args, context, info) {
+async function createProject(parent, args, context, info) {
   const userId = getUserId(context);
   const { project, sectionId } = args;
 
@@ -103,3 +103,8 @@ export async function createProject(parent, args, context, info) {
 
   return setProjectId;
 }
+
+module.exports = {
+  updateProject,
+  createProject
+};

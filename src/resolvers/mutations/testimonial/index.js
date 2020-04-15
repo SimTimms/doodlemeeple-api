@@ -1,6 +1,6 @@
 const { getUserId } = require('../../../utils');
 
-export async function updateTestimonial(parent, args, context, info) {
+async function updateTestimonial(parent, args, context, info) {
   const userId = getUserId(context);
   const { testimonial, sectionId } = args;
   const testimonialExists = await context.prisma.$exists.testimonial({
@@ -61,7 +61,7 @@ export async function updateTestimonial(parent, args, context, info) {
   return testimonial;
 }
 
-export async function createTestimonial(parent, args, context, info) {
+async function createTestimonial(parent, args, context, info) {
   const userId = getUserId(context);
   const { testimonial, sectionId } = args;
 
@@ -103,3 +103,8 @@ export async function createTestimonial(parent, args, context, info) {
 
   return setTestimonialId;
 }
+
+module.exports = {
+  updateTestimonial,
+  createTestimonial
+};

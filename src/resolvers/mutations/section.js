@@ -6,8 +6,8 @@ const {
   notableProjectsCreator,
   testimonialsCreator
 } = require('./utils');
-import { updateProject, createProject } from './project';
-import { updateTestimonial, createTestimonial } from './testimonial';
+const { updateProject, createProject } = require('./project');
+const { updateTestimonial, createTestimonial } = require('./testimonial');
 
 async function updateGallerySection(parent, args, context, info) {
   const userId = getUserId(context);

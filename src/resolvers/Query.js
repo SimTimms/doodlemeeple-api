@@ -11,6 +11,7 @@ async function getSections(parent, args, context) {
   });
   return sections;
 }
+
 async function sectionsPreview(parent, args, context) {
   const userId = args.userId;
   const sections = await context.prisma.sections({

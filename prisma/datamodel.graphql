@@ -12,8 +12,8 @@ type User {
   autosave: Boolean @default(value: true)
   summary: String
   location: String
-  sections: [Section!]
-  notifications: [Notification!]! @relation(link: TABLE)
+  sections: [Section!] @relation(link: TABLE, onDelete: CASCADE)
+  notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
 }
 
 type Notification {
@@ -54,10 +54,9 @@ type Section {
   id: ID! @id
   title: String
   summary: String
-  gallery: Gallery @relation(link: INLINE)
-  notableProjects: [NotableProjects] @relation(link: TABLE)
-  testimonials: [Testimonial] @relation(link: TABLE)
-  user: User!
+  gallery: Gallery @relation(link: INLINE, onDelete: CASCADE)
+  notableProjects: [NotableProjects] @relation(link: TABLE, onDelete: CASCADE)
+  testimonials: [Testimonial] @relation(link: TABLE, onDelete: CASCADE)
   showreel: String
   type: String
 }
@@ -82,7 +81,7 @@ type Gallery {
   id: ID! @id
   summary: String
   section: Section
-  images: [GalleryImage] @relation(link: TABLE)
+  images: [GalleryImage] @relation(link: TABLE, onDelete: CASCADE)
 }
 
 type GalleryImage {

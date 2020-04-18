@@ -14,6 +14,8 @@ type Mutation {
     sections: [SectionInput]
     autosave: Boolean
   ): User
+  updateEmail(email: String!): Boolean
+  deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
   updateTestimonial(

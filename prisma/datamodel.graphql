@@ -59,6 +59,7 @@ type Section {
   testimonials: [Testimonial] @relation(link: TABLE, onDelete: CASCADE)
   showreel: String
   type: String
+  user: User
 }
 
 type Testimonial {

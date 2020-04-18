@@ -12,6 +12,29 @@ async function getSections(parent, args, context) {
   return sections;
 }
 
+async function getGalleries(parent, args, context) {
+  const sections = await context.prisma.galleries({
+    where: {
+      section: {
+        id_in: args.sectionId,
+      },
+    },
+  });
+
+  return sections;
+}
+
+async function getImages(parent, args, context) {
+  const sections = await context.prisma.galleryImages({
+    where: {
+      gallery: {
+        id_in: args.galleryId,
+      },
+    },
+  });
+  return sections;
+}
+
 async function sectionsPreview(parent, args, context) {
   const userId = args.userId;
   const sections = await context.prisma.sections({
@@ -73,6 +96,8 @@ module.exports = {
   profile,
   getNotifications,
   getSections,
+  getGalleries,
+  getImages,
   getTestimonials,
   profilePreview,
   sectionsPreview,

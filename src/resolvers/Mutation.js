@@ -16,11 +16,56 @@ const {
 } = require('./mutations/section');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
+var aws = require('aws-sdk');
+require('dotenv').config();
+import { getSections, getGalleries, getImages } from './Query';
 
 const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PUBLIC,
   process.env.MJ_APIKEY_PRIVATE,
 );
+
+console.log(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
+
+//DANGER!!! Don't f*ck around with this one
+async function deleteAccount(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const sections = await getSections(parent, args, context);
+  const galleries = await getGalleries(
+    parent,
+    { sectionId: sections.map((item) => item.id) },
+    context,
+  );
+  const images = await getImages(
+    parent,
+    { galleryId: galleries.map((item) => item.id) },
+    context,
+  );
+
+  aws.config.update({
+    region: 'eu-west-2',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+  });
+
+  const S3_BUCKET = process.env.BUCKET;
+  var s3 = new aws.S3();
+
+  images.map((image) => {
+    var params = {
+      Bucket: S3_BUCKET,
+      Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
+    };
+    s3.deleteObject(params, function(err, data) {
+      if (err) console.log(err, err.stack);
+      // error
+      else console.log('deleted'); // deleted
+    });
+  });
+
+  await context.prisma.deleteUser({ id: userId });
+}
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
@@ -60,14 +105,6 @@ async function removeNotification(parent, args, context) {
   });
 
   return args.id;
-}
-
-async function deleteAccount(parent, args, context, info) {
-  const userId = getUserId(context);
-
-  await context.prisma.deleteUser({
-    id: userId,
-  });
 }
 
 async function updateEmail(parent, args, context, info) {

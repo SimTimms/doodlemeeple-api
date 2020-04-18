@@ -39,6 +39,8 @@ type Query {
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
   getSections: [Section!]
+  getGalleries: [Gallery!]
+  getImages: [GalleryImage!]
   getTestimonials(sectionId: String!): [Section!]
 }
 
@@ -101,7 +103,7 @@ type Section {
   notableProjects: [NotableProjects]
   testimonials: [Testimonial]
   showreel: String
-  user: User!
+  user: User
   type: String
 }
 

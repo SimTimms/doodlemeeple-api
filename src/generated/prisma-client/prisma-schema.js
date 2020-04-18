@@ -1096,6 +1096,7 @@ type Section {
   testimonials(where: TestimonialWhereInput, orderBy: TestimonialOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Testimonial!]
   showreel: String
   type: String
+  user: User
 }
 
 type SectionConnection {
@@ -1113,10 +1114,11 @@ input SectionCreateInput {
   testimonials: TestimonialCreateManyInput
   showreel: String
   type: String
+  user: UserCreateOneWithoutSectionsInput
 }
 
-input SectionCreateManyInput {
-  create: [SectionCreateInput!]
+input SectionCreateManyWithoutUserInput {
+  create: [SectionCreateWithoutUserInput!]
   connect: [SectionWhereUniqueInput!]
 }
 
@@ -1129,6 +1131,18 @@ input SectionCreateWithoutGalleryInput {
   id: ID
   title: String
   summary: String
+  notableProjects: NotableProjectsCreateManyInput
+  testimonials: TestimonialCreateManyInput
+  showreel: String
+  type: String
+  user: UserCreateOneWithoutSectionsInput
+}
+
+input SectionCreateWithoutUserInput {
+  id: ID
+  title: String
+  summary: String
+  gallery: GalleryCreateOneWithoutSectionInput
   notableProjects: NotableProjectsCreateManyInput
   testimonials: TestimonialCreateManyInput
   showreel: String
@@ -1255,16 +1269,6 @@ input SectionSubscriptionWhereInput {
   NOT: [SectionSubscriptionWhereInput!]
 }
 
-input SectionUpdateDataInput {
-  title: String
-  summary: String
-  gallery: GalleryUpdateOneWithoutSectionInput
-  notableProjects: NotableProjectsUpdateManyInput
-  testimonials: TestimonialUpdateManyInput
-  showreel: String
-  type: String
-}
-
 input SectionUpdateInput {
   title: String
   summary: String
@@ -1273,6 +1277,7 @@ input SectionUpdateInput {
   testimonials: TestimonialUpdateManyInput
   showreel: String
   type: String
+  user: UserUpdateOneWithoutSectionsInput
 }
 
 input SectionUpdateManyDataInput {
@@ -1282,23 +1287,23 @@ input SectionUpdateManyDataInput {
   type: String
 }
 
-input SectionUpdateManyInput {
-  create: [SectionCreateInput!]
-  update: [SectionUpdateWithWhereUniqueNestedInput!]
-  upsert: [SectionUpsertWithWhereUniqueNestedInput!]
-  delete: [SectionWhereUniqueInput!]
-  connect: [SectionWhereUniqueInput!]
-  set: [SectionWhereUniqueInput!]
-  disconnect: [SectionWhereUniqueInput!]
-  deleteMany: [SectionScalarWhereInput!]
-  updateMany: [SectionUpdateManyWithWhereNestedInput!]
-}
-
 input SectionUpdateManyMutationInput {
   title: String
   summary: String
   showreel: String
   type: String
+}
+
+input SectionUpdateManyWithoutUserInput {
+  create: [SectionCreateWithoutUserInput!]
+  delete: [SectionWhereUniqueInput!]
+  connect: [SectionWhereUniqueInput!]
+  set: [SectionWhereUniqueInput!]
+  disconnect: [SectionWhereUniqueInput!]
+  update: [SectionUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [SectionUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [SectionScalarWhereInput!]
+  updateMany: [SectionUpdateManyWithWhereNestedInput!]
 }
 
 input SectionUpdateManyWithWhereNestedInput {
@@ -1322,11 +1327,22 @@ input SectionUpdateWithoutGalleryDataInput {
   testimonials: TestimonialUpdateManyInput
   showreel: String
   type: String
+  user: UserUpdateOneWithoutSectionsInput
 }
 
-input SectionUpdateWithWhereUniqueNestedInput {
+input SectionUpdateWithoutUserDataInput {
+  title: String
+  summary: String
+  gallery: GalleryUpdateOneWithoutSectionInput
+  notableProjects: NotableProjectsUpdateManyInput
+  testimonials: TestimonialUpdateManyInput
+  showreel: String
+  type: String
+}
+
+input SectionUpdateWithWhereUniqueWithoutUserInput {
   where: SectionWhereUniqueInput!
-  data: SectionUpdateDataInput!
+  data: SectionUpdateWithoutUserDataInput!
 }
 
 input SectionUpsertWithoutGalleryInput {
@@ -1334,10 +1350,10 @@ input SectionUpsertWithoutGalleryInput {
   create: SectionCreateWithoutGalleryInput!
 }
 
-input SectionUpsertWithWhereUniqueNestedInput {
+input SectionUpsertWithWhereUniqueWithoutUserInput {
   where: SectionWhereUniqueInput!
-  update: SectionUpdateDataInput!
-  create: SectionCreateInput!
+  update: SectionUpdateWithoutUserDataInput!
+  create: SectionCreateWithoutUserInput!
 }
 
 input SectionWhereInput {
@@ -1418,6 +1434,7 @@ input SectionWhereInput {
   type_not_starts_with: String
   type_ends_with: String
   type_not_ends_with: String
+  user: UserWhereInput
   AND: [SectionWhereInput!]
   OR: [SectionWhereInput!]
   NOT: [SectionWhereInput!]
@@ -1734,7 +1751,7 @@ input UserCreateInput {
   autosave: Boolean
   summary: String
   location: String
-  sections: SectionCreateManyInput
+  sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
 }
 
@@ -1744,6 +1761,11 @@ input UserCreatekeywordsInput {
 
 input UserCreateOneWithoutNotificationsInput {
   create: UserCreateWithoutNotificationsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSectionsInput {
+  create: UserCreateWithoutSectionsInput
   connect: UserWhereUniqueInput
 }
 
@@ -1761,7 +1783,24 @@ input UserCreateWithoutNotificationsInput {
   autosave: Boolean
   summary: String
   location: String
-  sections: SectionCreateManyInput
+  sections: SectionCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutSectionsInput {
+  id: ID
+  name: String!
+  email: String!
+  resetToken: String
+  password: String!
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  notifications: NotificationCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -1843,7 +1882,7 @@ input UserUpdateInput {
   autosave: Boolean
   summary: String
   location: String
-  sections: SectionUpdateManyInput
+  sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
 }
 
@@ -1873,6 +1912,15 @@ input UserUpdateOneRequiredWithoutNotificationsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateOneWithoutSectionsInput {
+  create: UserCreateWithoutSectionsInput
+  update: UserUpdateWithoutSectionsDataInput
+  upsert: UserUpsertWithoutSectionsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateWithoutNotificationsDataInput {
   name: String
   email: String
@@ -1886,12 +1934,33 @@ input UserUpdateWithoutNotificationsDataInput {
   autosave: Boolean
   summary: String
   location: String
-  sections: SectionUpdateManyInput
+  sections: SectionUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutSectionsDataInput {
+  name: String
+  email: String
+  resetToken: String
+  password: String
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  notifications: NotificationUpdateManyWithoutUserInput
 }
 
 input UserUpsertWithoutNotificationsInput {
   update: UserUpdateWithoutNotificationsDataInput!
   create: UserCreateWithoutNotificationsInput!
+}
+
+input UserUpsertWithoutSectionsInput {
+  update: UserUpdateWithoutSectionsDataInput!
+  create: UserCreateWithoutSectionsInput!
 }
 
 input UserWhereInput {

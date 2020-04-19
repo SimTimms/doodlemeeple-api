@@ -46,7 +46,7 @@ async function updateGallerySection(parent, args, context, info) {
     });
   }
   //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
-
+  /*
   notableIds = await notableProjectsCreator(
     notableIds,
     notableProjects,
@@ -57,15 +57,13 @@ async function updateGallerySection(parent, args, context, info) {
     testimonialIds,
     testimonials,
     context,
-  );
+  );*/
 
   const section = await context.prisma.updateSection({
     data: {
       title: title,
       summary: summary,
       gallery: { connect: { id: galleryObject.id } },
-      testimonials: { connect: testimonialIds.map((id) => id) },
-      notableProjects: { connect: notableIds.map((id) => id) },
       showreel,
       type,
     },
@@ -125,7 +123,7 @@ async function createGallerySection(parent, args, context, info) {
     });
   }
   //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
-
+  /*
   notableIds = await notableProjectsCreator(
     notableIds,
     notableProjects,
@@ -137,14 +135,12 @@ async function createGallerySection(parent, args, context, info) {
     testimonials,
     context,
   );
-
+*/
   const section = await context.prisma.updateSection({
     data: {
       title: title,
       summary: summary,
       gallery: { connect: { id: galleryObject.id } },
-      testimonials: { connect: testimonialIds.map((id) => id) },
-      notableProjects: { connect: notableIds.map((id) => id) },
       showreel,
       type,
     },

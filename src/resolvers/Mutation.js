@@ -19,7 +19,7 @@ var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
 require('dotenv').config();
-import { getSections, getGalleries, getImages } from './Query';
+const { getSections, getGalleries, getImages } = require('../Query');
 
 const mailjet = require('node-mailjet').connect(
   process.env.MJ_APIKEY_PUBLIC,

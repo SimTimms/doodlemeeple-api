@@ -20,9 +20,7 @@ async function updateGallerySection(parent, args, context, info) {
     showreel,
     type,
   } = args.section;
-  const sectionExists = await context.prisma.$exists.section({
-    id: args.id,
-  });
+
   const { images } = gallery;
   let imageIds = [];
   let testimonialIds = [];
@@ -30,14 +28,79 @@ async function updateGallerySection(parent, args, context, info) {
 
   createNotification(UPDATED_PROFILE, userId, context);
 
-  const sectionObject = !sectionExists
-    ? await context.prisma.createSection({
-        title: '',
-        summary: '',
-      })
-    : await context.prisma.section({
-        id: args.id,
-      });
+  const sectionObject = await context.prisma.section({
+    id: args.id,
+  });
+
+  imageIds = await createImages(images, imageIds, context);
+
+  let galleryObject = sectionObject.gallery ? sectionObject.gallery : null;
+
+  if (galleryObject) {
+    await context.prisma.updateGallery({
+      images: { connect: imageIds },
+    });
+  } else {
+    galleryObject = await context.prisma.createGallery({
+      images: { connect: imageIds },
+    });
+  }
+  //TODO: make this less resource demanding, we only need to update projects that have changed or create new ones
+
+  notableIds = await notableProjectsCreator(
+    notableIds,
+    notableProjects,
+    context,
+  );
+
+  testimonialIds = await testimonialsCreator(
+    testimonialIds,
+    testimonials,
+    context,
+  );
+
+  const section = await context.prisma.updateSection({
+    data: {
+      title: title,
+      summary: summary,
+      gallery: { connect: { id: galleryObject.id } },
+      testimonials: { connect: testimonialIds.map((id) => id) },
+      notableProjects: { connect: notableIds.map((id) => id) },
+      showreel,
+      type,
+    },
+    where: {
+      id: sectionObject.id,
+    },
+  });
+
+  return section;
+}
+
+async function createGallerySection(parent, args, context, info) {
+  console.log('ASdasd');
+  const userId = getUserId(context);
+  const {
+    gallery,
+    title,
+    summary,
+    notableProjects,
+    testimonials,
+    showreel,
+    type,
+  } = args.section;
+
+  const { images } = gallery;
+  let imageIds = [];
+  let testimonialIds = [];
+  let notableIds = [];
+
+  createNotification(UPDATED_PROFILE, userId, context);
+
+  const sectionObject = await context.prisma.createSection({
+    title: '',
+    summary: '',
+  });
 
   await context.prisma.updateUser({
     data: {
@@ -90,7 +153,7 @@ async function updateGallerySection(parent, args, context, info) {
     },
   });
 
-  return section;
+  return section.id;
 }
 
 async function updateSection(parent, args, context, info) {
@@ -135,6 +198,7 @@ async function updateSection(parent, args, context, info) {
 
 module.exports = {
   updateGallerySection,
+  createGallerySection,
   updateSection,
   updateTestimonial,
   createTestimonial,

@@ -8,6 +8,7 @@ const {
 } = require('../utils');
 const {
   updateGallerySection,
+  createGallerySection,
   updateSection,
   updateTestimonial,
   createTestimonial,
@@ -178,7 +179,7 @@ async function updateUser(parent, args, context, info) {
   const user = await context.prisma.updateUser({
     data: {
       name: args.name.replace(/[^A-Za-z0-9 ]/g, ''),
-      summary: args.summary.replace(/[^A-Za-z0-9 \n]/g, ''),
+      summary: args.summary.replace(/[^A-Za-z0-9 .,\'\n]/g, ''),
       profileBG: args.profileBG,
       profileBGStyle: args.profileBGStyle,
       profileImg: args.profileImg,
@@ -417,6 +418,7 @@ module.exports = {
   updateEmail,
   updateSection,
   updateGallerySection,
+  createGallerySection,
   updateTestimonial,
   createTestimonial,
   updateProject,

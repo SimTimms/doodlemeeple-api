@@ -18,6 +18,7 @@ type Mutation {
   deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
+  createGallerySection(id: String!, section: SectionInput): String
   updateTestimonial(
     testimonial: TestimonialInput!
     sectionId: String!

@@ -13,6 +13,10 @@ var models = [
     embedded: false
   },
   {
+    name: "Game",
+    embedded: false
+  },
+  {
     name: "NotableProjects",
     embedded: false
   },

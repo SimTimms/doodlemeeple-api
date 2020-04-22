@@ -11,6 +11,10 @@ type AggregateGalleryImage {
   count: Int!
 }
 
+type AggregateGame {
+  count: Int!
+}
+
 type AggregateNotableProjects {
   count: Int!
 }
@@ -55,6 +59,11 @@ input GalleryCreateInput {
   summary: String
   section: SectionCreateOneWithoutGalleryInput
   images: GalleryImageCreateManyWithoutGalleryInput
+}
+
+input GalleryCreateOneInput {
+  create: GalleryCreateInput
+  connect: GalleryWhereUniqueInput
 }
 
 input GalleryCreateOneWithoutImagesInput {
@@ -333,6 +342,12 @@ input GallerySubscriptionWhereInput {
   NOT: [GallerySubscriptionWhereInput!]
 }
 
+input GalleryUpdateDataInput {
+  summary: String
+  section: SectionUpdateOneWithoutGalleryInput
+  images: GalleryImageUpdateManyWithoutGalleryInput
+}
+
 input GalleryUpdateInput {
   summary: String
   section: SectionUpdateOneWithoutGalleryInput
@@ -341,6 +356,15 @@ input GalleryUpdateInput {
 
 input GalleryUpdateManyMutationInput {
   summary: String
+}
+
+input GalleryUpdateOneInput {
+  create: GalleryCreateInput
+  update: GalleryUpdateDataInput
+  upsert: GalleryUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: GalleryWhereUniqueInput
 }
 
 input GalleryUpdateOneWithoutImagesInput {
@@ -369,6 +393,11 @@ input GalleryUpdateWithoutImagesDataInput {
 input GalleryUpdateWithoutSectionDataInput {
   summary: String
   images: GalleryImageUpdateManyWithoutGalleryInput
+}
+
+input GalleryUpsertNestedInput {
+  update: GalleryUpdateDataInput!
+  create: GalleryCreateInput!
 }
 
 input GalleryUpsertWithoutImagesInput {
@@ -423,6 +452,457 @@ input GalleryWhereUniqueInput {
   id: ID
 }
 
+type Game {
+  id: ID!
+  name: String!
+  keywords: [String!]!
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  user: User!
+  type: String
+  createdAt: DateTime!
+}
+
+type GameConnection {
+  pageInfo: PageInfo!
+  edges: [GameEdge]!
+  aggregate: AggregateGame!
+}
+
+input GameCreateInput {
+  id: ID
+  name: String!
+  keywords: GameCreatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryCreateOneInput
+  showreel: String
+  user: UserCreateOneWithoutGamesInput!
+  type: String
+}
+
+input GameCreatekeywordsInput {
+  set: [String!]
+}
+
+input GameCreateManyWithoutUserInput {
+  create: [GameCreateWithoutUserInput!]
+  connect: [GameWhereUniqueInput!]
+}
+
+input GameCreateWithoutUserInput {
+  id: ID
+  name: String!
+  keywords: GameCreatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryCreateOneInput
+  showreel: String
+  type: String
+}
+
+type GameEdge {
+  node: Game!
+  cursor: String!
+}
+
+enum GameOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  img_ASC
+  img_DESC
+  backgroundImg_ASC
+  backgroundImg_DESC
+  summary_ASC
+  summary_DESC
+  location_ASC
+  location_DESC
+  showreel_ASC
+  showreel_DESC
+  type_ASC
+  type_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type GamePreviousValues {
+  id: ID!
+  name: String!
+  keywords: [String!]!
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  showreel: String
+  type: String
+  createdAt: DateTime!
+}
+
+input GameScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  img: String
+  img_not: String
+  img_in: [String!]
+  img_not_in: [String!]
+  img_lt: String
+  img_lte: String
+  img_gt: String
+  img_gte: String
+  img_contains: String
+  img_not_contains: String
+  img_starts_with: String
+  img_not_starts_with: String
+  img_ends_with: String
+  img_not_ends_with: String
+  backgroundImg: String
+  backgroundImg_not: String
+  backgroundImg_in: [String!]
+  backgroundImg_not_in: [String!]
+  backgroundImg_lt: String
+  backgroundImg_lte: String
+  backgroundImg_gt: String
+  backgroundImg_gte: String
+  backgroundImg_contains: String
+  backgroundImg_not_contains: String
+  backgroundImg_starts_with: String
+  backgroundImg_not_starts_with: String
+  backgroundImg_ends_with: String
+  backgroundImg_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  location: String
+  location_not: String
+  location_in: [String!]
+  location_not_in: [String!]
+  location_lt: String
+  location_lte: String
+  location_gt: String
+  location_gte: String
+  location_contains: String
+  location_not_contains: String
+  location_starts_with: String
+  location_not_starts_with: String
+  location_ends_with: String
+  location_not_ends_with: String
+  showreel: String
+  showreel_not: String
+  showreel_in: [String!]
+  showreel_not_in: [String!]
+  showreel_lt: String
+  showreel_lte: String
+  showreel_gt: String
+  showreel_gte: String
+  showreel_contains: String
+  showreel_not_contains: String
+  showreel_starts_with: String
+  showreel_not_starts_with: String
+  showreel_ends_with: String
+  showreel_not_ends_with: String
+  type: String
+  type_not: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_lt: String
+  type_lte: String
+  type_gt: String
+  type_gte: String
+  type_contains: String
+  type_not_contains: String
+  type_starts_with: String
+  type_not_starts_with: String
+  type_ends_with: String
+  type_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [GameScalarWhereInput!]
+  OR: [GameScalarWhereInput!]
+  NOT: [GameScalarWhereInput!]
+}
+
+type GameSubscriptionPayload {
+  mutation: MutationType!
+  node: Game
+  updatedFields: [String!]
+  previousValues: GamePreviousValues
+}
+
+input GameSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GameWhereInput
+  AND: [GameSubscriptionWhereInput!]
+  OR: [GameSubscriptionWhereInput!]
+  NOT: [GameSubscriptionWhereInput!]
+}
+
+input GameUpdateInput {
+  name: String
+  keywords: GameUpdatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryUpdateOneInput
+  showreel: String
+  user: UserUpdateOneRequiredWithoutGamesInput
+  type: String
+}
+
+input GameUpdatekeywordsInput {
+  set: [String!]
+}
+
+input GameUpdateManyDataInput {
+  name: String
+  keywords: GameUpdatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  showreel: String
+  type: String
+}
+
+input GameUpdateManyMutationInput {
+  name: String
+  keywords: GameUpdatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  showreel: String
+  type: String
+}
+
+input GameUpdateManyWithoutUserInput {
+  create: [GameCreateWithoutUserInput!]
+  delete: [GameWhereUniqueInput!]
+  connect: [GameWhereUniqueInput!]
+  set: [GameWhereUniqueInput!]
+  disconnect: [GameWhereUniqueInput!]
+  update: [GameUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [GameUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [GameScalarWhereInput!]
+  updateMany: [GameUpdateManyWithWhereNestedInput!]
+}
+
+input GameUpdateManyWithWhereNestedInput {
+  where: GameScalarWhereInput!
+  data: GameUpdateManyDataInput!
+}
+
+input GameUpdateWithoutUserDataInput {
+  name: String
+  keywords: GameUpdatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryUpdateOneInput
+  showreel: String
+  type: String
+}
+
+input GameUpdateWithWhereUniqueWithoutUserInput {
+  where: GameWhereUniqueInput!
+  data: GameUpdateWithoutUserDataInput!
+}
+
+input GameUpsertWithWhereUniqueWithoutUserInput {
+  where: GameWhereUniqueInput!
+  update: GameUpdateWithoutUserDataInput!
+  create: GameCreateWithoutUserInput!
+}
+
+input GameWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  img: String
+  img_not: String
+  img_in: [String!]
+  img_not_in: [String!]
+  img_lt: String
+  img_lte: String
+  img_gt: String
+  img_gte: String
+  img_contains: String
+  img_not_contains: String
+  img_starts_with: String
+  img_not_starts_with: String
+  img_ends_with: String
+  img_not_ends_with: String
+  backgroundImg: String
+  backgroundImg_not: String
+  backgroundImg_in: [String!]
+  backgroundImg_not_in: [String!]
+  backgroundImg_lt: String
+  backgroundImg_lte: String
+  backgroundImg_gt: String
+  backgroundImg_gte: String
+  backgroundImg_contains: String
+  backgroundImg_not_contains: String
+  backgroundImg_starts_with: String
+  backgroundImg_not_starts_with: String
+  backgroundImg_ends_with: String
+  backgroundImg_not_ends_with: String
+  summary: String
+  summary_not: String
+  summary_in: [String!]
+  summary_not_in: [String!]
+  summary_lt: String
+  summary_lte: String
+  summary_gt: String
+  summary_gte: String
+  summary_contains: String
+  summary_not_contains: String
+  summary_starts_with: String
+  summary_not_starts_with: String
+  summary_ends_with: String
+  summary_not_ends_with: String
+  location: String
+  location_not: String
+  location_in: [String!]
+  location_not_in: [String!]
+  location_lt: String
+  location_lte: String
+  location_gt: String
+  location_gte: String
+  location_contains: String
+  location_not_contains: String
+  location_starts_with: String
+  location_not_starts_with: String
+  location_ends_with: String
+  location_not_ends_with: String
+  gallery: GalleryWhereInput
+  showreel: String
+  showreel_not: String
+  showreel_in: [String!]
+  showreel_not_in: [String!]
+  showreel_lt: String
+  showreel_lte: String
+  showreel_gt: String
+  showreel_gte: String
+  showreel_contains: String
+  showreel_not_contains: String
+  showreel_starts_with: String
+  showreel_not_starts_with: String
+  showreel_ends_with: String
+  showreel_not_ends_with: String
+  user: UserWhereInput
+  type: String
+  type_not: String
+  type_in: [String!]
+  type_not_in: [String!]
+  type_lt: String
+  type_lte: String
+  type_gt: String
+  type_gte: String
+  type_contains: String
+  type_not_contains: String
+  type_starts_with: String
+  type_not_starts_with: String
+  type_ends_with: String
+  type_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  AND: [GameWhereInput!]
+  OR: [GameWhereInput!]
+  NOT: [GameWhereInput!]
+}
+
+input GameWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
@@ -438,6 +918,12 @@ type Mutation {
   upsertGalleryImage(where: GalleryImageWhereUniqueInput!, create: GalleryImageCreateInput!, update: GalleryImageUpdateInput!): GalleryImage!
   deleteGalleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
   deleteManyGalleryImages(where: GalleryImageWhereInput): BatchPayload!
+  createGame(data: GameCreateInput!): Game!
+  updateGame(data: GameUpdateInput!, where: GameWhereUniqueInput!): Game
+  updateManyGames(data: GameUpdateManyMutationInput!, where: GameWhereInput): BatchPayload!
+  upsertGame(where: GameWhereUniqueInput!, create: GameCreateInput!, update: GameUpdateInput!): Game!
+  deleteGame(where: GameWhereUniqueInput!): Game
+  deleteManyGames(where: GameWhereInput): BatchPayload!
   createNotableProjects(data: NotableProjectsCreateInput!): NotableProjects!
   updateNotableProjects(data: NotableProjectsUpdateInput!, where: NotableProjectsWhereUniqueInput!): NotableProjects
   updateManyNotableProjectses(data: NotableProjectsUpdateManyMutationInput!, where: NotableProjectsWhereInput): BatchPayload!
@@ -1069,6 +1555,9 @@ type Query {
   galleryImage(where: GalleryImageWhereUniqueInput!): GalleryImage
   galleryImages(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [GalleryImage]!
   galleryImagesConnection(where: GalleryImageWhereInput, orderBy: GalleryImageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryImageConnection!
+  game(where: GameWhereUniqueInput!): Game
+  games(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Game]!
+  gamesConnection(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GameConnection!
   notableProjects(where: NotableProjectsWhereUniqueInput!): NotableProjects
   notableProjectses(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [NotableProjects]!
   notableProjectsesConnection(where: NotableProjectsWhereInput, orderBy: NotableProjectsOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotableProjectsConnection!
@@ -1447,6 +1936,7 @@ input SectionWhereUniqueInput {
 type Subscription {
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
   galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
+  game(where: GameSubscriptionWhereInput): GameSubscriptionPayload
   notableProjects(where: NotableProjectsSubscriptionWhereInput): NotableProjectsSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
   section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload
@@ -1729,6 +2219,7 @@ type User {
   location: String
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section!]
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification!]
+  games(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Game!]
 }
 
 type UserConnection {
@@ -1753,10 +2244,16 @@ input UserCreateInput {
   location: String
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
+  games: GameCreateManyWithoutUserInput
 }
 
 input UserCreatekeywordsInput {
   set: [String!]
+}
+
+input UserCreateOneWithoutGamesInput {
+  create: UserCreateWithoutGamesInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutNotificationsInput {
@@ -1767,6 +2264,24 @@ input UserCreateOneWithoutNotificationsInput {
 input UserCreateOneWithoutSectionsInput {
   create: UserCreateWithoutSectionsInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutGamesInput {
+  id: ID
+  name: String!
+  email: String!
+  resetToken: String
+  password: String!
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  sections: SectionCreateManyWithoutUserInput
+  notifications: NotificationCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutNotificationsInput {
@@ -1784,6 +2299,7 @@ input UserCreateWithoutNotificationsInput {
   summary: String
   location: String
   sections: SectionCreateManyWithoutUserInput
+  games: GameCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutSectionsInput {
@@ -1801,6 +2317,7 @@ input UserCreateWithoutSectionsInput {
   summary: String
   location: String
   notifications: NotificationCreateManyWithoutUserInput
+  games: GameCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -1884,6 +2401,7 @@ input UserUpdateInput {
   location: String
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
+  games: GameUpdateManyWithoutUserInput
 }
 
 input UserUpdatekeywordsInput {
@@ -1905,6 +2423,13 @@ input UserUpdateManyMutationInput {
   location: String
 }
 
+input UserUpdateOneRequiredWithoutGamesInput {
+  create: UserCreateWithoutGamesInput
+  update: UserUpdateWithoutGamesDataInput
+  upsert: UserUpsertWithoutGamesInput
+  connect: UserWhereUniqueInput
+}
+
 input UserUpdateOneRequiredWithoutNotificationsInput {
   create: UserCreateWithoutNotificationsInput
   update: UserUpdateWithoutNotificationsDataInput
@@ -1921,6 +2446,23 @@ input UserUpdateOneWithoutSectionsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutGamesDataInput {
+  name: String
+  email: String
+  resetToken: String
+  password: String
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  sections: SectionUpdateManyWithoutUserInput
+  notifications: NotificationUpdateManyWithoutUserInput
+}
+
 input UserUpdateWithoutNotificationsDataInput {
   name: String
   email: String
@@ -1935,6 +2477,7 @@ input UserUpdateWithoutNotificationsDataInput {
   summary: String
   location: String
   sections: SectionUpdateManyWithoutUserInput
+  games: GameUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutSectionsDataInput {
@@ -1951,6 +2494,12 @@ input UserUpdateWithoutSectionsDataInput {
   summary: String
   location: String
   notifications: NotificationUpdateManyWithoutUserInput
+  games: GameUpdateManyWithoutUserInput
+}
+
+input UserUpsertWithoutGamesInput {
+  update: UserUpdateWithoutGamesDataInput!
+  create: UserCreateWithoutGamesInput!
 }
 
 input UserUpsertWithoutNotificationsInput {
@@ -2126,6 +2675,9 @@ input UserWhereInput {
   notifications_every: NotificationWhereInput
   notifications_some: NotificationWhereInput
   notifications_none: NotificationWhereInput
+  games_every: GameWhereInput
+  games_some: GameWhereInput
+  games_none: GameWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

@@ -14,6 +14,7 @@ type Mutation {
     sections: [SectionInput]
     autosave: Boolean
   ): User
+  updateGame(id: String!, game: GameInput!): String
   updateEmail(email: String!): Boolean
   deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
@@ -23,7 +24,6 @@ type Mutation {
     testimonial: TestimonialInput!
     sectionId: String!
   ): Testimonial
-
   createTestimonial(testimonial: TestimonialInput!, sectionId: String!): String
   updateProject(project: NotableProjectsInput!, sectionId: String!): String
   createProject(project: NotableProjectsInput!, sectionId: String!): String
@@ -36,6 +36,7 @@ type Mutation {
 
 type Query {
   profile: User!
+  getGame(gameId: String!): Game
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
@@ -43,6 +44,17 @@ type Query {
   getGalleries: [Gallery!]
   getImages: [GalleryImage!]
   getTestimonials(sectionId: String!): [Section!]
+}
+
+input GameInput {
+  name: String!
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryInput
+  showreel: String
+  type: String
 }
 
 input SectionInput {
@@ -68,6 +80,21 @@ type AuthPayload {
   user: User
 }
 
+type Game {
+  id: ID!
+  name: String!
+  keywords: [String]
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  user: User!
+  type: String
+  createdAt: String
+}
+
 type User {
   id: ID!
   name: String!
@@ -82,6 +109,7 @@ type User {
   summary: String
   location: String
   sections: [Section!]
+  games: [Game!]
   notifications: [Notification!]!
 }
 

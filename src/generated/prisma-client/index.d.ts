@@ -18,6 +18,7 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   gallery: (where?: GalleryWhereInput) => Promise<boolean>;
   galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
+  game: (where?: GameWhereInput) => Promise<boolean>;
   notableProjects: (where?: NotableProjectsWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
@@ -84,6 +85,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => GalleryImageConnectionPromise;
+  game: (where: GameWhereUniqueInput) => GameNullablePromise;
+  games: (args?: {
+    where?: GameWhereInput;
+    orderBy?: GameOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Game>;
+  gamesConnection: (args?: {
+    where?: GameWhereInput;
+    orderBy?: GameOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GameConnectionPromise;
   notableProjects: (
     where: NotableProjectsWhereUniqueInput
   ) => NotableProjectsNullablePromise;
@@ -227,6 +247,22 @@ export interface Prisma {
   deleteManyGalleryImages: (
     where?: GalleryImageWhereInput
   ) => BatchPayloadPromise;
+  createGame: (data: GameCreateInput) => GamePromise;
+  updateGame: (args: {
+    data: GameUpdateInput;
+    where: GameWhereUniqueInput;
+  }) => GamePromise;
+  updateManyGames: (args: {
+    data: GameUpdateManyMutationInput;
+    where?: GameWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGame: (args: {
+    where: GameWhereUniqueInput;
+    create: GameCreateInput;
+    update: GameUpdateInput;
+  }) => GamePromise;
+  deleteGame: (where: GameWhereUniqueInput) => GamePromise;
+  deleteManyGames: (where?: GameWhereInput) => BatchPayloadPromise;
   createNotableProjects: (
     data: NotableProjectsCreateInput
   ) => NotableProjectsPromise;
@@ -334,6 +370,9 @@ export interface Subscription {
   galleryImage: (
     where?: GalleryImageSubscriptionWhereInput
   ) => GalleryImageSubscriptionPayloadSubscription;
+  game: (
+    where?: GameSubscriptionWhereInput
+  ) => GameSubscriptionPayloadSubscription;
   notableProjects: (
     where?: NotableProjectsSubscriptionWhereInput
   ) => NotableProjectsSubscriptionPayloadSubscription;
@@ -406,6 +445,26 @@ export type NotificationOrderByInput =
   | "linkTo_DESC"
   | "icon_ASC"
   | "icon_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC";
+
+export type GameOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "name_ASC"
+  | "name_DESC"
+  | "img_ASC"
+  | "img_DESC"
+  | "backgroundImg_ASC"
+  | "backgroundImg_DESC"
+  | "summary_ASC"
+  | "summary_DESC"
+  | "location_ASC"
+  | "location_DESC"
+  | "showreel_ASC"
+  | "showreel_DESC"
+  | "type_ASC"
+  | "type_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC";
 
@@ -915,6 +974,9 @@ export interface UserWhereInput {
   notifications_every?: Maybe<NotificationWhereInput>;
   notifications_some?: Maybe<NotificationWhereInput>;
   notifications_none?: Maybe<NotificationWhereInput>;
+  games_every?: Maybe<GameWhereInput>;
+  games_some?: Maybe<GameWhereInput>;
+  games_none?: Maybe<GameWhereInput>;
   AND?: Maybe<UserWhereInput[] | UserWhereInput>;
   OR?: Maybe<UserWhereInput[] | UserWhereInput>;
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
@@ -1007,7 +1069,139 @@ export interface NotificationWhereInput {
   NOT?: Maybe<NotificationWhereInput[] | NotificationWhereInput>;
 }
 
+export interface GameWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  backgroundImg_not?: Maybe<String>;
+  backgroundImg_in?: Maybe<String[] | String>;
+  backgroundImg_not_in?: Maybe<String[] | String>;
+  backgroundImg_lt?: Maybe<String>;
+  backgroundImg_lte?: Maybe<String>;
+  backgroundImg_gt?: Maybe<String>;
+  backgroundImg_gte?: Maybe<String>;
+  backgroundImg_contains?: Maybe<String>;
+  backgroundImg_not_contains?: Maybe<String>;
+  backgroundImg_starts_with?: Maybe<String>;
+  backgroundImg_not_starts_with?: Maybe<String>;
+  backgroundImg_ends_with?: Maybe<String>;
+  backgroundImg_not_ends_with?: Maybe<String>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  location?: Maybe<String>;
+  location_not?: Maybe<String>;
+  location_in?: Maybe<String[] | String>;
+  location_not_in?: Maybe<String[] | String>;
+  location_lt?: Maybe<String>;
+  location_lte?: Maybe<String>;
+  location_gt?: Maybe<String>;
+  location_gte?: Maybe<String>;
+  location_contains?: Maybe<String>;
+  location_not_contains?: Maybe<String>;
+  location_starts_with?: Maybe<String>;
+  location_not_starts_with?: Maybe<String>;
+  location_ends_with?: Maybe<String>;
+  location_not_ends_with?: Maybe<String>;
+  gallery?: Maybe<GalleryWhereInput>;
+  showreel?: Maybe<String>;
+  showreel_not?: Maybe<String>;
+  showreel_in?: Maybe<String[] | String>;
+  showreel_not_in?: Maybe<String[] | String>;
+  showreel_lt?: Maybe<String>;
+  showreel_lte?: Maybe<String>;
+  showreel_gt?: Maybe<String>;
+  showreel_gte?: Maybe<String>;
+  showreel_contains?: Maybe<String>;
+  showreel_not_contains?: Maybe<String>;
+  showreel_starts_with?: Maybe<String>;
+  showreel_not_starts_with?: Maybe<String>;
+  showreel_ends_with?: Maybe<String>;
+  showreel_not_ends_with?: Maybe<String>;
+  user?: Maybe<UserWhereInput>;
+  type?: Maybe<String>;
+  type_not?: Maybe<String>;
+  type_in?: Maybe<String[] | String>;
+  type_not_in?: Maybe<String[] | String>;
+  type_lt?: Maybe<String>;
+  type_lte?: Maybe<String>;
+  type_gt?: Maybe<String>;
+  type_gte?: Maybe<String>;
+  type_contains?: Maybe<String>;
+  type_not_contains?: Maybe<String>;
+  type_starts_with?: Maybe<String>;
+  type_not_starts_with?: Maybe<String>;
+  type_ends_with?: Maybe<String>;
+  type_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<GameWhereInput[] | GameWhereInput>;
+  OR?: Maybe<GameWhereInput[] | GameWhereInput>;
+  NOT?: Maybe<GameWhereInput[] | GameWhereInput>;
+}
+
 export type GalleryImageWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export type GameWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
@@ -1103,6 +1297,7 @@ export interface UserCreateWithoutSectionsInput {
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
+  games?: Maybe<GameCreateManyWithoutUserInput>;
 }
 
 export interface UserCreatekeywordsInput {
@@ -1125,6 +1320,33 @@ export interface NotificationCreateWithoutUserInput {
   discarded?: Maybe<Boolean>;
   linkTo?: Maybe<String>;
   icon: String;
+}
+
+export interface GameCreateManyWithoutUserInput {
+  create?: Maybe<GameCreateWithoutUserInput[] | GameCreateWithoutUserInput>;
+  connect?: Maybe<GameWhereUniqueInput[] | GameWhereUniqueInput>;
+}
+
+export interface GameCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  keywords?: Maybe<GameCreatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  gallery?: Maybe<GalleryCreateOneInput>;
+  showreel?: Maybe<String>;
+  type?: Maybe<String>;
+}
+
+export interface GameCreatekeywordsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface GalleryCreateOneInput {
+  create?: Maybe<GalleryCreateInput>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
 }
 
 export interface GalleryImageCreateManyWithoutGalleryInput {
@@ -1437,6 +1659,7 @@ export interface UserUpdateWithoutSectionsDataInput {
   summary?: Maybe<String>;
   location?: Maybe<String>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
+  games?: Maybe<GameUpdateManyWithoutUserInput>;
 }
 
 export interface UserUpdatekeywordsInput {
@@ -1590,14 +1813,60 @@ export interface NotificationUpdateManyDataInput {
   icon?: Maybe<String>;
 }
 
-export interface UserUpsertWithoutSectionsInput {
-  update: UserUpdateWithoutSectionsDataInput;
-  create: UserCreateWithoutSectionsInput;
+export interface GameUpdateManyWithoutUserInput {
+  create?: Maybe<GameCreateWithoutUserInput[] | GameCreateWithoutUserInput>;
+  delete?: Maybe<GameWhereUniqueInput[] | GameWhereUniqueInput>;
+  connect?: Maybe<GameWhereUniqueInput[] | GameWhereUniqueInput>;
+  set?: Maybe<GameWhereUniqueInput[] | GameWhereUniqueInput>;
+  disconnect?: Maybe<GameWhereUniqueInput[] | GameWhereUniqueInput>;
+  update?: Maybe<
+    | GameUpdateWithWhereUniqueWithoutUserInput[]
+    | GameUpdateWithWhereUniqueWithoutUserInput
+  >;
+  upsert?: Maybe<
+    | GameUpsertWithWhereUniqueWithoutUserInput[]
+    | GameUpsertWithWhereUniqueWithoutUserInput
+  >;
+  deleteMany?: Maybe<GameScalarWhereInput[] | GameScalarWhereInput>;
+  updateMany?: Maybe<
+    GameUpdateManyWithWhereNestedInput[] | GameUpdateManyWithWhereNestedInput
+  >;
 }
 
-export interface SectionUpsertWithoutGalleryInput {
-  update: SectionUpdateWithoutGalleryDataInput;
-  create: SectionCreateWithoutGalleryInput;
+export interface GameUpdateWithWhereUniqueWithoutUserInput {
+  where: GameWhereUniqueInput;
+  data: GameUpdateWithoutUserDataInput;
+}
+
+export interface GameUpdateWithoutUserDataInput {
+  name?: Maybe<String>;
+  keywords?: Maybe<GameUpdatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  gallery?: Maybe<GalleryUpdateOneInput>;
+  showreel?: Maybe<String>;
+  type?: Maybe<String>;
+}
+
+export interface GameUpdatekeywordsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface GalleryUpdateOneInput {
+  create?: Maybe<GalleryCreateInput>;
+  update?: Maybe<GalleryUpdateDataInput>;
+  upsert?: Maybe<GalleryUpsertNestedInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GalleryWhereUniqueInput>;
+}
+
+export interface GalleryUpdateDataInput {
+  summary?: Maybe<String>;
+  section?: Maybe<SectionUpdateOneWithoutGalleryInput>;
+  images?: Maybe<GalleryImageUpdateManyWithoutGalleryInput>;
 }
 
 export interface GalleryImageUpdateManyWithoutGalleryInput {
@@ -1704,6 +1973,169 @@ export interface GalleryImageUpdateManyDataInput {
   title?: Maybe<String>;
 }
 
+export interface GalleryUpsertNestedInput {
+  update: GalleryUpdateDataInput;
+  create: GalleryCreateInput;
+}
+
+export interface GameUpsertWithWhereUniqueWithoutUserInput {
+  where: GameWhereUniqueInput;
+  update: GameUpdateWithoutUserDataInput;
+  create: GameCreateWithoutUserInput;
+}
+
+export interface GameScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  backgroundImg_not?: Maybe<String>;
+  backgroundImg_in?: Maybe<String[] | String>;
+  backgroundImg_not_in?: Maybe<String[] | String>;
+  backgroundImg_lt?: Maybe<String>;
+  backgroundImg_lte?: Maybe<String>;
+  backgroundImg_gt?: Maybe<String>;
+  backgroundImg_gte?: Maybe<String>;
+  backgroundImg_contains?: Maybe<String>;
+  backgroundImg_not_contains?: Maybe<String>;
+  backgroundImg_starts_with?: Maybe<String>;
+  backgroundImg_not_starts_with?: Maybe<String>;
+  backgroundImg_ends_with?: Maybe<String>;
+  backgroundImg_not_ends_with?: Maybe<String>;
+  summary?: Maybe<String>;
+  summary_not?: Maybe<String>;
+  summary_in?: Maybe<String[] | String>;
+  summary_not_in?: Maybe<String[] | String>;
+  summary_lt?: Maybe<String>;
+  summary_lte?: Maybe<String>;
+  summary_gt?: Maybe<String>;
+  summary_gte?: Maybe<String>;
+  summary_contains?: Maybe<String>;
+  summary_not_contains?: Maybe<String>;
+  summary_starts_with?: Maybe<String>;
+  summary_not_starts_with?: Maybe<String>;
+  summary_ends_with?: Maybe<String>;
+  summary_not_ends_with?: Maybe<String>;
+  location?: Maybe<String>;
+  location_not?: Maybe<String>;
+  location_in?: Maybe<String[] | String>;
+  location_not_in?: Maybe<String[] | String>;
+  location_lt?: Maybe<String>;
+  location_lte?: Maybe<String>;
+  location_gt?: Maybe<String>;
+  location_gte?: Maybe<String>;
+  location_contains?: Maybe<String>;
+  location_not_contains?: Maybe<String>;
+  location_starts_with?: Maybe<String>;
+  location_not_starts_with?: Maybe<String>;
+  location_ends_with?: Maybe<String>;
+  location_not_ends_with?: Maybe<String>;
+  showreel?: Maybe<String>;
+  showreel_not?: Maybe<String>;
+  showreel_in?: Maybe<String[] | String>;
+  showreel_not_in?: Maybe<String[] | String>;
+  showreel_lt?: Maybe<String>;
+  showreel_lte?: Maybe<String>;
+  showreel_gt?: Maybe<String>;
+  showreel_gte?: Maybe<String>;
+  showreel_contains?: Maybe<String>;
+  showreel_not_contains?: Maybe<String>;
+  showreel_starts_with?: Maybe<String>;
+  showreel_not_starts_with?: Maybe<String>;
+  showreel_ends_with?: Maybe<String>;
+  showreel_not_ends_with?: Maybe<String>;
+  type?: Maybe<String>;
+  type_not?: Maybe<String>;
+  type_in?: Maybe<String[] | String>;
+  type_not_in?: Maybe<String[] | String>;
+  type_lt?: Maybe<String>;
+  type_lte?: Maybe<String>;
+  type_gt?: Maybe<String>;
+  type_gte?: Maybe<String>;
+  type_contains?: Maybe<String>;
+  type_not_contains?: Maybe<String>;
+  type_starts_with?: Maybe<String>;
+  type_not_starts_with?: Maybe<String>;
+  type_ends_with?: Maybe<String>;
+  type_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<GameScalarWhereInput[] | GameScalarWhereInput>;
+  OR?: Maybe<GameScalarWhereInput[] | GameScalarWhereInput>;
+  NOT?: Maybe<GameScalarWhereInput[] | GameScalarWhereInput>;
+}
+
+export interface GameUpdateManyWithWhereNestedInput {
+  where: GameScalarWhereInput;
+  data: GameUpdateManyDataInput;
+}
+
+export interface GameUpdateManyDataInput {
+  name?: Maybe<String>;
+  keywords?: Maybe<GameUpdatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  showreel?: Maybe<String>;
+  type?: Maybe<String>;
+}
+
+export interface UserUpsertWithoutSectionsInput {
+  update: UserUpdateWithoutSectionsDataInput;
+  create: UserCreateWithoutSectionsInput;
+}
+
+export interface SectionUpsertWithoutGalleryInput {
+  update: SectionUpdateWithoutGalleryDataInput;
+  create: SectionCreateWithoutGalleryInput;
+}
+
 export interface GalleryUpdateManyMutationInput {
   summary?: Maybe<String>;
 }
@@ -1756,34 +2188,26 @@ export interface GalleryImageUpdateManyMutationInput {
   title?: Maybe<String>;
 }
 
-export interface NotableProjectsUpdateInput {
-  summary?: Maybe<String>;
-  image?: Maybe<String>;
-  name?: Maybe<String>;
-}
-
-export interface NotableProjectsUpdateManyMutationInput {
-  summary?: Maybe<String>;
-  image?: Maybe<String>;
-  name?: Maybe<String>;
-}
-
-export interface NotificationCreateInput {
+export interface GameCreateInput {
   id?: Maybe<ID_Input>;
-  title: String;
-  message: String;
-  discarded?: Maybe<Boolean>;
-  linkTo?: Maybe<String>;
-  icon: String;
-  user: UserCreateOneWithoutNotificationsInput;
+  name: String;
+  keywords?: Maybe<GameCreatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  gallery?: Maybe<GalleryCreateOneInput>;
+  showreel?: Maybe<String>;
+  user: UserCreateOneWithoutGamesInput;
+  type?: Maybe<String>;
 }
 
-export interface UserCreateOneWithoutNotificationsInput {
-  create?: Maybe<UserCreateWithoutNotificationsInput>;
+export interface UserCreateOneWithoutGamesInput {
+  create?: Maybe<UserCreateWithoutGamesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserCreateWithoutNotificationsInput {
+export interface UserCreateWithoutGamesInput {
   id?: Maybe<ID_Input>;
   name: String;
   email: String;
@@ -1798,6 +2222,7 @@ export interface UserCreateWithoutNotificationsInput {
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
+  notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
 }
 
 export interface SectionCreateManyWithoutUserInput {
@@ -1829,23 +2254,27 @@ export interface GalleryCreateWithoutSectionInput {
   images?: Maybe<GalleryImageCreateManyWithoutGalleryInput>;
 }
 
-export interface NotificationUpdateInput {
-  title?: Maybe<String>;
-  message?: Maybe<String>;
-  discarded?: Maybe<Boolean>;
-  linkTo?: Maybe<String>;
-  icon?: Maybe<String>;
-  user?: Maybe<UserUpdateOneRequiredWithoutNotificationsInput>;
+export interface GameUpdateInput {
+  name?: Maybe<String>;
+  keywords?: Maybe<GameUpdatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  gallery?: Maybe<GalleryUpdateOneInput>;
+  showreel?: Maybe<String>;
+  user?: Maybe<UserUpdateOneRequiredWithoutGamesInput>;
+  type?: Maybe<String>;
 }
 
-export interface UserUpdateOneRequiredWithoutNotificationsInput {
-  create?: Maybe<UserCreateWithoutNotificationsInput>;
-  update?: Maybe<UserUpdateWithoutNotificationsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutNotificationsInput>;
+export interface UserUpdateOneRequiredWithoutGamesInput {
+  create?: Maybe<UserCreateWithoutGamesInput>;
+  update?: Maybe<UserUpdateWithoutGamesDataInput>;
+  upsert?: Maybe<UserUpsertWithoutGamesInput>;
   connect?: Maybe<UserWhereUniqueInput>;
 }
 
-export interface UserUpdateWithoutNotificationsDataInput {
+export interface UserUpdateWithoutGamesDataInput {
   name?: Maybe<String>;
   email?: Maybe<String>;
   resetToken?: Maybe<String>;
@@ -1859,6 +2288,7 @@ export interface UserUpdateWithoutNotificationsDataInput {
   summary?: Maybe<String>;
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
+  notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
 }
 
 export interface SectionUpdateManyWithoutUserInput {
@@ -2012,6 +2442,100 @@ export interface SectionUpdateManyDataInput {
   type?: Maybe<String>;
 }
 
+export interface UserUpsertWithoutGamesInput {
+  update: UserUpdateWithoutGamesDataInput;
+  create: UserCreateWithoutGamesInput;
+}
+
+export interface GameUpdateManyMutationInput {
+  name?: Maybe<String>;
+  keywords?: Maybe<GameUpdatekeywordsInput>;
+  img?: Maybe<String>;
+  backgroundImg?: Maybe<String>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  showreel?: Maybe<String>;
+  type?: Maybe<String>;
+}
+
+export interface NotableProjectsUpdateInput {
+  summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface NotableProjectsUpdateManyMutationInput {
+  summary?: Maybe<String>;
+  image?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface NotificationCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  message: String;
+  discarded?: Maybe<Boolean>;
+  linkTo?: Maybe<String>;
+  icon: String;
+  user: UserCreateOneWithoutNotificationsInput;
+}
+
+export interface UserCreateOneWithoutNotificationsInput {
+  create?: Maybe<UserCreateWithoutNotificationsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateWithoutNotificationsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  resetToken?: Maybe<String>;
+  password: String;
+  keywords?: Maybe<UserCreatekeywordsInput>;
+  profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
+  profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  sections?: Maybe<SectionCreateManyWithoutUserInput>;
+  games?: Maybe<GameCreateManyWithoutUserInput>;
+}
+
+export interface NotificationUpdateInput {
+  title?: Maybe<String>;
+  message?: Maybe<String>;
+  discarded?: Maybe<Boolean>;
+  linkTo?: Maybe<String>;
+  icon?: Maybe<String>;
+  user?: Maybe<UserUpdateOneRequiredWithoutNotificationsInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutNotificationsInput {
+  create?: Maybe<UserCreateWithoutNotificationsInput>;
+  update?: Maybe<UserUpdateWithoutNotificationsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutNotificationsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutNotificationsDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  resetToken?: Maybe<String>;
+  password?: Maybe<String>;
+  keywords?: Maybe<UserUpdatekeywordsInput>;
+  profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
+  profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  sections?: Maybe<SectionUpdateManyWithoutUserInput>;
+  games?: Maybe<GameUpdateManyWithoutUserInput>;
+}
+
 export interface UserUpsertWithoutNotificationsInput {
   update: UserUpdateWithoutNotificationsDataInput;
   create: UserCreateWithoutNotificationsInput;
@@ -2085,6 +2609,7 @@ export interface UserCreateInput {
   location?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
+  games?: Maybe<GameCreateManyWithoutUserInput>;
 }
 
 export interface UserUpdateInput {
@@ -2102,6 +2627,7 @@ export interface UserUpdateInput {
   location?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
+  games?: Maybe<GameUpdateManyWithoutUserInput>;
 }
 
 export interface UserUpdateManyMutationInput {
@@ -2145,6 +2671,17 @@ export interface GalleryImageSubscriptionWhereInput {
   NOT?: Maybe<
     GalleryImageSubscriptionWhereInput[] | GalleryImageSubscriptionWhereInput
   >;
+}
+
+export interface GameSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GameWhereInput>;
+  AND?: Maybe<GameSubscriptionWhereInput[] | GameSubscriptionWhereInput>;
+  OR?: Maybe<GameSubscriptionWhereInput[] | GameSubscriptionWhereInput>;
+  NOT?: Maybe<GameSubscriptionWhereInput[] | GameSubscriptionWhereInput>;
 }
 
 export interface NotableProjectsSubscriptionWhereInput {
@@ -2497,6 +3034,15 @@ export interface UserPromise extends Promise<User>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  games: <T = FragmentableArray<Game>>(args?: {
+    where?: GameWhereInput;
+    orderBy?: GameOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserSubscription
@@ -2533,6 +3079,15 @@ export interface UserSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  games: <T = Promise<AsyncIterator<GameSubscription>>>(args?: {
+    where?: GameWhereInput;
+    orderBy?: GameOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface UserNullablePromise
@@ -2563,6 +3118,15 @@ export interface UserNullablePromise
   notifications: <T = FragmentableArray<Notification>>(args?: {
     where?: NotificationWhereInput;
     orderBy?: NotificationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  games: <T = FragmentableArray<Game>>(args?: {
+    where?: GameWhereInput;
+    orderBy?: GameOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;
@@ -2618,6 +3182,68 @@ export interface NotificationNullablePromise
   icon: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   user: <T = UserPromise>() => T;
+}
+
+export interface Game {
+  id: ID_Output;
+  name: String;
+  keywords: String[];
+  img?: String;
+  backgroundImg?: String;
+  summary?: String;
+  location?: String;
+  showreel?: String;
+  type?: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface GamePromise extends Promise<Game>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  keywords: () => Promise<String[]>;
+  img: () => Promise<String>;
+  backgroundImg: () => Promise<String>;
+  summary: () => Promise<String>;
+  location: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
+  showreel: () => Promise<String>;
+  user: <T = UserPromise>() => T;
+  type: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface GameSubscription
+  extends Promise<AsyncIterator<Game>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  keywords: () => Promise<AsyncIterator<String[]>>;
+  img: () => Promise<AsyncIterator<String>>;
+  backgroundImg: () => Promise<AsyncIterator<String>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  location: () => Promise<AsyncIterator<String>>;
+  gallery: <T = GallerySubscription>() => T;
+  showreel: () => Promise<AsyncIterator<String>>;
+  user: <T = UserSubscription>() => T;
+  type: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface GameNullablePromise
+  extends Promise<Game | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  keywords: () => Promise<String[]>;
+  img: () => Promise<String>;
+  backgroundImg: () => Promise<String>;
+  summary: () => Promise<String>;
+  location: () => Promise<String>;
+  gallery: <T = GalleryPromise>() => T;
+  showreel: () => Promise<String>;
+  user: <T = UserPromise>() => T;
+  type: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
 }
 
 export interface GalleryImage {
@@ -2782,6 +3408,60 @@ export interface AggregateGalleryImagePromise
 
 export interface AggregateGalleryImageSubscription
   extends Promise<AsyncIterator<AggregateGalleryImage>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GameConnection {
+  pageInfo: PageInfo;
+  edges: GameEdge[];
+}
+
+export interface GameConnectionPromise
+  extends Promise<GameConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GameEdge>>() => T;
+  aggregate: <T = AggregateGamePromise>() => T;
+}
+
+export interface GameConnectionSubscription
+  extends Promise<AsyncIterator<GameConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GameEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGameSubscription>() => T;
+}
+
+export interface GameEdge {
+  node: Game;
+  cursor: String;
+}
+
+export interface GameEdgePromise extends Promise<GameEdge>, Fragmentable {
+  node: <T = GamePromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface GameEdgeSubscription
+  extends Promise<AsyncIterator<GameEdge>>,
+    Fragmentable {
+  node: <T = GameSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateGame {
+  count: Int;
+}
+
+export interface AggregateGamePromise
+  extends Promise<AggregateGame>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateGameSubscription
+  extends Promise<AsyncIterator<AggregateGame>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -3169,6 +3849,74 @@ export interface GalleryImagePreviousValuesSubscription
   title: () => Promise<AsyncIterator<String>>;
 }
 
+export interface GameSubscriptionPayload {
+  mutation: MutationType;
+  node: Game;
+  updatedFields: String[];
+  previousValues: GamePreviousValues;
+}
+
+export interface GameSubscriptionPayloadPromise
+  extends Promise<GameSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GamePromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GamePreviousValuesPromise>() => T;
+}
+
+export interface GameSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GameSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GameSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GamePreviousValuesSubscription>() => T;
+}
+
+export interface GamePreviousValues {
+  id: ID_Output;
+  name: String;
+  keywords: String[];
+  img?: String;
+  backgroundImg?: String;
+  summary?: String;
+  location?: String;
+  showreel?: String;
+  type?: String;
+  createdAt: DateTimeOutput;
+}
+
+export interface GamePreviousValuesPromise
+  extends Promise<GamePreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  keywords: () => Promise<String[]>;
+  img: () => Promise<String>;
+  backgroundImg: () => Promise<String>;
+  summary: () => Promise<String>;
+  location: () => Promise<String>;
+  showreel: () => Promise<String>;
+  type: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+}
+
+export interface GamePreviousValuesSubscription
+  extends Promise<AsyncIterator<GamePreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  keywords: () => Promise<AsyncIterator<String[]>>;
+  img: () => Promise<AsyncIterator<String>>;
+  backgroundImg: () => Promise<AsyncIterator<String>>;
+  summary: () => Promise<AsyncIterator<String>>;
+  location: () => Promise<AsyncIterator<String>>;
+  showreel: () => Promise<AsyncIterator<String>>;
+  type: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
 export interface NotableProjectsSubscriptionPayload {
   mutation: MutationType;
   node: NotableProjects;
@@ -3505,6 +4253,10 @@ export const models: Model[] = [
   },
   {
     name: "Notification",
+    embedded: false
+  },
+  {
+    name: "Game",
     embedded: false
   },
   {

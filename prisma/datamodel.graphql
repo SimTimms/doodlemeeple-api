@@ -14,6 +14,7 @@ type User {
   location: String
   sections: [Section!] @relation(link: TABLE, onDelete: CASCADE)
   notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
+  games: [Game!] @relation(link: TABLE, onDelete: CASCADE)
 }
 
 type Notification {
@@ -25,6 +26,32 @@ type Notification {
   icon: String!
   createdAt: DateTime! @createdAt
   user: User!
+}
+
+type Game {
+  id: ID! @id
+  name: String!
+  keywords: [String] @scalarList(strategy: RELATION)
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  user: User!
+  type: String
+  createdAt: DateTime! @createdAt
+}
+
+input GameInput {
+  name: String
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  type: String
 }
 
 input SectionInput {

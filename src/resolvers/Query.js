@@ -118,6 +118,11 @@ async function getTestimonials(parent, args, context) {
   return section;
 }
 
+async function getCreatives(parent, args, context) {
+  const section = await context.prisma.users();
+
+  return section;
+}
 async function getNotifications(parent, args, context) {
   const userId = getUserId(context);
 
@@ -147,4 +152,5 @@ module.exports = {
   getJob,
   getJobs,
   sectionsPreview,
+  getCreatives,
 };

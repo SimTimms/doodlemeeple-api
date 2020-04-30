@@ -51,6 +51,7 @@ type Query {
   getGalleries: [Gallery!]
   getImages: [GalleryImage!]
   getTestimonials(sectionId: String!): [Section!]
+  getCreatives: [User!]
 }
 
 input GameInput {

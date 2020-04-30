@@ -56,6 +56,48 @@ async function profile(parent, args, context, info) {
   return profile;
 }
 
+async function getGame(parent, args, context, info) {
+  const game = await context.prisma.game({
+    id: args.gameId,
+  });
+
+  return game;
+}
+
+async function getGames(parent, args, context, info) {
+  const userId = getUserId(context);
+  const games = await context.prisma.games({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+  });
+
+  return games;
+}
+
+async function getJob(parent, args, context, info) {
+  const job = await context.prisma.job({
+    id: args.jobId,
+  });
+
+  return job;
+}
+
+async function getJobs(parent, args, context, info) {
+  const userId = getUserId(context);
+  const games = await context.prisma.jobs({
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+  });
+
+  return games;
+}
+
 async function profilePreview(parent, args, context, info) {
   const userId = args.userId;
 
@@ -100,5 +142,9 @@ module.exports = {
   getImages,
   getTestimonials,
   profilePreview,
+  getGame,
+  getGames,
+  getJob,
+  getJobs,
   sectionsPreview,
 };

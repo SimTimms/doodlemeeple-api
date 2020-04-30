@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const { sign_s3 } = require('./aws-upload');
 const Section = require('./resolvers/Section');
 const Gallery = require('./resolvers/Gallery');
+const Game = require('./resolvers/Game');
+const Job = require('./resolvers/Job');
 const User = require('./resolvers/User');
 
 const resolvers = {
@@ -16,13 +18,15 @@ const resolvers = {
   User,
   Section,
   Gallery,
+  Game,
+  Job,
 };
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
 
-  context: request => {
+  context: (request) => {
     return {
       ...request,
       prisma,

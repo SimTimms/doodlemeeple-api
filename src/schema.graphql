@@ -15,6 +15,11 @@ type Mutation {
     autosave: Boolean
   ): User
   updateGame(id: String!, game: GameInput!): String
+  createGame(id: String!, game: GameInput!): String
+  removeGame(id: String!): Boolean
+  updateJob(id: String!, job: JobInput!): String
+  createJob(id: String!, job: JobInput!): String
+  removeJob(id: String!): Boolean
   updateEmail(email: String!): Boolean
   deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
@@ -31,12 +36,14 @@ type Mutation {
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): String
   removeTestimonial(id: String!): Boolean
-  removeProject(id: String!): Boolean
 }
 
 type Query {
   profile: User!
   getGame(gameId: String!): Game
+  getGames: [Game]
+  getJob(jobId: String!): Job
+  getJobs: [Job]
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
@@ -55,6 +62,19 @@ input GameInput {
   gallery: GalleryInput
   showreel: String
   type: String
+}
+
+input JobInput {
+  name: String!
+  img: String
+  summary: String
+  location: String
+  creativeSummary: String
+  gallery: GalleryInput
+  gameId: String!
+  showreel: String
+  type: String
+  submitted: Boolean
 }
 
 input SectionInput {
@@ -93,6 +113,24 @@ type Game {
   user: User!
   type: String
   createdAt: String
+  jobs: [Job]
+}
+
+type Job {
+  id: ID!
+  name: String!
+  keywords: [String]
+  img: String
+  summary: String
+  creativeSummary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  user: User!
+  type: String
+  createdAt: String
+  game: Game!
+  submitted: Boolean
 }
 
 type User {
@@ -110,6 +148,7 @@ type User {
   location: String
   sections: [Section!]
   games: [Game!]
+  jobs: [Job!]
   notifications: [Notification!]!
 }
 

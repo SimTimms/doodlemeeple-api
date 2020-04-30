@@ -15,6 +15,8 @@ const {
   updateProject,
   createProject,
 } = require('./mutations/section');
+const { updateGame, createGame, removeGame } = require('./mutations/game');
+const { updateJob, createJob, removeJob } = require('./mutations/job');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
@@ -86,14 +88,6 @@ async function removeNotableProject(parent, args, context) {
 
 async function removeTestimonial(parent, args, context) {
   await context.prisma.deleteTestimonial({
-    id: args.id,
-  });
-
-  return true;
-}
-
-async function removeProject(parent, args, context) {
-  await context.prisma.deleteNotableProjects({
     id: args.id,
   });
 
@@ -423,12 +417,17 @@ module.exports = {
   createTestimonial,
   updateProject,
   createProject,
+  updateGame,
+  createGame,
+  removeGame,
+  updateJob,
+  createJob,
+  removeJob,
   removeSection,
   createNotification,
   removeNotification,
   removeNotableProject,
   removeTestimonial,
-  removeProject,
   deleteAccount,
   login,
 };

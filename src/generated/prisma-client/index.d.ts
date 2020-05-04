@@ -567,7 +567,9 @@ export type UserOrderByInput =
   | "summary_ASC"
   | "summary_DESC"
   | "location_ASC"
-  | "location_DESC";
+  | "location_DESC"
+  | "img_ASC"
+  | "img_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
@@ -1029,6 +1031,20 @@ export interface UserWhereInput {
   location_not_starts_with?: Maybe<String>;
   location_ends_with?: Maybe<String>;
   location_not_ends_with?: Maybe<String>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
   sections_every?: Maybe<SectionWhereInput>;
   sections_some?: Maybe<SectionWhereInput>;
   sections_none?: Maybe<SectionWhereInput>;
@@ -1498,12 +1514,18 @@ export interface UserCreateWithoutSectionsInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
   games?: Maybe<GameCreateManyWithoutUserInput>;
   jobs?: Maybe<JobCreateManyWithoutUserInput>;
 }
 
 export interface UserCreatekeywordsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface UserCreatefavouritesInput {
   set?: Maybe<String[] | String>;
 }
 
@@ -1596,6 +1618,8 @@ export interface UserCreateWithoutJobsInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
   games?: Maybe<GameCreateManyWithoutUserInput>;
@@ -1704,6 +1728,8 @@ export interface UserCreateWithoutGamesInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
   jobs?: Maybe<JobCreateManyWithoutUserInput>;
@@ -2002,12 +2028,18 @@ export interface UserUpdateWithoutSectionsDataInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
   games?: Maybe<GameUpdateManyWithoutUserInput>;
   jobs?: Maybe<JobUpdateManyWithoutUserInput>;
 }
 
 export interface UserUpdatekeywordsInput {
+  set?: Maybe<String[] | String>;
+}
+
+export interface UserUpdatefavouritesInput {
   set?: Maybe<String[] | String>;
 }
 
@@ -2387,6 +2419,8 @@ export interface UserUpdateWithoutJobsDataInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
   games?: Maybe<GameUpdateManyWithoutUserInput>;
@@ -2926,6 +2960,8 @@ export interface UserUpdateWithoutGamesDataInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
   jobs?: Maybe<JobUpdateManyWithoutUserInput>;
@@ -3133,6 +3169,8 @@ export interface UserCreateWithoutNotificationsInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
   games?: Maybe<GameCreateManyWithoutUserInput>;
   jobs?: Maybe<JobCreateManyWithoutUserInput>;
@@ -3167,6 +3205,8 @@ export interface UserUpdateWithoutNotificationsDataInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   games?: Maybe<GameUpdateManyWithoutUserInput>;
   jobs?: Maybe<JobUpdateManyWithoutUserInput>;
@@ -3243,6 +3283,8 @@ export interface UserCreateInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionCreateManyWithoutUserInput>;
   notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
   games?: Maybe<GameCreateManyWithoutUserInput>;
@@ -3262,6 +3304,8 @@ export interface UserUpdateInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
   sections?: Maybe<SectionUpdateManyWithoutUserInput>;
   notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
   games?: Maybe<GameUpdateManyWithoutUserInput>;
@@ -3281,6 +3325,8 @@ export interface UserUpdateManyMutationInput {
   autosave?: Maybe<Boolean>;
   summary?: Maybe<String>;
   location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
 }
 
 export interface GallerySubscriptionWhereInput {
@@ -3649,6 +3695,8 @@ export interface User {
   autosave?: Boolean;
   summary?: String;
   location?: String;
+  favourites: String[];
+  img?: String;
 }
 
 export interface UserPromise extends Promise<User>, Fragmentable {
@@ -3665,6 +3713,8 @@ export interface UserPromise extends Promise<User>, Fragmentable {
   autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
+  favourites: () => Promise<String[]>;
+  img: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
     where?: SectionWhereInput;
     orderBy?: SectionOrderByInput;
@@ -3719,6 +3769,8 @@ export interface UserSubscription
   autosave: () => Promise<AsyncIterator<Boolean>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
+  favourites: () => Promise<AsyncIterator<String[]>>;
+  img: () => Promise<AsyncIterator<String>>;
   sections: <T = Promise<AsyncIterator<SectionSubscription>>>(args?: {
     where?: SectionWhereInput;
     orderBy?: SectionOrderByInput;
@@ -3773,6 +3825,8 @@ export interface UserNullablePromise
   autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
+  favourites: () => Promise<String[]>;
+  img: () => Promise<String>;
   sections: <T = FragmentableArray<Section>>(args?: {
     where?: SectionWhereInput;
     orderBy?: SectionOrderByInput;
@@ -5066,6 +5120,8 @@ export interface UserPreviousValues {
   autosave?: Boolean;
   summary?: String;
   location?: String;
+  favourites: String[];
+  img?: String;
 }
 
 export interface UserPreviousValuesPromise
@@ -5084,6 +5140,8 @@ export interface UserPreviousValuesPromise
   autosave: () => Promise<Boolean>;
   summary: () => Promise<String>;
   location: () => Promise<String>;
+  favourites: () => Promise<String[]>;
+  img: () => Promise<String>;
 }
 
 export interface UserPreviousValuesSubscription
@@ -5102,6 +5160,8 @@ export interface UserPreviousValuesSubscription
   autosave: () => Promise<AsyncIterator<Boolean>>;
   summary: () => Promise<AsyncIterator<String>>;
   location: () => Promise<AsyncIterator<String>>;
+  favourites: () => Promise<AsyncIterator<String[]>>;
+  img: () => Promise<AsyncIterator<String>>;
 }
 
 /*

@@ -15,6 +15,7 @@ const {
   updateProject,
   createProject,
 } = require('./mutations/section');
+const { addFavourite } = require('./mutations/favourites');
 const { updateGame, createGame, removeGame } = require('./mutations/game');
 const { updateJob, createJob, removeJob } = require('./mutations/job');
 var validator = require('email-validator');
@@ -30,6 +31,13 @@ const mailjet = require('node-mailjet').connect(
 
 console.log(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
+aws.config.update({
+  region: 'eu-west-2',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
+const S3_BUCKET = process.env.BUCKET;
+var s3 = new aws.S3();
 //DANGER!!! Don't f*ck around with this one
 async function deleteAccount(parent, args, context, info) {
   const userId = getUserId(context);
@@ -45,15 +53,6 @@ async function deleteAccount(parent, args, context, info) {
     { galleryId: galleries.map((item) => item.id) },
     context,
   );
-
-  aws.config.update({
-    region: 'eu-west-2',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_KEY,
-  });
-
-  const S3_BUCKET = process.env.BUCKET;
-  var s3 = new aws.S3();
 
   images.map((image) => {
     var params = {
@@ -421,6 +420,7 @@ module.exports = {
   createGame,
   removeGame,
   updateJob,
+  addFavourite,
   createJob,
   removeJob,
   removeSection,

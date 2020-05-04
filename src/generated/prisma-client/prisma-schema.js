@@ -2811,6 +2811,8 @@ type User {
   autosave: Boolean
   summary: String
   location: String
+  favourites: [String!]!
+  img: String
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section!]
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification!]
   games(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Game!]
@@ -2821,6 +2823,10 @@ type UserConnection {
   pageInfo: PageInfo!
   edges: [UserEdge]!
   aggregate: AggregateUser!
+}
+
+input UserCreatefavouritesInput {
+  set: [String!]
 }
 
 input UserCreateInput {
@@ -2837,6 +2843,8 @@ input UserCreateInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserCreatefavouritesInput
+  img: String
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
@@ -2881,6 +2889,8 @@ input UserCreateWithoutGamesInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserCreatefavouritesInput
+  img: String
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
@@ -2900,6 +2910,8 @@ input UserCreateWithoutJobsInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserCreatefavouritesInput
+  img: String
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
@@ -2919,6 +2931,8 @@ input UserCreateWithoutNotificationsInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserCreatefavouritesInput
+  img: String
   sections: SectionCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
@@ -2938,6 +2952,8 @@ input UserCreateWithoutSectionsInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserCreatefavouritesInput
+  img: String
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
@@ -2973,6 +2989,8 @@ enum UserOrderByInput {
   summary_DESC
   location_ASC
   location_DESC
+  img_ASC
+  img_DESC
 }
 
 type UserPreviousValues {
@@ -2989,6 +3007,8 @@ type UserPreviousValues {
   autosave: Boolean
   summary: String
   location: String
+  favourites: [String!]!
+  img: String
 }
 
 type UserSubscriptionPayload {
@@ -3009,6 +3029,10 @@ input UserSubscriptionWhereInput {
   NOT: [UserSubscriptionWhereInput!]
 }
 
+input UserUpdatefavouritesInput {
+  set: [String!]
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -3022,6 +3046,8 @@ input UserUpdateInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
@@ -3045,6 +3071,8 @@ input UserUpdateManyMutationInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
 }
 
 input UserUpdateOneRequiredWithoutGamesInput {
@@ -3090,6 +3118,8 @@ input UserUpdateWithoutGamesDataInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
@@ -3108,6 +3138,8 @@ input UserUpdateWithoutJobsDataInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
@@ -3126,6 +3158,8 @@ input UserUpdateWithoutNotificationsDataInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
   sections: SectionUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
@@ -3144,6 +3178,8 @@ input UserUpdateWithoutSectionsDataInput {
   autosave: Boolean
   summary: String
   location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
@@ -3326,6 +3362,20 @@ input UserWhereInput {
   location_not_starts_with: String
   location_ends_with: String
   location_not_ends_with: String
+  img: String
+  img_not: String
+  img_in: [String!]
+  img_not_in: [String!]
+  img_lt: String
+  img_lte: String
+  img_gt: String
+  img_gte: String
+  img_contains: String
+  img_not_contains: String
+  img_starts_with: String
+  img_not_starts_with: String
+  img_ends_with: String
+  img_not_ends_with: String
   sections_every: SectionWhereInput
   sections_some: SectionWhereInput
   sections_none: SectionWhereInput

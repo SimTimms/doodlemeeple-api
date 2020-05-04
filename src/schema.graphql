@@ -25,6 +25,7 @@ type Mutation {
   updateSection(id: String!, section: SectionInput): Section
   updateGallerySection(id: String!, section: SectionInput): Section
   createGallerySection(id: String!, section: SectionInput): String
+  addFavourite(id: String!, addRemove: String!): String
   updateTestimonial(
     testimonial: TestimonialInput!
     sectionId: String!
@@ -148,6 +149,7 @@ type User {
   summary: String
   location: String
   sections: [Section!]
+  favourites: [String]
   games: [Game!]
   jobs: [Job!]
   notifications: [Notification!]!

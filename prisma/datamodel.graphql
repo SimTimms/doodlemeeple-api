@@ -18,6 +18,25 @@ type User {
   notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
   games: [Game!] @relation(link: TABLE, onDelete: CASCADE)
   jobs: [Job!] @relation(link: TABLE, onDelete: CASCADE)
+  invites: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
+}
+
+type Invite {
+  id: ID! @id
+  title: String!
+  message: String!
+  game: Game! @relation(link: INLINE)
+  job: Job! @relation(link: INLINE)
+  user: User!
+  receiver: String!
+}
+
+input InviteInput {
+  title: String
+  message: String
+  gameId: String!
+  jobId: String!
+  userId: String!
 }
 
 type Notification {

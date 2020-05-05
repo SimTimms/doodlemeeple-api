@@ -20,6 +20,9 @@ type Mutation {
   updateJob(id: String!, job: JobInput!): String
   createJob(id: String!, job: JobInput!): String
   removeJob(id: String!): Boolean
+  updateInvite(id: String!, invite: InviteInput!): String
+  createInvite(id: String!, invite: InviteInput!): String
+  removeInvite(id: String!): Boolean
   updateEmail(email: String!): Boolean
   deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
@@ -53,6 +56,15 @@ type Query {
   getImages: [GalleryImage!]
   getTestimonials(sectionId: String!): [Section!]
   getCreatives: [User!]
+  getInvites: [Invite!]
+}
+
+input InviteInput {
+  title: String
+  message: String
+  gameId: String!
+  jobId: String!
+  userId: String!
 }
 
 input GameInput {
@@ -153,6 +165,17 @@ type User {
   games: [Game!]
   jobs: [Job!]
   notifications: [Notification!]!
+  invites: [Invite!]
+}
+
+type Invite {
+  id: ID!
+  title: String!
+  message: String!
+  game: Game!
+  job: Job!
+  user: User!
+  receiver: String!
 }
 
 type Notification {

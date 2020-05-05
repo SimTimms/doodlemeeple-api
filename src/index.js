@@ -11,6 +11,7 @@ const Gallery = require('./resolvers/Gallery');
 const Game = require('./resolvers/Game');
 const Job = require('./resolvers/Job');
 const User = require('./resolvers/User');
+const Invite = require('./resolvers/Invite');
 
 const resolvers = {
   Query,
@@ -20,6 +21,7 @@ const resolvers = {
   Gallery,
   Game,
   Job,
+  Invite,
 };
 
 const server = new GraphQLServer({

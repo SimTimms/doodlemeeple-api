@@ -15,6 +15,10 @@ type AggregateGame {
   count: Int!
 }
 
+type AggregateInvite {
+  count: Int!
+}
+
 type AggregateJob {
   count: Int!
 }
@@ -502,6 +506,11 @@ input GameCreateManyWithoutUserInput {
   connect: [GameWhereUniqueInput!]
 }
 
+input GameCreateOneInput {
+  create: GameCreateInput
+  connect: GameWhereUniqueInput
+}
+
 input GameCreateOneWithoutJobsInput {
   create: GameCreateWithoutJobsInput
   connect: GameWhereUniqueInput
@@ -718,6 +727,20 @@ input GameSubscriptionWhereInput {
   NOT: [GameSubscriptionWhereInput!]
 }
 
+input GameUpdateDataInput {
+  name: String
+  keywords: GameUpdatekeywordsInput
+  img: String
+  backgroundImg: String
+  summary: String
+  location: String
+  gallery: GalleryUpdateOneInput
+  showreel: String
+  user: UserUpdateOneRequiredWithoutGamesInput
+  type: String
+  jobs: JobUpdateManyWithoutGameInput
+}
+
 input GameUpdateInput {
   name: String
   keywords: GameUpdatekeywordsInput
@@ -775,6 +798,13 @@ input GameUpdateManyWithWhereNestedInput {
   data: GameUpdateManyDataInput!
 }
 
+input GameUpdateOneRequiredInput {
+  create: GameCreateInput
+  update: GameUpdateDataInput
+  upsert: GameUpsertNestedInput
+  connect: GameWhereUniqueInput
+}
+
 input GameUpdateOneRequiredWithoutJobsInput {
   create: GameCreateWithoutJobsInput
   update: GameUpdateWithoutJobsDataInput
@@ -811,6 +841,11 @@ input GameUpdateWithoutUserDataInput {
 input GameUpdateWithWhereUniqueWithoutUserInput {
   where: GameWhereUniqueInput!
   data: GameUpdateWithoutUserDataInput!
+}
+
+input GameUpsertNestedInput {
+  update: GameUpdateDataInput!
+  create: GameCreateInput!
 }
 
 input GameUpsertWithoutJobsInput {
@@ -959,6 +994,275 @@ input GameWhereUniqueInput {
   id: ID
 }
 
+type Invite {
+  id: ID!
+  title: String!
+  message: String!
+  game: Game!
+  job: Job!
+  user: User!
+  receiver: String!
+}
+
+type InviteConnection {
+  pageInfo: PageInfo!
+  edges: [InviteEdge]!
+  aggregate: AggregateInvite!
+}
+
+input InviteCreateInput {
+  id: ID
+  title: String!
+  message: String!
+  game: GameCreateOneInput!
+  job: JobCreateOneInput!
+  user: UserCreateOneWithoutInvitesInput!
+  receiver: String!
+}
+
+input InviteCreateManyWithoutUserInput {
+  create: [InviteCreateWithoutUserInput!]
+  connect: [InviteWhereUniqueInput!]
+}
+
+input InviteCreateWithoutUserInput {
+  id: ID
+  title: String!
+  message: String!
+  game: GameCreateOneInput!
+  job: JobCreateOneInput!
+  receiver: String!
+}
+
+type InviteEdge {
+  node: Invite!
+  cursor: String!
+}
+
+enum InviteOrderByInput {
+  id_ASC
+  id_DESC
+  title_ASC
+  title_DESC
+  message_ASC
+  message_DESC
+  receiver_ASC
+  receiver_DESC
+}
+
+type InvitePreviousValues {
+  id: ID!
+  title: String!
+  message: String!
+  receiver: String!
+}
+
+input InviteScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  message: String
+  message_not: String
+  message_in: [String!]
+  message_not_in: [String!]
+  message_lt: String
+  message_lte: String
+  message_gt: String
+  message_gte: String
+  message_contains: String
+  message_not_contains: String
+  message_starts_with: String
+  message_not_starts_with: String
+  message_ends_with: String
+  message_not_ends_with: String
+  receiver: String
+  receiver_not: String
+  receiver_in: [String!]
+  receiver_not_in: [String!]
+  receiver_lt: String
+  receiver_lte: String
+  receiver_gt: String
+  receiver_gte: String
+  receiver_contains: String
+  receiver_not_contains: String
+  receiver_starts_with: String
+  receiver_not_starts_with: String
+  receiver_ends_with: String
+  receiver_not_ends_with: String
+  AND: [InviteScalarWhereInput!]
+  OR: [InviteScalarWhereInput!]
+  NOT: [InviteScalarWhereInput!]
+}
+
+type InviteSubscriptionPayload {
+  mutation: MutationType!
+  node: Invite
+  updatedFields: [String!]
+  previousValues: InvitePreviousValues
+}
+
+input InviteSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: InviteWhereInput
+  AND: [InviteSubscriptionWhereInput!]
+  OR: [InviteSubscriptionWhereInput!]
+  NOT: [InviteSubscriptionWhereInput!]
+}
+
+input InviteUpdateInput {
+  title: String
+  message: String
+  game: GameUpdateOneRequiredInput
+  job: JobUpdateOneRequiredInput
+  user: UserUpdateOneRequiredWithoutInvitesInput
+  receiver: String
+}
+
+input InviteUpdateManyDataInput {
+  title: String
+  message: String
+  receiver: String
+}
+
+input InviteUpdateManyMutationInput {
+  title: String
+  message: String
+  receiver: String
+}
+
+input InviteUpdateManyWithoutUserInput {
+  create: [InviteCreateWithoutUserInput!]
+  delete: [InviteWhereUniqueInput!]
+  connect: [InviteWhereUniqueInput!]
+  set: [InviteWhereUniqueInput!]
+  disconnect: [InviteWhereUniqueInput!]
+  update: [InviteUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [InviteUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [InviteScalarWhereInput!]
+  updateMany: [InviteUpdateManyWithWhereNestedInput!]
+}
+
+input InviteUpdateManyWithWhereNestedInput {
+  where: InviteScalarWhereInput!
+  data: InviteUpdateManyDataInput!
+}
+
+input InviteUpdateWithoutUserDataInput {
+  title: String
+  message: String
+  game: GameUpdateOneRequiredInput
+  job: JobUpdateOneRequiredInput
+  receiver: String
+}
+
+input InviteUpdateWithWhereUniqueWithoutUserInput {
+  where: InviteWhereUniqueInput!
+  data: InviteUpdateWithoutUserDataInput!
+}
+
+input InviteUpsertWithWhereUniqueWithoutUserInput {
+  where: InviteWhereUniqueInput!
+  update: InviteUpdateWithoutUserDataInput!
+  create: InviteCreateWithoutUserInput!
+}
+
+input InviteWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  message: String
+  message_not: String
+  message_in: [String!]
+  message_not_in: [String!]
+  message_lt: String
+  message_lte: String
+  message_gt: String
+  message_gte: String
+  message_contains: String
+  message_not_contains: String
+  message_starts_with: String
+  message_not_starts_with: String
+  message_ends_with: String
+  message_not_ends_with: String
+  game: GameWhereInput
+  job: JobWhereInput
+  user: UserWhereInput
+  receiver: String
+  receiver_not: String
+  receiver_in: [String!]
+  receiver_not_in: [String!]
+  receiver_lt: String
+  receiver_lte: String
+  receiver_gt: String
+  receiver_gte: String
+  receiver_contains: String
+  receiver_not_contains: String
+  receiver_starts_with: String
+  receiver_not_starts_with: String
+  receiver_ends_with: String
+  receiver_not_ends_with: String
+  AND: [InviteWhereInput!]
+  OR: [InviteWhereInput!]
+  NOT: [InviteWhereInput!]
+}
+
+input InviteWhereUniqueInput {
+  id: ID
+}
+
 type Job {
   id: ID!
   name: String!
@@ -1010,6 +1314,11 @@ input JobCreateManyWithoutGameInput {
 input JobCreateManyWithoutUserInput {
   create: [JobCreateWithoutUserInput!]
   connect: [JobWhereUniqueInput!]
+}
+
+input JobCreateOneInput {
+  create: JobCreateInput
+  connect: JobWhereUniqueInput
 }
 
 input JobCreateWithoutGameInput {
@@ -1230,6 +1539,21 @@ input JobSubscriptionWhereInput {
   NOT: [JobSubscriptionWhereInput!]
 }
 
+input JobUpdateDataInput {
+  name: String
+  keywords: JobUpdatekeywordsInput
+  img: String
+  summary: String
+  creativeSummary: String
+  location: String
+  gallery: GalleryUpdateOneInput
+  showreel: String
+  user: UserUpdateOneRequiredWithoutJobsInput
+  type: String
+  game: GameUpdateOneRequiredWithoutJobsInput
+  submitted: Boolean
+}
+
 input JobUpdateInput {
   name: String
   keywords: JobUpdatekeywordsInput
@@ -1302,6 +1626,13 @@ input JobUpdateManyWithWhereNestedInput {
   data: JobUpdateManyDataInput!
 }
 
+input JobUpdateOneRequiredInput {
+  create: JobCreateInput
+  update: JobUpdateDataInput
+  upsert: JobUpsertNestedInput
+  connect: JobWhereUniqueInput
+}
+
 input JobUpdateWithoutGameDataInput {
   name: String
   keywords: JobUpdatekeywordsInput
@@ -1338,6 +1669,11 @@ input JobUpdateWithWhereUniqueWithoutGameInput {
 input JobUpdateWithWhereUniqueWithoutUserInput {
   where: JobWhereUniqueInput!
   data: JobUpdateWithoutUserDataInput!
+}
+
+input JobUpsertNestedInput {
+  update: JobUpdateDataInput!
+  create: JobCreateInput!
 }
 
 input JobUpsertWithWhereUniqueWithoutGameInput {
@@ -1508,6 +1844,12 @@ type Mutation {
   upsertGame(where: GameWhereUniqueInput!, create: GameCreateInput!, update: GameUpdateInput!): Game!
   deleteGame(where: GameWhereUniqueInput!): Game
   deleteManyGames(where: GameWhereInput): BatchPayload!
+  createInvite(data: InviteCreateInput!): Invite!
+  updateInvite(data: InviteUpdateInput!, where: InviteWhereUniqueInput!): Invite
+  updateManyInvites(data: InviteUpdateManyMutationInput!, where: InviteWhereInput): BatchPayload!
+  upsertInvite(where: InviteWhereUniqueInput!, create: InviteCreateInput!, update: InviteUpdateInput!): Invite!
+  deleteInvite(where: InviteWhereUniqueInput!): Invite
+  deleteManyInvites(where: InviteWhereInput): BatchPayload!
   createJob(data: JobCreateInput!): Job!
   updateJob(data: JobUpdateInput!, where: JobWhereUniqueInput!): Job
   updateManyJobs(data: JobUpdateManyMutationInput!, where: JobWhereInput): BatchPayload!
@@ -2148,6 +2490,9 @@ type Query {
   game(where: GameWhereUniqueInput!): Game
   games(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Game]!
   gamesConnection(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GameConnection!
+  invite(where: InviteWhereUniqueInput!): Invite
+  invites(where: InviteWhereInput, orderBy: InviteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Invite]!
+  invitesConnection(where: InviteWhereInput, orderBy: InviteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): InviteConnection!
   job(where: JobWhereUniqueInput!): Job
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job]!
   jobsConnection(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): JobConnection!
@@ -2530,6 +2875,7 @@ type Subscription {
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
   galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
   game(where: GameSubscriptionWhereInput): GameSubscriptionPayload
+  invite(where: InviteSubscriptionWhereInput): InviteSubscriptionPayload
   job(where: JobSubscriptionWhereInput): JobSubscriptionPayload
   notableProjects(where: NotableProjectsSubscriptionWhereInput): NotableProjectsSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
@@ -2817,6 +3163,7 @@ type User {
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification!]
   games(where: GameWhereInput, orderBy: GameOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Game!]
   jobs(where: JobWhereInput, orderBy: JobOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Job!]
+  invites(where: InviteWhereInput, orderBy: InviteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Invite!]
 }
 
 type UserConnection {
@@ -2849,6 +3196,7 @@ input UserCreateInput {
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
+  invites: InviteCreateManyWithoutUserInput
 }
 
 input UserCreatekeywordsInput {
@@ -2857,6 +3205,11 @@ input UserCreatekeywordsInput {
 
 input UserCreateOneWithoutGamesInput {
   create: UserCreateWithoutGamesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutInvitesInput {
+  create: UserCreateWithoutInvitesInput
   connect: UserWhereUniqueInput
 }
 
@@ -2894,6 +3247,29 @@ input UserCreateWithoutGamesInput {
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
+  invites: InviteCreateManyWithoutUserInput
+}
+
+input UserCreateWithoutInvitesInput {
+  id: ID
+  name: String!
+  email: String!
+  resetToken: String
+  password: String!
+  keywords: UserCreatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  favourites: UserCreatefavouritesInput
+  img: String
+  sections: SectionCreateManyWithoutUserInput
+  notifications: NotificationCreateManyWithoutUserInput
+  games: GameCreateManyWithoutUserInput
+  jobs: JobCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutJobsInput {
@@ -2915,6 +3291,7 @@ input UserCreateWithoutJobsInput {
   sections: SectionCreateManyWithoutUserInput
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
+  invites: InviteCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutNotificationsInput {
@@ -2936,6 +3313,7 @@ input UserCreateWithoutNotificationsInput {
   sections: SectionCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
+  invites: InviteCreateManyWithoutUserInput
 }
 
 input UserCreateWithoutSectionsInput {
@@ -2957,6 +3335,7 @@ input UserCreateWithoutSectionsInput {
   notifications: NotificationCreateManyWithoutUserInput
   games: GameCreateManyWithoutUserInput
   jobs: JobCreateManyWithoutUserInput
+  invites: InviteCreateManyWithoutUserInput
 }
 
 type UserEdge {
@@ -3052,6 +3431,7 @@ input UserUpdateInput {
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
+  invites: InviteUpdateManyWithoutUserInput
 }
 
 input UserUpdatekeywordsInput {
@@ -3079,6 +3459,13 @@ input UserUpdateOneRequiredWithoutGamesInput {
   create: UserCreateWithoutGamesInput
   update: UserUpdateWithoutGamesDataInput
   upsert: UserUpsertWithoutGamesInput
+  connect: UserWhereUniqueInput
+}
+
+input UserUpdateOneRequiredWithoutInvitesInput {
+  create: UserCreateWithoutInvitesInput
+  update: UserUpdateWithoutInvitesDataInput
+  upsert: UserUpsertWithoutInvitesInput
   connect: UserWhereUniqueInput
 }
 
@@ -3123,6 +3510,28 @@ input UserUpdateWithoutGamesDataInput {
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
+  invites: InviteUpdateManyWithoutUserInput
+}
+
+input UserUpdateWithoutInvitesDataInput {
+  name: String
+  email: String
+  resetToken: String
+  password: String
+  keywords: UserUpdatekeywordsInput
+  profileImg: String
+  profileImgStyle: String
+  profileBG: String
+  profileBGStyle: String
+  autosave: Boolean
+  summary: String
+  location: String
+  favourites: UserUpdatefavouritesInput
+  img: String
+  sections: SectionUpdateManyWithoutUserInput
+  notifications: NotificationUpdateManyWithoutUserInput
+  games: GameUpdateManyWithoutUserInput
+  jobs: JobUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutJobsDataInput {
@@ -3143,6 +3552,7 @@ input UserUpdateWithoutJobsDataInput {
   sections: SectionUpdateManyWithoutUserInput
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
+  invites: InviteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutNotificationsDataInput {
@@ -3163,6 +3573,7 @@ input UserUpdateWithoutNotificationsDataInput {
   sections: SectionUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
+  invites: InviteUpdateManyWithoutUserInput
 }
 
 input UserUpdateWithoutSectionsDataInput {
@@ -3183,11 +3594,17 @@ input UserUpdateWithoutSectionsDataInput {
   notifications: NotificationUpdateManyWithoutUserInput
   games: GameUpdateManyWithoutUserInput
   jobs: JobUpdateManyWithoutUserInput
+  invites: InviteUpdateManyWithoutUserInput
 }
 
 input UserUpsertWithoutGamesInput {
   update: UserUpdateWithoutGamesDataInput!
   create: UserCreateWithoutGamesInput!
+}
+
+input UserUpsertWithoutInvitesInput {
+  update: UserUpdateWithoutInvitesDataInput!
+  create: UserCreateWithoutInvitesInput!
 }
 
 input UserUpsertWithoutJobsInput {
@@ -3388,6 +3805,9 @@ input UserWhereInput {
   jobs_every: JobWhereInput
   jobs_some: JobWhereInput
   jobs_none: JobWhereInput
+  invites_every: InviteWhereInput
+  invites_some: InviteWhereInput
+  invites_none: InviteWhereInput
   AND: [UserWhereInput!]
   OR: [UserWhereInput!]
   NOT: [UserWhereInput!]

@@ -123,6 +123,18 @@ async function getCreatives(parent, args, context) {
 
   return section;
 }
+
+async function getInvites(parent, args, context) {
+  const userId = getUserId(context);
+  const invites = await context.prisma.invites({
+    where: {
+      receiver: userId,
+    },
+  });
+  console.log(invites);
+
+  return invites;
+}
 async function getNotifications(parent, args, context) {
   const userId = getUserId(context);
 
@@ -153,4 +165,5 @@ module.exports = {
   getJobs,
   sectionsPreview,
   getCreatives,
+  getInvites,
 };

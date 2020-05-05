@@ -18,6 +18,11 @@ const {
 const { addFavourite } = require('./mutations/favourites');
 const { updateGame, createGame, removeGame } = require('./mutations/game');
 const { updateJob, createJob, removeJob } = require('./mutations/job');
+const {
+  updateInvite,
+  createInvite,
+  removeInvite,
+} = require('./mutations/invite');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
@@ -420,9 +425,12 @@ module.exports = {
   createGame,
   removeGame,
   updateJob,
-  addFavourite,
   createJob,
   removeJob,
+  updateInvite,
+  createInvite,
+  removeInvite,
+  addFavourite,
   removeSection,
   createNotification,
   removeNotification,

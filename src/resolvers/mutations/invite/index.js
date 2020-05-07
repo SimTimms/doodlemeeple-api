@@ -1,15 +1,14 @@
 const { getUserId } = require('../../../utils');
 
 async function updateInvite(parent, args, context, info) {
-  const { name, img, backgroundImg, summary, location, showreel } = args.game;
+  const { title, message, gameId, jobId, userId } = args.invite;
   const returnObj = await context.prisma.updateGame({
     data: {
-      name,
-      img,
-      backgroundImg,
-      summary,
-      location,
-      showreel,
+      title,
+      message,
+      game: { connect: { id: gameId } },
+      job: { connect: { id: jobId } },
+      receiver: userId,
     },
     where: {
       id: args.id,
@@ -36,8 +35,21 @@ async function createInvite(parent, args, context, info) {
 }
 
 async function removeInvite(parent, args, context) {
-  await context.prisma.deleteGame({
+  await context.prisma.deleteInvite({
     id: args.id,
+  });
+
+  return true;
+}
+
+async function declineInvite(parent, args, context) {
+  await context.prisma.updateInvite({
+    data: {
+      status: 'declined',
+    },
+    where: {
+      id: args.id,
+    },
   });
 
   return true;
@@ -47,4 +59,5 @@ module.exports = {
   updateInvite,
   createInvite,
   removeInvite,
+  declineInvite,
 };

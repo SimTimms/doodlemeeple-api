@@ -575,6 +575,8 @@ export type InviteOrderByInput =
   | "title_DESC"
   | "message_ASC"
   | "message_DESC"
+  | "status_ASC"
+  | "status_DESC"
   | "receiver_ASC"
   | "receiver_DESC";
 
@@ -1506,6 +1508,20 @@ export interface InviteWhereInput {
   message_not_starts_with?: Maybe<String>;
   message_ends_with?: Maybe<String>;
   message_not_ends_with?: Maybe<String>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
   game?: Maybe<GameWhereInput>;
   job?: Maybe<JobWhereInput>;
   user?: Maybe<UserWhereInput>;
@@ -1802,6 +1818,7 @@ export interface InviteCreateWithoutUserInput {
   id?: Maybe<ID_Input>;
   title: String;
   message: String;
+  status?: Maybe<String>;
   game: GameCreateOneInput;
   job: JobCreateOneInput;
   receiver: String;
@@ -2787,6 +2804,7 @@ export interface InviteUpdateWithWhereUniqueWithoutUserInput {
 export interface InviteUpdateWithoutUserDataInput {
   title?: Maybe<String>;
   message?: Maybe<String>;
+  status?: Maybe<String>;
   game?: Maybe<GameUpdateOneRequiredInput>;
   job?: Maybe<JobUpdateOneRequiredInput>;
   receiver?: Maybe<String>;
@@ -3142,6 +3160,20 @@ export interface InviteScalarWhereInput {
   message_not_starts_with?: Maybe<String>;
   message_ends_with?: Maybe<String>;
   message_not_ends_with?: Maybe<String>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
   receiver?: Maybe<String>;
   receiver_not?: Maybe<String>;
   receiver_in?: Maybe<String[] | String>;
@@ -3169,6 +3201,7 @@ export interface InviteUpdateManyWithWhereNestedInput {
 export interface InviteUpdateManyDataInput {
   title?: Maybe<String>;
   message?: Maybe<String>;
+  status?: Maybe<String>;
   receiver?: Maybe<String>;
 }
 
@@ -3422,6 +3455,7 @@ export interface InviteCreateInput {
   id?: Maybe<ID_Input>;
   title: String;
   message: String;
+  status?: Maybe<String>;
   game: GameCreateOneInput;
   job: JobCreateOneInput;
   user: UserCreateOneWithoutInvitesInput;
@@ -3458,6 +3492,7 @@ export interface UserCreateWithoutInvitesInput {
 export interface InviteUpdateInput {
   title?: Maybe<String>;
   message?: Maybe<String>;
+  status?: Maybe<String>;
   game?: Maybe<GameUpdateOneRequiredInput>;
   job?: Maybe<JobUpdateOneRequiredInput>;
   user?: Maybe<UserUpdateOneRequiredWithoutInvitesInput>;
@@ -3500,6 +3535,7 @@ export interface UserUpsertWithoutInvitesInput {
 export interface InviteUpdateManyMutationInput {
   title?: Maybe<String>;
   message?: Maybe<String>;
+  status?: Maybe<String>;
   receiver?: Maybe<String>;
 }
 
@@ -4518,6 +4554,7 @@ export interface Invite {
   id: ID_Output;
   title: String;
   message: String;
+  status?: String;
   receiver: String;
 }
 
@@ -4525,6 +4562,7 @@ export interface InvitePromise extends Promise<Invite>, Fragmentable {
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   message: () => Promise<String>;
+  status: () => Promise<String>;
   game: <T = GamePromise>() => T;
   job: <T = JobPromise>() => T;
   user: <T = UserPromise>() => T;
@@ -4537,6 +4575,7 @@ export interface InviteSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   message: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<String>>;
   game: <T = GameSubscription>() => T;
   job: <T = JobSubscription>() => T;
   user: <T = UserSubscription>() => T;
@@ -4549,6 +4588,7 @@ export interface InviteNullablePromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   message: () => Promise<String>;
+  status: () => Promise<String>;
   game: <T = GamePromise>() => T;
   job: <T = JobPromise>() => T;
   user: <T = UserPromise>() => T;
@@ -5363,6 +5403,7 @@ export interface InvitePreviousValues {
   id: ID_Output;
   title: String;
   message: String;
+  status?: String;
   receiver: String;
 }
 
@@ -5372,6 +5413,7 @@ export interface InvitePreviousValuesPromise
   id: () => Promise<ID_Output>;
   title: () => Promise<String>;
   message: () => Promise<String>;
+  status: () => Promise<String>;
   receiver: () => Promise<String>;
 }
 
@@ -5381,6 +5423,7 @@ export interface InvitePreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   title: () => Promise<AsyncIterator<String>>;
   message: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<String>>;
   receiver: () => Promise<AsyncIterator<String>>;
 }
 

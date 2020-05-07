@@ -23,6 +23,7 @@ type Mutation {
   updateInvite(id: String!, invite: InviteInput!): String
   createInvite(id: String!, invite: InviteInput!): String
   removeInvite(id: String!): Boolean
+  declineInvite(id: String!): Boolean
   updateEmail(email: String!): Boolean
   deleteAccount: Boolean
   updateSection(id: String!, section: SectionInput): Section
@@ -172,6 +173,7 @@ type Invite {
   id: ID!
   title: String!
   message: String!
+  status: String
   game: Game!
   job: Job!
   user: User!

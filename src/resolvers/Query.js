@@ -129,6 +129,7 @@ async function getInvites(parent, args, context) {
   const invites = await context.prisma.invites({
     where: {
       receiver: userId,
+      status: null,
     },
   });
   console.log(invites);

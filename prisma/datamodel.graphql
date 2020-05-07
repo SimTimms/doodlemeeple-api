@@ -25,6 +25,7 @@ type Invite {
   id: ID! @id
   title: String!
   message: String!
+  status: String
   game: Game! @relation(link: INLINE)
   job: Job! @relation(link: INLINE)
   user: User!

@@ -22,6 +22,7 @@ const {
   updateInvite,
   createInvite,
   removeInvite,
+  declineInvite,
 } = require('./mutations/invite');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
@@ -430,6 +431,7 @@ module.exports = {
   updateInvite,
   createInvite,
   removeInvite,
+  declineInvite,
   addFavourite,
   removeSection,
   createNotification,

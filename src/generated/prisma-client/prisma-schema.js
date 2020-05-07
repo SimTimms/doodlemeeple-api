@@ -998,6 +998,7 @@ type Invite {
   id: ID!
   title: String!
   message: String!
+  status: String
   game: Game!
   job: Job!
   user: User!
@@ -1014,6 +1015,7 @@ input InviteCreateInput {
   id: ID
   title: String!
   message: String!
+  status: String
   game: GameCreateOneInput!
   job: JobCreateOneInput!
   user: UserCreateOneWithoutInvitesInput!
@@ -1029,6 +1031,7 @@ input InviteCreateWithoutUserInput {
   id: ID
   title: String!
   message: String!
+  status: String
   game: GameCreateOneInput!
   job: JobCreateOneInput!
   receiver: String!
@@ -1046,6 +1049,8 @@ enum InviteOrderByInput {
   title_DESC
   message_ASC
   message_DESC
+  status_ASC
+  status_DESC
   receiver_ASC
   receiver_DESC
 }
@@ -1054,6 +1059,7 @@ type InvitePreviousValues {
   id: ID!
   title: String!
   message: String!
+  status: String
   receiver: String!
 }
 
@@ -1100,6 +1106,20 @@ input InviteScalarWhereInput {
   message_not_starts_with: String
   message_ends_with: String
   message_not_ends_with: String
+  status: String
+  status_not: String
+  status_in: [String!]
+  status_not_in: [String!]
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_contains: String
+  status_not_contains: String
+  status_starts_with: String
+  status_not_starts_with: String
+  status_ends_with: String
+  status_not_ends_with: String
   receiver: String
   receiver_not: String
   receiver_in: [String!]
@@ -1140,6 +1160,7 @@ input InviteSubscriptionWhereInput {
 input InviteUpdateInput {
   title: String
   message: String
+  status: String
   game: GameUpdateOneRequiredInput
   job: JobUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutInvitesInput
@@ -1149,12 +1170,14 @@ input InviteUpdateInput {
 input InviteUpdateManyDataInput {
   title: String
   message: String
+  status: String
   receiver: String
 }
 
 input InviteUpdateManyMutationInput {
   title: String
   message: String
+  status: String
   receiver: String
 }
 
@@ -1178,6 +1201,7 @@ input InviteUpdateManyWithWhereNestedInput {
 input InviteUpdateWithoutUserDataInput {
   title: String
   message: String
+  status: String
   game: GameUpdateOneRequiredInput
   job: JobUpdateOneRequiredInput
   receiver: String
@@ -1237,6 +1261,20 @@ input InviteWhereInput {
   message_not_starts_with: String
   message_ends_with: String
   message_not_ends_with: String
+  status: String
+  status_not: String
+  status_in: [String!]
+  status_not_in: [String!]
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_contains: String
+  status_not_contains: String
+  status_starts_with: String
+  status_not_starts_with: String
+  status_ends_with: String
+  status_not_ends_with: String
   game: GameWhereInput
   job: JobWhereInput
   user: UserWhereInput

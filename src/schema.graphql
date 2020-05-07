@@ -167,6 +167,7 @@ type User {
   jobs: [Job!]
   notifications: [Notification!]!
   invites: [Invite!]
+  invitesReceived: [Invite!]
 }
 
 type Invite {
@@ -177,7 +178,7 @@ type Invite {
   game: Game!
   job: Job!
   user: User!
-  receiver: String!
+  receiver: User!
 }
 
 type Notification {

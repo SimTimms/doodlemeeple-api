@@ -18,7 +18,10 @@ type User {
   notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
   games: [Game!] @relation(link: TABLE, onDelete: CASCADE)
   jobs: [Job!] @relation(link: TABLE, onDelete: CASCADE)
-  invites: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
+  invites: [Invite!]
+    @relation(link: TABLE, onDelete: CASCADE, name: "InviteUser")
+  invitesReceived: [Invite!]
+    @relation(link: TABLE, onDelete: CASCADE, name: "InviteReceived")
 }
 
 type Invite {
@@ -28,8 +31,8 @@ type Invite {
   status: String
   game: Game! @relation(link: INLINE)
   job: Job! @relation(link: INLINE)
-  user: User!
-  receiver: String!
+  user: User! @relation(name: "InviteUser")
+  receiver: User! @relation(name: "InviteReceived")
 }
 
 input InviteInput {

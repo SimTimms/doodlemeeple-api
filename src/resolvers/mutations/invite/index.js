@@ -23,14 +23,14 @@ async function createInvite(parent, args, context, info) {
   const { title, message, gameId, jobId, userId } = args.invite;
 
   const returnObj = await context.prisma.createInvite({
+    receiver: { connect: { id: userId } },
     user: { connect: { id: senderId } },
     title,
     message,
     game: { connect: { id: gameId } },
     job: { connect: { id: jobId } },
-    receiver: userId,
   });
-
+  console.log(returnObj);
   return returnObj.id;
 }
 

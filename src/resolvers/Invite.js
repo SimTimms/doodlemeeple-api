@@ -10,8 +10,13 @@ async function job(parent, args, context) {
   return await context.prisma.invite({ id: parent.id }).job();
 }
 
+async function receiver(parent, args, context) {
+  return await context.prisma.invite({ id: parent.id }).receiver();
+}
+
 module.exports = {
   game,
   user,
   job,
+  receiver,
 };

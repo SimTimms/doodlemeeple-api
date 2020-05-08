@@ -128,7 +128,7 @@ async function getInvites(parent, args, context) {
   const userId = getUserId(context);
   const invites = await context.prisma.invites({
     where: {
-      receiver: userId,
+      receiver: { id: userId },
       status: null,
     },
   });

@@ -30,7 +30,7 @@ type Invite {
   message: String!
   status: String
   game: Game! @relation(link: INLINE)
-  job: Job! @relation(link: INLINE)
+  job: Job!
   user: User! @relation(name: "InviteUser")
   receiver: User! @relation(name: "InviteReceived")
 }
@@ -85,6 +85,7 @@ type Job {
   createdAt: DateTime! @createdAt
   game: Game! @relation(link: INLINE)
   submitted: Boolean
+  invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
 }
 
 input GameInput {

@@ -146,6 +146,7 @@ type Job {
   createdAt: String
   game: Game!
   submitted: Boolean
+  invite: [Invite!]
 }
 
 type User {

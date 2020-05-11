@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateGallery {
+/* GraphQL */ `type AggregateCount {
+  count: Int!
+}
+
+type AggregateGallery {
   count: Int!
 }
 
@@ -45,6 +49,103 @@ type AggregateUser {
 
 type BatchPayload {
   count: Long!
+}
+
+type Count {
+  id: ID!
+  invites: String
+}
+
+type CountConnection {
+  pageInfo: PageInfo!
+  edges: [CountEdge]!
+  aggregate: AggregateCount!
+}
+
+input CountCreateInput {
+  id: ID
+  invites: String
+}
+
+type CountEdge {
+  node: Count!
+  cursor: String!
+}
+
+enum CountOrderByInput {
+  id_ASC
+  id_DESC
+  invites_ASC
+  invites_DESC
+}
+
+type CountPreviousValues {
+  id: ID!
+  invites: String
+}
+
+type CountSubscriptionPayload {
+  mutation: MutationType!
+  node: Count
+  updatedFields: [String!]
+  previousValues: CountPreviousValues
+}
+
+input CountSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CountWhereInput
+  AND: [CountSubscriptionWhereInput!]
+  OR: [CountSubscriptionWhereInput!]
+  NOT: [CountSubscriptionWhereInput!]
+}
+
+input CountUpdateInput {
+  invites: String
+}
+
+input CountUpdateManyMutationInput {
+  invites: String
+}
+
+input CountWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  invites: String
+  invites_not: String
+  invites_in: [String!]
+  invites_not_in: [String!]
+  invites_lt: String
+  invites_lte: String
+  invites_gt: String
+  invites_gte: String
+  invites_contains: String
+  invites_not_contains: String
+  invites_starts_with: String
+  invites_not_starts_with: String
+  invites_ends_with: String
+  invites_not_ends_with: String
+  AND: [CountWhereInput!]
+  OR: [CountWhereInput!]
+  NOT: [CountWhereInput!]
+}
+
+input CountWhereUniqueInput {
+  id: ID
 }
 
 scalar DateTime
@@ -1952,6 +2053,12 @@ input JobWhereUniqueInput {
 scalar Long
 
 type Mutation {
+  createCount(data: CountCreateInput!): Count!
+  updateCount(data: CountUpdateInput!, where: CountWhereUniqueInput!): Count
+  updateManyCounts(data: CountUpdateManyMutationInput!, where: CountWhereInput): BatchPayload!
+  upsertCount(where: CountWhereUniqueInput!, create: CountCreateInput!, update: CountUpdateInput!): Count!
+  deleteCount(where: CountWhereUniqueInput!): Count
+  deleteManyCounts(where: CountWhereInput): BatchPayload!
   createGallery(data: GalleryCreateInput!): Gallery!
   updateGallery(data: GalleryUpdateInput!, where: GalleryWhereUniqueInput!): Gallery
   updateManyGalleries(data: GalleryUpdateManyMutationInput!, where: GalleryWhereInput): BatchPayload!
@@ -2607,6 +2714,9 @@ type PageInfo {
 }
 
 type Query {
+  count(where: CountWhereUniqueInput!): Count
+  counts(where: CountWhereInput, orderBy: CountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Count]!
+  countsConnection(where: CountWhereInput, orderBy: CountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CountConnection!
   gallery(where: GalleryWhereUniqueInput!): Gallery
   galleries(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Gallery]!
   galleriesConnection(where: GalleryWhereInput, orderBy: GalleryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GalleryConnection!
@@ -2998,6 +3108,7 @@ input SectionWhereUniqueInput {
 }
 
 type Subscription {
+  count(where: CountSubscriptionWhereInput): CountSubscriptionPayload
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
   galleryImage(where: GalleryImageSubscriptionWhereInput): GalleryImageSubscriptionPayload
   game(where: GameSubscriptionWhereInput): GameSubscriptionPayload

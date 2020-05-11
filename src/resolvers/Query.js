@@ -129,13 +129,27 @@ async function getInvites(parent, args, context) {
   const invites = await context.prisma.invites({
     where: {
       receiver: { id: userId },
-      status: null,
+      status: 'submitted',
     },
   });
   console.log(invites);
 
   return invites;
 }
+
+async function counts(parent, args, context) {
+  const userId = getUserId(context);
+  const invites = await context.prisma.invites({
+    where: {
+      receiver: { id: userId },
+      status: 'submitted',
+    },
+  });
+  console.log(invites);
+
+  return { invites: invites.length, id: 'counts' };
+}
+
 async function getNotifications(parent, args, context) {
   const userId = getUserId(context);
 
@@ -167,4 +181,5 @@ module.exports = {
   sectionsPreview,
   getCreatives,
   getInvites,
+  counts,
 };

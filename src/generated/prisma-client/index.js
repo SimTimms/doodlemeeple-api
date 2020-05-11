@@ -25,6 +25,10 @@ var models = [
     embedded: false
   },
   {
+    name: "Count",
+    embedded: false
+  },
+  {
     name: "NotableProjects",
     embedded: false
   },

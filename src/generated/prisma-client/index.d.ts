@@ -16,6 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  count: (where?: CountWhereInput) => Promise<boolean>;
   gallery: (where?: GalleryWhereInput) => Promise<boolean>;
   galleryImage: (where?: GalleryImageWhereInput) => Promise<boolean>;
   game: (where?: GameWhereInput) => Promise<boolean>;
@@ -47,6 +48,25 @@ export interface Prisma {
    * Queries
    */
 
+  count: (where: CountWhereUniqueInput) => CountNullablePromise;
+  counts: (args?: {
+    where?: CountWhereInput;
+    orderBy?: CountOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Count>;
+  countsConnection: (args?: {
+    where?: CountWhereInput;
+    orderBy?: CountOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => CountConnectionPromise;
   gallery: (where: GalleryWhereUniqueInput) => GalleryNullablePromise;
   galleries: (args?: {
     where?: GalleryWhereInput;
@@ -251,6 +271,22 @@ export interface Prisma {
    * Mutations
    */
 
+  createCount: (data: CountCreateInput) => CountPromise;
+  updateCount: (args: {
+    data: CountUpdateInput;
+    where: CountWhereUniqueInput;
+  }) => CountPromise;
+  updateManyCounts: (args: {
+    data: CountUpdateManyMutationInput;
+    where?: CountWhereInput;
+  }) => BatchPayloadPromise;
+  upsertCount: (args: {
+    where: CountWhereUniqueInput;
+    create: CountCreateInput;
+    update: CountUpdateInput;
+  }) => CountPromise;
+  deleteCount: (where: CountWhereUniqueInput) => CountPromise;
+  deleteManyCounts: (where?: CountWhereInput) => BatchPayloadPromise;
   createGallery: (data: GalleryCreateInput) => GalleryPromise;
   updateGallery: (args: {
     data: GalleryUpdateInput;
@@ -436,6 +472,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  count: (
+    where?: CountSubscriptionWhereInput
+  ) => CountSubscriptionPayloadSubscription;
   gallery: (
     where?: GallerySubscriptionWhereInput
   ) => GallerySubscriptionPayloadSubscription;
@@ -475,6 +514,12 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type CountOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "invites_ASC"
+  | "invites_DESC";
 
 export type NotableProjectsOrderByInput =
   | "id_ASC"
@@ -621,6 +666,44 @@ export type UserOrderByInput =
   | "img_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+
+export type CountWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface CountWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  invites?: Maybe<String>;
+  invites_not?: Maybe<String>;
+  invites_in?: Maybe<String[] | String>;
+  invites_not_in?: Maybe<String[] | String>;
+  invites_lt?: Maybe<String>;
+  invites_lte?: Maybe<String>;
+  invites_gt?: Maybe<String>;
+  invites_gte?: Maybe<String>;
+  invites_contains?: Maybe<String>;
+  invites_not_contains?: Maybe<String>;
+  invites_starts_with?: Maybe<String>;
+  invites_not_starts_with?: Maybe<String>;
+  invites_ends_with?: Maybe<String>;
+  invites_not_ends_with?: Maybe<String>;
+  AND?: Maybe<CountWhereInput[] | CountWhereInput>;
+  OR?: Maybe<CountWhereInput[] | CountWhereInput>;
+  NOT?: Maybe<CountWhereInput[] | CountWhereInput>;
+}
 
 export type GalleryWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
@@ -1572,6 +1655,19 @@ export type UserWhereUniqueInput = AtLeastOne<{
   email?: Maybe<String>;
   resetToken?: Maybe<String>;
 }>;
+
+export interface CountCreateInput {
+  id?: Maybe<ID_Input>;
+  invites?: Maybe<String>;
+}
+
+export interface CountUpdateInput {
+  invites?: Maybe<String>;
+}
+
+export interface CountUpdateManyMutationInput {
+  invites?: Maybe<String>;
+}
 
 export interface GalleryCreateInput {
   id?: Maybe<ID_Input>;
@@ -3958,6 +4054,17 @@ export interface UserUpdateManyMutationInput {
   img?: Maybe<String>;
 }
 
+export interface CountSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<CountWhereInput>;
+  AND?: Maybe<CountSubscriptionWhereInput[] | CountSubscriptionWhereInput>;
+  OR?: Maybe<CountSubscriptionWhereInput[] | CountSubscriptionWhereInput>;
+  NOT?: Maybe<CountSubscriptionWhereInput[] | CountSubscriptionWhereInput>;
+}
+
 export interface GallerySubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
@@ -4097,6 +4204,107 @@ export interface UserSubscriptionWhereInput {
 
 export interface NodeNode {
   id: ID_Output;
+}
+
+export interface Count {
+  id: ID_Output;
+  invites?: String;
+}
+
+export interface CountPromise extends Promise<Count>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  invites: () => Promise<String>;
+}
+
+export interface CountSubscription
+  extends Promise<AsyncIterator<Count>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  invites: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CountNullablePromise
+  extends Promise<Count | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  invites: () => Promise<String>;
+}
+
+export interface CountConnection {
+  pageInfo: PageInfo;
+  edges: CountEdge[];
+}
+
+export interface CountConnectionPromise
+  extends Promise<CountConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CountEdge>>() => T;
+  aggregate: <T = AggregateCountPromise>() => T;
+}
+
+export interface CountConnectionSubscription
+  extends Promise<AsyncIterator<CountConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CountEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCountSubscription>() => T;
+}
+
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CountEdge {
+  node: Count;
+  cursor: String;
+}
+
+export interface CountEdgePromise extends Promise<CountEdge>, Fragmentable {
+  node: <T = CountPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface CountEdgeSubscription
+  extends Promise<AsyncIterator<CountEdge>>,
+    Fragmentable {
+  node: <T = CountSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateCount {
+  count: Int;
+}
+
+export interface AggregateCountPromise
+  extends Promise<AggregateCount>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCountSubscription
+  extends Promise<AsyncIterator<AggregateCount>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface Gallery {
@@ -4889,29 +5097,6 @@ export interface GalleryConnectionSubscription
   aggregate: <T = AggregateGallerySubscription>() => T;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
 export interface GalleryEdge {
   node: Gallery;
   cursor: String;
@@ -5453,6 +5638,50 @@ export interface BatchPayloadSubscription
   extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface CountSubscriptionPayload {
+  mutation: MutationType;
+  node: Count;
+  updatedFields: String[];
+  previousValues: CountPreviousValues;
+}
+
+export interface CountSubscriptionPayloadPromise
+  extends Promise<CountSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CountPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CountPreviousValuesPromise>() => T;
+}
+
+export interface CountSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CountSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CountSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CountPreviousValuesSubscription>() => T;
+}
+
+export interface CountPreviousValues {
+  id: ID_Output;
+  invites?: String;
+}
+
+export interface CountPreviousValuesPromise
+  extends Promise<CountPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  invites: () => Promise<String>;
+}
+
+export interface CountPreviousValuesSubscription
+  extends Promise<AsyncIterator<CountPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  invites: () => Promise<AsyncIterator<String>>;
 }
 
 export interface GallerySubscriptionPayload {
@@ -6089,6 +6318,10 @@ export const models: Model[] = [
   },
   {
     name: "Job",
+    embedded: false
+  },
+  {
+    name: "Count",
     embedded: false
   },
   {

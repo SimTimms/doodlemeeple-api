@@ -88,6 +88,11 @@ type Job {
   invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
 }
 
+type Count {
+  id: ID! @id
+  invites: String
+}
+
 input GameInput {
   name: String
   img: String

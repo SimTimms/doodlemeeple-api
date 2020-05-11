@@ -17,7 +17,12 @@ const {
 } = require('./mutations/section');
 const { addFavourite } = require('./mutations/favourites');
 const { updateGame, createGame, removeGame } = require('./mutations/game');
-const { updateJob, createJob, removeJob } = require('./mutations/job');
+const {
+  updateJob,
+  createJob,
+  removeJob,
+  submitBrief,
+} = require('./mutations/job');
 const {
   updateInvite,
   createInvite,
@@ -428,6 +433,7 @@ module.exports = {
   updateJob,
   createJob,
   removeJob,
+  submitBrief,
   updateInvite,
   createInvite,
   removeInvite,

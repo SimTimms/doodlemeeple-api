@@ -1,17 +1,13 @@
 const { getUserId } = require('../../../utils');
 
 async function updateInvite(parent, args, context, info) {
-  const { title, message, gameId, jobId, userId } = args.invite;
-  const returnObj = await context.prisma.updateGame({
+  const { jobId } = args.invite;
+  const returnObj = await context.prisma.updateInvite({
     data: {
-      title,
-      message,
-      game: { connect: { id: gameId } },
-      job: { connect: { id: jobId } },
-      receiver: userId,
+      status: 'send',
     },
     where: {
-      id: args.id,
+      job: { id: jobId },
     },
   });
 

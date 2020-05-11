@@ -1,5 +1,29 @@
 const { getUserId } = require('../../../utils');
 
+async function submitBrief(parent, args, context, info) {
+  const { jobId } = args;
+  console.log('ads');
+  await context.prisma.updateJob({
+    data: {
+      submitted: true,
+    },
+    where: {
+      id: jobId,
+    },
+  });
+
+  await context.prisma.updateManyInvites({
+    data: {
+      status: 'submitted',
+    },
+    where: {
+      job: { id: jobId },
+    },
+  });
+
+  return true;
+}
+
 async function updateJob(parent, args, context, info) {
   const {
     name,
@@ -67,4 +91,5 @@ module.exports = {
   updateJob,
   createJob,
   removeJob,
+  submitBrief,
 };

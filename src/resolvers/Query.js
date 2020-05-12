@@ -132,7 +132,6 @@ async function getInvites(parent, args, context) {
       status: 'submitted',
     },
   });
-  console.log(invites);
 
   return invites;
 }
@@ -145,7 +144,6 @@ async function counts(parent, args, context) {
       status: 'submitted',
     },
   });
-  console.log(invites);
 
   return { invites: invites.length, id: 'counts' };
 }

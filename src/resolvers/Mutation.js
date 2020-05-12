@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { emailReset, emailForgot, emailSignup } = require('../email');
 const {
   APP_SECRET,
   getUserId,
@@ -34,13 +35,6 @@ const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
 require('dotenv').config();
 const { getSections, getGalleries, getImages } = require('./Query');
-
-const mailjet = require('node-mailjet').connect(
-  process.env.MJ_APIKEY_PUBLIC,
-  process.env.MJ_APIKEY_PRIVATE,
-);
-
-console.log(process.env.MJ_APIKEY_PUBLIC, process.env.MJ_APIKEY_PRIVATE);
 
 aws.config.update({
   region: 'eu-west-2',
@@ -214,31 +208,8 @@ async function passwordForgot(parent, args, context) {
     },
   });
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
-  const request = mailjet.post('send', { version: 'v3.1' }).request({
-    Messages: [
-      {
-        From: {
-          Email: emailAddress.noreply,
-          Name: 'DoodleMeeple',
-        },
-        To: [
-          {
-            Email: user.email,
-            Name: user.name,
-          },
-        ],
-        Subject: 'Reset your DoodleMeeple password',
-        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${
-          emailAddress.tech
-        }. ${emailAddress.signoffPain}`,
-        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${
-          emailAddress.signoffHTML
-        }</p><p style="font-size:10px">If this was not you contact <a href='${
-          emailAddress.tech
-        }'>${emailAddress.tech}</a></p>`,
-      },
-    ],
-  });
+  const request = emailForgot(user, actionLink);
+
   request
     .then((result) => {})
     .catch((err) => {
@@ -277,28 +248,11 @@ async function passwordReset(parent, args, context) {
 
   if (user) {
     const actionLink = `${process.env.EMAIL_URL}`;
-    const request = mailjet.post('send', { version: 'v3.1' }).request({
-      Messages: [
-        {
-          From: {
-            Email: emailAddress.noreply,
-            Name: 'DoodleMeeple',
-          },
-          To: [
-            {
-              Email: user.email,
-              Name: user.name,
-            },
-          ],
-          Subject: 'Password has been changed',
-          TextPart: `Your password has been changed, visit ${actionLink}`,
-          HTMLPart: `<strong>Your password has been changed, visit <a href='${actionLink}'>${actionLink}</a></strong>`,
-        },
-      ],
-    });
+    const request = emailReset(user, actionLink);
+
     request
       .then((result) => {
-        console.log(result.body);
+        console.log(result);
       })
       .catch((err) => {
         console.log(err.statusCode);
@@ -331,33 +285,7 @@ async function signup(parent, args, context, info) {
     });
     const token = jwt.sign({ userId: user.id }, APP_SECRET);
 
-    const request = mailjet.post('send', { version: 'v3.1' }).request({
-      Messages: [
-        {
-          From: {
-            Email: 'welcome@doodlemeeple.com',
-            Name: 'DoodleMeeple',
-          },
-          To: [
-            {
-              Email: args.email,
-              Name: args.name,
-            },
-          ],
-          Subject: 'Welcome to DoodleMeeple',
-          TextPart: `It's great to have you on board, login and set up your profile here: ${
-            emailAddress.appURL
-          }`,
-          HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
-            emailAddress.appURL
-          }'>Let's Begin</a><br/><br/></strong></p><p>${
-            emailAddress.signoffHTML
-          }</p><p style="font-size:10px">If this was not you contact <a href='${
-            emailAddress.tech
-          }'>${emailAddress.tech}</a></p>`,
-        },
-      ],
-    });
+    const request = emailSignup(args);
     request
       .then((result) => {
         console.log(result.body);

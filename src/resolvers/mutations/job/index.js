@@ -1,8 +1,13 @@
 const { getUserId } = require('../../../utils');
+const { emailInvite } = require('../../../email');
 
 async function submitBrief(parent, args, context, info) {
   const { jobId } = args;
-  console.log('ads');
+
+  const jobDeets = await context.prisma.job({
+    id: jobId,
+  });
+
   await context.prisma.updateJob({
     data: {
       submitted: true,
@@ -12,6 +17,23 @@ async function submitBrief(parent, args, context, info) {
     },
   });
 
+  const emailAddresses = await context.prisma.users({
+    where: {
+      invites_some: { job: { id: jobId } },
+    },
+  });
+
+  emailAddresses.map((email) => {
+    console.log(email);
+    const request = emailInvite(email, jobDeets);
+
+    request
+      .then((result) => {})
+      .catch((err) => {
+        console.log(err.statusCode);
+      });
+  });
+  /*
   await context.prisma.updateManyInvites({
     data: {
       status: 'submitted',
@@ -20,7 +42,9 @@ async function submitBrief(parent, args, context, info) {
       job: { id: jobId },
     },
   });
-
+*/
+  /*
+   */
   return true;
 }
 

@@ -76,7 +76,6 @@ async function updateGallerySection(parent, args, context, info) {
 }
 
 async function createGallerySection(parent, args, context, info) {
-  console.log('ASdasd');
   const userId = getUserId(context);
   const {
     gallery,

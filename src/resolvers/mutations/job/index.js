@@ -33,7 +33,7 @@ async function submitBrief(parent, args, context, info) {
         console.log(err.statusCode);
       });
   });
-  /*
+
   await context.prisma.updateManyInvites({
     data: {
       status: 'submitted',
@@ -42,9 +42,7 @@ async function submitBrief(parent, args, context, info) {
       job: { id: jobId },
     },
   });
-*/
-  /*
-   */
+
   return true;
 }
 

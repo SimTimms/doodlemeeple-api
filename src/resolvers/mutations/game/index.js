@@ -1,7 +1,15 @@
 const { getUserId } = require('../../../utils');
 
 async function updateGame(parent, args, context, info) {
-  const { name, img, backgroundImg, summary, location, showreel } = args.game;
+  const {
+    name,
+    img,
+    backgroundImg,
+    summary,
+    location,
+    showreel,
+    type,
+  } = args.game;
   const returnObj = await context.prisma.updateGame({
     data: {
       name,
@@ -10,6 +18,7 @@ async function updateGame(parent, args, context, info) {
       summary,
       location,
       showreel,
+      type,
     },
     where: {
       id: args.id,
@@ -31,8 +40,7 @@ async function createGame(parent, args, context, info) {
     location,
     showreel,
   });
-  
-  
+
   return returnObj.id;
 }
 

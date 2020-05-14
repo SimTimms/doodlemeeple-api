@@ -26,7 +26,7 @@ async function createInvite(parent, args, context, info) {
     game: { connect: { id: gameId } },
     job: { connect: { id: jobId } },
   });
-  console.log(returnObj);
+
   return returnObj.id;
 }
 

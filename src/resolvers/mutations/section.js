@@ -1,11 +1,6 @@
 const { getUserId } = require('../../utils');
 const { UPDATED_PROFILE } = require('../../utils/notifications');
-const {
-  createImages,
-  createNotification,
-  notableProjectsCreator,
-  testimonialsCreator,
-} = require('./utils');
+const { createImages, createNotification } = require('./utils');
 const { updateProject, createProject } = require('./project');
 const { updateTestimonial, createTestimonial } = require('./testimonial');
 

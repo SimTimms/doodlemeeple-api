@@ -1,5 +1,7 @@
 const { getUserId } = require('../../../utils');
 const { emailInvite } = require('../../../email');
+const { createNotification } = require('../utils');
+const { INVITED } = require('../../../utils/notifications');
 
 async function submitBrief(parent, args, context, info) {
   const { jobId } = args;
@@ -19,16 +21,26 @@ async function submitBrief(parent, args, context, info) {
 
   const emailAddresses = await context.prisma.users({
     where: {
-      invites_some: { job: { id: jobId } },
+      invitesReceived_some: { job: { id: jobId } },
     },
   });
 
+  INVITED.message = `${jobDeets.name}`;
+  INVITED.linkTo = `${INVITED.linkTo}`;
+
+  const results = emailAddresses.map(async (user) => {
+    await createNotification(INVITED, user.id, context);
+  });
+
+  Promise.all(results).then();
+
   emailAddresses.map((email) => {
-    console.log(email);
     const request = emailInvite(email, jobDeets);
 
     request
-      .then((result) => {})
+      .then((result) => {
+        //  console.log(result);
+      })
       .catch((err) => {
         console.log(err.statusCode);
       });

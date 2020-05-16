@@ -13,15 +13,19 @@ var models = [
     embedded: false
   },
   {
+    name: "Job",
+    embedded: false
+  },
+  {
+    name: "Message",
+    embedded: false
+  },
+  {
     name: "Notification",
     embedded: false
   },
   {
     name: "Game",
-    embedded: false
-  },
-  {
-    name: "Job",
     embedded: false
   },
   {

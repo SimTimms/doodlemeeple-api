@@ -42,6 +42,9 @@ type Mutation {
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): String
   removeTestimonial(id: String!): Boolean
+  createMessage(id: String!, message: MessageInput!): String
+  updateMessage(id: String!, message: MessageInput!): String
+  removeMessage(id: String!): Boolean
 }
 
 type Query {
@@ -92,6 +95,20 @@ input JobInput {
   showreel: String
   type: String
   submitted: Boolean
+}
+
+input MessageInput {
+  messageStr: String!
+  job: Job
+  receiver: User!
+}
+
+type Message {
+  id: ID!
+  messageStr: String!
+  job: Job
+  sender: User!
+  receiver: User!
 }
 
 input SectionInput {
@@ -154,6 +171,7 @@ type Job {
   game: Game!
   submitted: Boolean
   invite: [Invite!]
+  messages: [Message]
 }
 
 type User {

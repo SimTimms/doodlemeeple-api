@@ -54,6 +54,7 @@ type Query {
   getJob(jobId: String!): Job
   getJobs: [Job]
   getMessages(jobId: String!): [Message]
+  getConversations: [Message]
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]

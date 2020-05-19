@@ -98,8 +98,28 @@ async function getJobs(parent, args, context, info) {
   return games;
 }
 
+async function getConversations(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const messages = await context.prisma.messages({
+    orderBy: 'createdAt_DESC',
+    where: {
+      OR: [
+        {
+          sender: {
+            id: userId,
+          },
+        },
+        { receiver: { id: userId } },
+      ],
+    },
+    first: 1,
+  });
+
+  return messages;
+}
+
 async function getMessages(parent, args, context, info) {
-  console.log('das');
   const userId = getUserId(context);
   const messages = await context.prisma.messages({
     where: {
@@ -212,4 +232,5 @@ module.exports = {
   getInvites,
   counts,
   getMessages,
+  getConversations,
 };

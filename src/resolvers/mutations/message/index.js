@@ -1,7 +1,7 @@
 const { getUserId } = require('../../../utils');
 const { emailInvite } = require('../../../email');
 const { createNotification } = require('../utils');
-const { INVITED } = require('../../../utils/notifications');
+const { MESSAGE_SENT } = require('../../../utils/notifications');
 
 async function updateMessage(parent, args, context, info) {
   const {
@@ -33,28 +33,18 @@ async function updateMessage(parent, args, context, info) {
 
 async function createMessage(parent, args, context, info) {
   const userId = getUserId(context);
-  const {
-    name,
-    img,
-    summary,
-    location,
-    showreel,
-    submitted,
-    gameId,
-    creativeSummary,
-  } = args.message;
+  const messageId = args.id;
+  const { messageStr, job, receiver } = args.message;
 
   const returnObj = await context.prisma.createMessage({
-    user: { connect: { id: userId } },
-    name,
-    img,
-    summary,
-    creativeSummary,
-    submitted,
-    location,
-    showreel,
-    game: { connect: { id: gameId } },
+    sender: { connect: { id: userId } },
+    messageStr,
+    job: { connect: { id: job } },
+    receiver: { connect: { id: receiver } },
+    status: 'unread',
   });
+  MESSAGE_SENT.message = "There's a message for you";
+  createNotification(MESSAGE_SENT, receiver, context);
   return returnObj.id;
 }
 

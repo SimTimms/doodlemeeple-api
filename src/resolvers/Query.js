@@ -98,6 +98,26 @@ async function getJobs(parent, args, context, info) {
   return games;
 }
 
+async function getMessages(parent, args, context, info) {
+  console.log('das');
+  const userId = getUserId(context);
+  const messages = await context.prisma.messages({
+    where: {
+      OR: [
+        {
+          sender: {
+            id: userId,
+          },
+        },
+        { receiver: { id: userId } },
+      ],
+      job: { id: args.jobId },
+    },
+  });
+
+  return messages;
+}
+
 async function profilePreview(parent, args, context, info) {
   const userId = args.userId;
 
@@ -145,7 +165,18 @@ async function counts(parent, args, context) {
     },
   });
 
-  return { invites: invites.length, id: 'counts' };
+  const messages = await context.prisma.messages({
+    where: {
+      receiver: { id: userId },
+      status: 'unread',
+    },
+  });
+
+  return {
+    invites: invites.length,
+    id: 'counts',
+    messages: messages.length,
+  };
 }
 
 async function getNotifications(parent, args, context) {
@@ -180,4 +211,5 @@ module.exports = {
   getCreatives,
   getInvites,
   counts,
+  getMessages,
 };

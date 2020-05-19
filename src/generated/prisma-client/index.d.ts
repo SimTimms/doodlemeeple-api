@@ -558,7 +558,9 @@ export type CountOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "invites_ASC"
-  | "invites_DESC";
+  | "invites_DESC"
+  | "messages_ASC"
+  | "messages_DESC";
 
 export type NotableProjectsOrderByInput =
   | "id_ASC"
@@ -666,7 +668,11 @@ export type MessageOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "messageStr_ASC"
-  | "messageStr_DESC";
+  | "messageStr_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "status_ASC"
+  | "status_DESC";
 
 export type GalleryImageOrderByInput =
   | "id_ASC"
@@ -745,6 +751,20 @@ export interface CountWhereInput {
   invites_not_starts_with?: Maybe<String>;
   invites_ends_with?: Maybe<String>;
   invites_not_ends_with?: Maybe<String>;
+  messages?: Maybe<String>;
+  messages_not?: Maybe<String>;
+  messages_in?: Maybe<String[] | String>;
+  messages_not_in?: Maybe<String[] | String>;
+  messages_lt?: Maybe<String>;
+  messages_lte?: Maybe<String>;
+  messages_gt?: Maybe<String>;
+  messages_gte?: Maybe<String>;
+  messages_contains?: Maybe<String>;
+  messages_not_contains?: Maybe<String>;
+  messages_starts_with?: Maybe<String>;
+  messages_not_starts_with?: Maybe<String>;
+  messages_ends_with?: Maybe<String>;
+  messages_not_ends_with?: Maybe<String>;
   AND?: Maybe<CountWhereInput[] | CountWhereInput>;
   OR?: Maybe<CountWhereInput[] | CountWhereInput>;
   NOT?: Maybe<CountWhereInput[] | CountWhereInput>;
@@ -1704,6 +1724,28 @@ export interface MessageWhereInput {
   job?: Maybe<JobWhereInput>;
   sender?: Maybe<UserWhereInput>;
   receiver?: Maybe<UserWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
   AND?: Maybe<MessageWhereInput[] | MessageWhereInput>;
   OR?: Maybe<MessageWhereInput[] | MessageWhereInput>;
   NOT?: Maybe<MessageWhereInput[] | MessageWhereInput>;
@@ -1754,14 +1796,17 @@ export type UserWhereUniqueInput = AtLeastOne<{
 export interface CountCreateInput {
   id?: Maybe<ID_Input>;
   invites?: Maybe<String>;
+  messages?: Maybe<String>;
 }
 
 export interface CountUpdateInput {
   invites?: Maybe<String>;
+  messages?: Maybe<String>;
 }
 
 export interface CountUpdateManyMutationInput {
   invites?: Maybe<String>;
+  messages?: Maybe<String>;
 }
 
 export interface GalleryCreateInput {
@@ -2199,6 +2244,7 @@ export interface MessageCreateWithoutJobInput {
   messageStr: String;
   sender: UserCreateOneWithoutMessagesSentInput;
   receiver: UserCreateOneWithoutMessagesReceivedInput;
+  status?: Maybe<String>;
 }
 
 export interface UserCreateOneWithoutMessagesSentInput {
@@ -2243,6 +2289,7 @@ export interface MessageCreateWithoutReceiverInput {
   messageStr: String;
   job?: Maybe<JobCreateOneWithoutMessagesInput>;
   sender: UserCreateOneWithoutMessagesSentInput;
+  status?: Maybe<String>;
 }
 
 export interface JobCreateOneWithoutMessagesInput {
@@ -2309,6 +2356,7 @@ export interface MessageCreateWithoutSenderInput {
   messageStr: String;
   job?: Maybe<JobCreateOneWithoutMessagesInput>;
   receiver: UserCreateOneWithoutMessagesReceivedInput;
+  status?: Maybe<String>;
 }
 
 export interface UserCreateOneWithoutInvitesReceivedInput {
@@ -3502,6 +3550,7 @@ export interface MessageUpdateWithoutJobDataInput {
   messageStr?: Maybe<String>;
   sender?: Maybe<UserUpdateOneRequiredWithoutMessagesSentInput>;
   receiver?: Maybe<UserUpdateOneRequiredWithoutMessagesReceivedInput>;
+  status?: Maybe<String>;
 }
 
 export interface UserUpdateOneRequiredWithoutMessagesSentInput {
@@ -3567,6 +3616,7 @@ export interface MessageUpdateWithoutReceiverDataInput {
   messageStr?: Maybe<String>;
   job?: Maybe<JobUpdateOneWithoutMessagesInput>;
   sender?: Maybe<UserUpdateOneRequiredWithoutMessagesSentInput>;
+  status?: Maybe<String>;
 }
 
 export interface JobUpdateOneWithoutMessagesInput {
@@ -3634,6 +3684,28 @@ export interface MessageScalarWhereInput {
   messageStr_not_starts_with?: Maybe<String>;
   messageStr_ends_with?: Maybe<String>;
   messageStr_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
   AND?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
   OR?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
   NOT?: Maybe<MessageScalarWhereInput[] | MessageScalarWhereInput>;
@@ -3646,6 +3718,7 @@ export interface MessageUpdateManyWithWhereNestedInput {
 
 export interface MessageUpdateManyDataInput {
   messageStr?: Maybe<String>;
+  status?: Maybe<String>;
 }
 
 export interface UserUpsertWithoutMessagesSentInput {
@@ -3716,6 +3789,7 @@ export interface MessageUpdateWithoutSenderDataInput {
   messageStr?: Maybe<String>;
   job?: Maybe<JobUpdateOneWithoutMessagesInput>;
   receiver?: Maybe<UserUpdateOneRequiredWithoutMessagesReceivedInput>;
+  status?: Maybe<String>;
 }
 
 export interface MessageUpsertWithWhereUniqueWithoutSenderInput {
@@ -4359,6 +4433,7 @@ export interface MessageCreateInput {
   job?: Maybe<JobCreateOneWithoutMessagesInput>;
   sender: UserCreateOneWithoutMessagesSentInput;
   receiver: UserCreateOneWithoutMessagesReceivedInput;
+  status?: Maybe<String>;
 }
 
 export interface MessageUpdateInput {
@@ -4366,10 +4441,12 @@ export interface MessageUpdateInput {
   job?: Maybe<JobUpdateOneWithoutMessagesInput>;
   sender?: Maybe<UserUpdateOneRequiredWithoutMessagesSentInput>;
   receiver?: Maybe<UserUpdateOneRequiredWithoutMessagesReceivedInput>;
+  status?: Maybe<String>;
 }
 
 export interface MessageUpdateManyMutationInput {
   messageStr?: Maybe<String>;
+  status?: Maybe<String>;
 }
 
 export interface NotableProjectsUpdateInput {
@@ -4755,11 +4832,13 @@ export interface NodeNode {
 export interface Count {
   id: ID_Output;
   invites?: String;
+  messages?: String;
 }
 
 export interface CountPromise extends Promise<Count>, Fragmentable {
   id: () => Promise<ID_Output>;
   invites: () => Promise<String>;
+  messages: () => Promise<String>;
 }
 
 export interface CountSubscription
@@ -4767,6 +4846,7 @@ export interface CountSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   invites: () => Promise<AsyncIterator<String>>;
+  messages: () => Promise<AsyncIterator<String>>;
 }
 
 export interface CountNullablePromise
@@ -4774,6 +4854,7 @@ export interface CountNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   invites: () => Promise<String>;
+  messages: () => Promise<String>;
 }
 
 export interface CountConnection {
@@ -5673,6 +5754,8 @@ export interface InviteNullablePromise
 export interface Message {
   id: ID_Output;
   messageStr: String;
+  createdAt: DateTimeOutput;
+  status?: String;
 }
 
 export interface MessagePromise extends Promise<Message>, Fragmentable {
@@ -5681,6 +5764,8 @@ export interface MessagePromise extends Promise<Message>, Fragmentable {
   job: <T = JobPromise>() => T;
   sender: <T = UserPromise>() => T;
   receiver: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  status: () => Promise<String>;
 }
 
 export interface MessageSubscription
@@ -5691,6 +5776,8 @@ export interface MessageSubscription
   job: <T = JobSubscription>() => T;
   sender: <T = UserSubscription>() => T;
   receiver: <T = UserSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  status: () => Promise<AsyncIterator<String>>;
 }
 
 export interface MessageNullablePromise
@@ -5701,6 +5788,8 @@ export interface MessageNullablePromise
   job: <T = JobPromise>() => T;
   sender: <T = UserPromise>() => T;
   receiver: <T = UserPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  status: () => Promise<String>;
 }
 
 export interface GalleryImage {
@@ -6382,6 +6471,7 @@ export interface CountSubscriptionPayloadSubscription
 export interface CountPreviousValues {
   id: ID_Output;
   invites?: String;
+  messages?: String;
 }
 
 export interface CountPreviousValuesPromise
@@ -6389,6 +6479,7 @@ export interface CountPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   invites: () => Promise<String>;
+  messages: () => Promise<String>;
 }
 
 export interface CountPreviousValuesSubscription
@@ -6396,6 +6487,7 @@ export interface CountPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   invites: () => Promise<AsyncIterator<String>>;
+  messages: () => Promise<AsyncIterator<String>>;
 }
 
 export interface GallerySubscriptionPayload {
@@ -6706,6 +6798,8 @@ export interface MessageSubscriptionPayloadSubscription
 export interface MessagePreviousValues {
   id: ID_Output;
   messageStr: String;
+  createdAt: DateTimeOutput;
+  status?: String;
 }
 
 export interface MessagePreviousValuesPromise
@@ -6713,6 +6807,8 @@ export interface MessagePreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   messageStr: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  status: () => Promise<String>;
 }
 
 export interface MessagePreviousValuesSubscription
@@ -6720,6 +6816,8 @@ export interface MessagePreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   messageStr: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  status: () => Promise<AsyncIterator<String>>;
 }
 
 export interface NotableProjectsSubscriptionPayload {

@@ -58,6 +58,7 @@ type BatchPayload {
 type Count {
   id: ID!
   invites: String
+  messages: String
 }
 
 type CountConnection {
@@ -69,6 +70,7 @@ type CountConnection {
 input CountCreateInput {
   id: ID
   invites: String
+  messages: String
 }
 
 type CountEdge {
@@ -81,11 +83,14 @@ enum CountOrderByInput {
   id_DESC
   invites_ASC
   invites_DESC
+  messages_ASC
+  messages_DESC
 }
 
 type CountPreviousValues {
   id: ID!
   invites: String
+  messages: String
 }
 
 type CountSubscriptionPayload {
@@ -108,10 +113,12 @@ input CountSubscriptionWhereInput {
 
 input CountUpdateInput {
   invites: String
+  messages: String
 }
 
 input CountUpdateManyMutationInput {
   invites: String
+  messages: String
 }
 
 input CountWhereInput {
@@ -143,6 +150,20 @@ input CountWhereInput {
   invites_not_starts_with: String
   invites_ends_with: String
   invites_not_ends_with: String
+  messages: String
+  messages_not: String
+  messages_in: [String!]
+  messages_not_in: [String!]
+  messages_lt: String
+  messages_lte: String
+  messages_gt: String
+  messages_gte: String
+  messages_contains: String
+  messages_not_contains: String
+  messages_starts_with: String
+  messages_not_starts_with: String
+  messages_ends_with: String
+  messages_not_ends_with: String
   AND: [CountWhereInput!]
   OR: [CountWhereInput!]
   NOT: [CountWhereInput!]
@@ -2126,6 +2147,8 @@ type Message {
   job: Job
   sender: User!
   receiver: User!
+  createdAt: DateTime!
+  status: String
 }
 
 type MessageConnection {
@@ -2140,6 +2163,7 @@ input MessageCreateInput {
   job: JobCreateOneWithoutMessagesInput
   sender: UserCreateOneWithoutMessagesSentInput!
   receiver: UserCreateOneWithoutMessagesReceivedInput!
+  status: String
 }
 
 input MessageCreateManyWithoutJobInput {
@@ -2162,6 +2186,7 @@ input MessageCreateWithoutJobInput {
   messageStr: String!
   sender: UserCreateOneWithoutMessagesSentInput!
   receiver: UserCreateOneWithoutMessagesReceivedInput!
+  status: String
 }
 
 input MessageCreateWithoutReceiverInput {
@@ -2169,6 +2194,7 @@ input MessageCreateWithoutReceiverInput {
   messageStr: String!
   job: JobCreateOneWithoutMessagesInput
   sender: UserCreateOneWithoutMessagesSentInput!
+  status: String
 }
 
 input MessageCreateWithoutSenderInput {
@@ -2176,6 +2202,7 @@ input MessageCreateWithoutSenderInput {
   messageStr: String!
   job: JobCreateOneWithoutMessagesInput
   receiver: UserCreateOneWithoutMessagesReceivedInput!
+  status: String
 }
 
 type MessageEdge {
@@ -2188,11 +2215,17 @@ enum MessageOrderByInput {
   id_DESC
   messageStr_ASC
   messageStr_DESC
+  createdAt_ASC
+  createdAt_DESC
+  status_ASC
+  status_DESC
 }
 
 type MessagePreviousValues {
   id: ID!
   messageStr: String!
+  createdAt: DateTime!
+  status: String
 }
 
 input MessageScalarWhereInput {
@@ -2224,6 +2257,28 @@ input MessageScalarWhereInput {
   messageStr_not_starts_with: String
   messageStr_ends_with: String
   messageStr_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  status: String
+  status_not: String
+  status_in: [String!]
+  status_not_in: [String!]
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_contains: String
+  status_not_contains: String
+  status_starts_with: String
+  status_not_starts_with: String
+  status_ends_with: String
+  status_not_ends_with: String
   AND: [MessageScalarWhereInput!]
   OR: [MessageScalarWhereInput!]
   NOT: [MessageScalarWhereInput!]
@@ -2252,14 +2307,17 @@ input MessageUpdateInput {
   job: JobUpdateOneWithoutMessagesInput
   sender: UserUpdateOneRequiredWithoutMessagesSentInput
   receiver: UserUpdateOneRequiredWithoutMessagesReceivedInput
+  status: String
 }
 
 input MessageUpdateManyDataInput {
   messageStr: String
+  status: String
 }
 
 input MessageUpdateManyMutationInput {
   messageStr: String
+  status: String
 }
 
 input MessageUpdateManyWithoutJobInput {
@@ -2307,18 +2365,21 @@ input MessageUpdateWithoutJobDataInput {
   messageStr: String
   sender: UserUpdateOneRequiredWithoutMessagesSentInput
   receiver: UserUpdateOneRequiredWithoutMessagesReceivedInput
+  status: String
 }
 
 input MessageUpdateWithoutReceiverDataInput {
   messageStr: String
   job: JobUpdateOneWithoutMessagesInput
   sender: UserUpdateOneRequiredWithoutMessagesSentInput
+  status: String
 }
 
 input MessageUpdateWithoutSenderDataInput {
   messageStr: String
   job: JobUpdateOneWithoutMessagesInput
   receiver: UserUpdateOneRequiredWithoutMessagesReceivedInput
+  status: String
 }
 
 input MessageUpdateWithWhereUniqueWithoutJobInput {
@@ -2386,6 +2447,28 @@ input MessageWhereInput {
   job: JobWhereInput
   sender: UserWhereInput
   receiver: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  status: String
+  status_not: String
+  status_in: [String!]
+  status_not_in: [String!]
+  status_lt: String
+  status_lte: String
+  status_gt: String
+  status_gte: String
+  status_contains: String
+  status_not_contains: String
+  status_starts_with: String
+  status_not_starts_with: String
+  status_ends_with: String
+  status_not_ends_with: String
   AND: [MessageWhereInput!]
   OR: [MessageWhereInput!]
   NOT: [MessageWhereInput!]

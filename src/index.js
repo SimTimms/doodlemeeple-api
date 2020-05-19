@@ -12,6 +12,7 @@ const Game = require('./resolvers/Game');
 const Job = require('./resolvers/Job');
 const User = require('./resolvers/User');
 const Invite = require('./resolvers/Invite');
+const Message = require('./resolvers/Message');
 
 const resolvers = {
   Query,
@@ -22,6 +23,7 @@ const resolvers = {
   Game,
   Job,
   Invite,
+  Message,
 };
 
 const server = new GraphQLServer({

@@ -60,8 +60,8 @@ type Job {
 
 input MessageInput {
   messageStr: String!
-  job: Job
-  receiver: User!
+  job: String
+  receiver: String!
 }
 
 type Message {
@@ -70,6 +70,8 @@ type Message {
   job: Job
   sender: User! @relation(name: "MessageSent")
   receiver: User! @relation(name: "MessageReceived")
+  createdAt: DateTime! @createdAt
+  status: String
 }
 
 input InviteInput {
@@ -110,6 +112,7 @@ type Game {
 type Count {
   id: ID! @id
   invites: String
+  messages: String
 }
 
 input GameInput {

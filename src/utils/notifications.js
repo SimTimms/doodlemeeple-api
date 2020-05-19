@@ -12,7 +12,15 @@ const INVITED = {
   icon: 'thumb_up',
 };
 
+const MESSAGE_SENT = {
+  title: `New Message`,
+  message: '',
+  linkTo: '/messages/conversations',
+  icon: 'chat',
+};
+
 module.exports = {
   UPDATED_PROFILE,
   INVITED,
+  MESSAGE_SENT,
 };

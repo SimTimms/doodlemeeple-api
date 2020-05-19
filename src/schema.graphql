@@ -53,6 +53,7 @@ type Query {
   getGames: [Game]
   getJob(jobId: String!): Job
   getJobs: [Job]
+  getMessages(jobId: String!): [Message]
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
@@ -99,8 +100,8 @@ input JobInput {
 
 input MessageInput {
   messageStr: String!
-  job: Job
-  receiver: User!
+  job: String
+  receiver: String!
 }
 
 type Message {
@@ -109,6 +110,8 @@ type Message {
   job: Job
   sender: User!
   receiver: User!
+  createdAt: String
+  status: String
 }
 
 input SectionInput {
@@ -153,6 +156,7 @@ type Game {
 type Count {
   id: ID!
   invites: String
+  messages: String
 }
 
 type Job {

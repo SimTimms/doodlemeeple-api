@@ -17,6 +17,7 @@ type User {
   sections: [Section!] @relation(link: TABLE, onDelete: CASCADE)
   notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
   games: [Game!] @relation(link: TABLE, onDelete: CASCADE)
+  conversations: [Conversation] @relation(link: TABLE)
   jobs: [Job!] @relation(link: TABLE, onDelete: CASCADE)
   invites: [Invite!]
     @relation(link: TABLE, onDelete: CASCADE, name: "InviteUser")
@@ -39,6 +40,14 @@ type Invite {
   receiver: User! @relation(name: "InviteReceived")
 }
 
+type Conversation {
+  id: ID! @id
+  messages: [Message] @relation(link: TABLE)
+  participants: [User]
+  job: Job
+  createdAt: DateTime! @createdAt
+}
+
 type Job {
   id: ID! @id
   name: String!
@@ -56,12 +65,12 @@ type Job {
   submitted: Boolean
   invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
   messages: [Message] @relation(link: TABLE, onDelete: CASCADE)
+  conversations: [Conversation] @relation(link: TABLE)
 }
 
 input MessageInput {
   messageStr: String!
-  job: String
-  receiver: String!
+  conversationId: String!
 }
 
 type Message {
@@ -69,9 +78,10 @@ type Message {
   messageStr: String!
   job: Job
   sender: User! @relation(name: "MessageSent")
-  receiver: User! @relation(name: "MessageReceived")
+  receiver: User @relation(name: "MessageReceived")
   createdAt: DateTime! @createdAt
   status: String
+  conversation: Conversation
 }
 
 input InviteInput {

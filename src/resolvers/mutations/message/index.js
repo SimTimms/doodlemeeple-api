@@ -1,5 +1,4 @@
 const { getUserId } = require('../../../utils');
-const { emailInvite } = require('../../../email');
 const { createNotification } = require('../utils');
 const { MESSAGE_SENT } = require('../../../utils/notifications');
 
@@ -33,18 +32,31 @@ async function updateMessage(parent, args, context, info) {
 
 async function createMessage(parent, args, context, info) {
   const userId = getUserId(context);
-  const messageId = args.id;
-  const { messageStr, job, receiver } = args.message;
+
+  const { messageStr, conversationId } = args.message;
+
+  const conversationUsers = await context.prisma
+    .conversation({
+      id: conversationId,
+    })
+    .participants();
 
   const returnObj = await context.prisma.createMessage({
     sender: { connect: { id: userId } },
     messageStr,
-    job: { connect: { id: job } },
-    receiver: { connect: { id: receiver } },
+    conversation: { connect: { id: conversationId } },
     status: 'unread',
   });
   MESSAGE_SENT.message = "There's a message for you";
-  createNotification(MESSAGE_SENT, receiver, context);
+
+  const results = conversationUsers
+    .filter((user) => user.id !== userId)
+    .map(async (user) => {
+      await createNotification(MESSAGE_SENT, user.id, context);
+    });
+
+  Promise.all(results).then();
+
   return returnObj.id;
 }
 

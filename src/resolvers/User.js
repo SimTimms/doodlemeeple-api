@@ -17,10 +17,15 @@ function invites(parent, args, context) {
 function invitesReceived(parent, args, context) {
   return context.prisma.user({ id: parent.id }).invitesReceived();
 }
+
+function conversations(parent, args, context) {
+  return context.prisma.user({ id: parent.id }).conversations();
+}
 module.exports = {
   sections,
   notifications,
   games,
   invites,
   invitesReceived,
+  conversations,
 };

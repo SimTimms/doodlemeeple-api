@@ -4,6 +4,7 @@ const { createNotification } = require('../utils');
 const { INVITED } = require('../../../utils/notifications');
 
 async function submitBrief(parent, args, context, info) {
+  const userId = getUserId(context);
   const { jobId } = args;
 
   const jobDeets = await context.prisma.job({
@@ -46,6 +47,17 @@ async function submitBrief(parent, args, context, info) {
       });
   });
 
+  const results2 = emailAddresses.map(async (user) => {
+    await context.prisma.createConversation({
+      participants: {
+        connect: [{ id: user.id }, { id: userId }],
+      },
+      job: { connect: { id: jobId } },
+    });
+  });
+
+  Promise.all(results2).then();
+
   await context.prisma.updateManyInvites({
     data: {
       status: 'submitted',
@@ -54,6 +66,8 @@ async function submitBrief(parent, args, context, info) {
       job: { id: jobId },
     },
   });
+
+  //Create a conversation for each person
 
   return true;
 }
@@ -110,6 +124,7 @@ async function createJob(parent, args, context, info) {
     showreel,
     game: { connect: { id: gameId } },
   });
+
   return returnObj.id;
 }
 

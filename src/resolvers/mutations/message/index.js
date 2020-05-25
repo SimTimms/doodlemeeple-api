@@ -13,7 +13,6 @@ async function markAsRead(parent, args, context, info) {
       conversation: { id: conversationId },
     },
   });
-  console.log('done');
 }
 
 async function updateMessage(parent, args, context, info) {
@@ -49,6 +48,10 @@ async function createMessage(parent, args, context, info) {
 
   const { messageStr, conversationId } = args.message;
 
+  const senderDetails = await context.prisma.user({
+    id: userId,
+  });
+
   const conversationUsers = await context.prisma
     .conversation({
       id: conversationId,
@@ -66,6 +69,7 @@ async function createMessage(parent, args, context, info) {
   const results = conversationUsers
     .filter((user) => user.id !== userId)
     .map(async (user) => {
+      MESSAGE_SENT.title = `Message from ${senderDetails.name}`;
       const notificationExists = await createNotification(
         MESSAGE_SENT,
         user.id,

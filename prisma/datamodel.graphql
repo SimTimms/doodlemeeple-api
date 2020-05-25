@@ -46,6 +46,7 @@ type Conversation {
   participants: [User]
   job: Job
   createdAt: DateTime! @createdAt
+  count: String
 }
 
 type Job {

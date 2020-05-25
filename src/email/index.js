@@ -37,6 +37,35 @@ async function emailInvite(user, jobDeets) {
   return request;
 }
 
+async function emailNewMessage(user, subject) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: subject,
+        TextPart: `There's a message waiting for you on Doodle Meeple"`,
+        HTMLPart: `<p>Hi ${user.name},</p>
+        <p>There's a message waiting for you on Doodle Meeple!
+        </p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>1 New Message
+        </p><p>Login at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
+          emailAddress.messagesURL
+        }'>${emailAddress.messagesURL}</a></p><p>${emailAddress.signoffHTML}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
 async function emailForgot(user, actionLink) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -125,4 +154,5 @@ module.exports = {
   emailReset,
   emailSignup,
   emailInvite,
+  emailNewMessage,
 };

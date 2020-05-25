@@ -14,6 +14,7 @@ type Mutation {
     sections: [SectionInput]
     autosave: Boolean
   ): User
+  markAsRead(conversationId: String!): String
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
@@ -40,7 +41,7 @@ type Mutation {
   createProject(project: NotableProjectsInput!, sectionId: String!): String
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
-  removeNotification(id: String!): String
+  removeNotification(id: String!): [Notification]
   removeTestimonial(id: String!): Boolean
   createMessage(id: String!, message: MessageInput!): String
   updateMessage(id: String!, message: MessageInput!): String
@@ -186,6 +187,7 @@ type Conversation {
   participants: [User]
   job: Job
   createdAt: String
+  count: String
 }
 
 type User {

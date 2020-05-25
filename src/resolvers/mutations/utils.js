@@ -23,6 +23,8 @@ async function createNotification(message, userId, context) {
       linkTo: message.linkTo,
       icon: message.icon,
     }));
+
+  return exists;
 }
 
 async function notableProjectsCreator(ids, notableProjects, context) {

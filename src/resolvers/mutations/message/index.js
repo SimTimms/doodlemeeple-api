@@ -1,6 +1,19 @@
 const { getUserId } = require('../../../utils');
 const { createNotification } = require('../utils');
 const { MESSAGE_SENT } = require('../../../utils/notifications');
+const { emailNewMessage } = require('../../../email');
+
+async function markAsRead(parent, args, context, info) {
+  const conversationId = args.conversationId;
+  await context.prisma.updateMessages({
+    data: {
+      status: 'read',
+    },
+    where: {
+      conversation: { id: conversationId },
+    },
+  });
+}
 
 async function updateMessage(parent, args, context, info) {
   const {
@@ -52,7 +65,14 @@ async function createMessage(parent, args, context, info) {
   const results = conversationUsers
     .filter((user) => user.id !== userId)
     .map(async (user) => {
-      await createNotification(MESSAGE_SENT, user.id, context);
+      const notificationExists = await createNotification(
+        MESSAGE_SENT,
+        user.id,
+        context,
+      );
+
+      !notificationExists &&
+        (await emailNewMessage(user, MESSAGE_SENT.message));
     });
 
   Promise.all(results).then();
@@ -72,4 +92,5 @@ module.exports = {
   updateMessage,
   createMessage,
   removeMessage,
+  markAsRead,
 };

@@ -187,8 +187,8 @@ async function counts(parent, args, context) {
 
   const messages = await context.prisma.messages({
     where: {
-      receiver: { id: userId },
       status: 'unread',
+      conversation: { participants_some: { id: userId } },
     },
   });
 
@@ -203,6 +203,7 @@ async function getNotifications(parent, args, context) {
   const userId = getUserId(context);
 
   const notifications = await context.prisma.notifications({
+    orderBy: 'createdAt_DESC',
     where: {
       user: {
         id: userId,

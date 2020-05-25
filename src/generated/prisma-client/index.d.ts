@@ -318,6 +318,10 @@ export interface Prisma {
     data: ConversationUpdateInput;
     where: ConversationWhereUniqueInput;
   }) => ConversationPromise;
+  updateManyConversations: (args: {
+    data: ConversationUpdateManyMutationInput;
+    where?: ConversationWhereInput;
+  }) => BatchPayloadPromise;
   upsertConversation: (args: {
     where: ConversationWhereUniqueInput;
     create: ConversationCreateInput;
@@ -701,7 +705,9 @@ export type ConversationOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "createdAt_ASC"
-  | "createdAt_DESC";
+  | "createdAt_DESC"
+  | "count_ASC"
+  | "count_DESC";
 
 export type InviteOrderByInput =
   | "id_ASC"
@@ -1668,6 +1674,20 @@ export interface ConversationWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
+  count?: Maybe<String>;
+  count_not?: Maybe<String>;
+  count_in?: Maybe<String[] | String>;
+  count_not_in?: Maybe<String[] | String>;
+  count_lt?: Maybe<String>;
+  count_lte?: Maybe<String>;
+  count_gt?: Maybe<String>;
+  count_gte?: Maybe<String>;
+  count_contains?: Maybe<String>;
+  count_not_contains?: Maybe<String>;
+  count_starts_with?: Maybe<String>;
+  count_not_starts_with?: Maybe<String>;
+  count_ends_with?: Maybe<String>;
+  count_not_ends_with?: Maybe<String>;
   AND?: Maybe<ConversationWhereInput[] | ConversationWhereInput>;
   OR?: Maybe<ConversationWhereInput[] | ConversationWhereInput>;
   NOT?: Maybe<ConversationWhereInput[] | ConversationWhereInput>;
@@ -1891,6 +1911,7 @@ export interface ConversationCreateInput {
   messages?: Maybe<MessageCreateManyWithoutConversationInput>;
   participants?: Maybe<UserCreateManyWithoutConversationsInput>;
   job?: Maybe<JobCreateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface MessageCreateManyWithoutConversationInput {
@@ -2185,6 +2206,7 @@ export interface ConversationCreateWithoutParticipantsInput {
   id?: Maybe<ID_Input>;
   messages?: Maybe<MessageCreateManyWithoutConversationInput>;
   job?: Maybe<JobCreateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface JobCreateOneWithoutConversationsInput {
@@ -2536,6 +2558,7 @@ export interface ConversationCreateWithoutMessagesInput {
   id?: Maybe<ID_Input>;
   participants?: Maybe<UserCreateManyWithoutConversationsInput>;
   job?: Maybe<JobCreateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface UserCreateManyWithoutConversationsInput {
@@ -2600,12 +2623,14 @@ export interface ConversationCreateWithoutJobInput {
   id?: Maybe<ID_Input>;
   messages?: Maybe<MessageCreateManyWithoutConversationInput>;
   participants?: Maybe<UserCreateManyWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface ConversationUpdateInput {
   messages?: Maybe<MessageUpdateManyWithoutConversationInput>;
   participants?: Maybe<UserUpdateManyWithoutConversationsInput>;
   job?: Maybe<JobUpdateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface MessageUpdateManyWithoutConversationInput {
@@ -3539,6 +3564,10 @@ export interface ConversationUpdateManyWithoutParticipantsInput {
   deleteMany?: Maybe<
     ConversationScalarWhereInput[] | ConversationScalarWhereInput
   >;
+  updateMany?: Maybe<
+    | ConversationUpdateManyWithWhereNestedInput[]
+    | ConversationUpdateManyWithWhereNestedInput
+  >;
 }
 
 export interface ConversationUpdateWithWhereUniqueWithoutParticipantsInput {
@@ -3549,6 +3578,7 @@ export interface ConversationUpdateWithWhereUniqueWithoutParticipantsInput {
 export interface ConversationUpdateWithoutParticipantsDataInput {
   messages?: Maybe<MessageUpdateManyWithoutConversationInput>;
   job?: Maybe<JobUpdateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface JobUpdateOneWithoutConversationsInput {
@@ -4045,6 +4075,7 @@ export interface ConversationUpdateOneWithoutMessagesInput {
 export interface ConversationUpdateWithoutMessagesDataInput {
   participants?: Maybe<UserUpdateManyWithoutConversationsInput>;
   job?: Maybe<JobUpdateOneWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface UserUpdateManyWithoutConversationsInput {
@@ -4540,6 +4571,10 @@ export interface ConversationUpdateManyWithoutJobInput {
   deleteMany?: Maybe<
     ConversationScalarWhereInput[] | ConversationScalarWhereInput
   >;
+  updateMany?: Maybe<
+    | ConversationUpdateManyWithWhereNestedInput[]
+    | ConversationUpdateManyWithWhereNestedInput
+  >;
 }
 
 export interface ConversationUpdateWithWhereUniqueWithoutJobInput {
@@ -4550,6 +4585,7 @@ export interface ConversationUpdateWithWhereUniqueWithoutJobInput {
 export interface ConversationUpdateWithoutJobDataInput {
   messages?: Maybe<MessageUpdateManyWithoutConversationInput>;
   participants?: Maybe<UserUpdateManyWithoutConversationsInput>;
+  count?: Maybe<String>;
 }
 
 export interface ConversationUpsertWithWhereUniqueWithoutJobInput {
@@ -4581,9 +4617,32 @@ export interface ConversationScalarWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
+  count?: Maybe<String>;
+  count_not?: Maybe<String>;
+  count_in?: Maybe<String[] | String>;
+  count_not_in?: Maybe<String[] | String>;
+  count_lt?: Maybe<String>;
+  count_lte?: Maybe<String>;
+  count_gt?: Maybe<String>;
+  count_gte?: Maybe<String>;
+  count_contains?: Maybe<String>;
+  count_not_contains?: Maybe<String>;
+  count_starts_with?: Maybe<String>;
+  count_not_starts_with?: Maybe<String>;
+  count_ends_with?: Maybe<String>;
+  count_not_ends_with?: Maybe<String>;
   AND?: Maybe<ConversationScalarWhereInput[] | ConversationScalarWhereInput>;
   OR?: Maybe<ConversationScalarWhereInput[] | ConversationScalarWhereInput>;
   NOT?: Maybe<ConversationScalarWhereInput[] | ConversationScalarWhereInput>;
+}
+
+export interface ConversationUpdateManyWithWhereNestedInput {
+  where: ConversationScalarWhereInput;
+  data: ConversationUpdateManyDataInput;
+}
+
+export interface ConversationUpdateManyDataInput {
+  count?: Maybe<String>;
 }
 
 export interface JobUpsertWithoutInviteInput {
@@ -4963,6 +5022,10 @@ export interface MessageUpsertWithWhereUniqueWithoutConversationInput {
   where: MessageWhereUniqueInput;
   update: MessageUpdateWithoutConversationDataInput;
   create: MessageCreateWithoutConversationInput;
+}
+
+export interface ConversationUpdateManyMutationInput {
+  count?: Maybe<String>;
 }
 
 export interface CountCreateInput {
@@ -5568,6 +5631,7 @@ export interface NodeNode {
 export interface Conversation {
   id: ID_Output;
   createdAt: DateTimeOutput;
+  count?: String;
 }
 
 export interface ConversationPromise
@@ -5594,6 +5658,7 @@ export interface ConversationPromise
   }) => T;
   job: <T = JobPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
+  count: () => Promise<String>;
 }
 
 export interface ConversationSubscription
@@ -5620,6 +5685,7 @@ export interface ConversationSubscription
   }) => T;
   job: <T = JobSubscription>() => T;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  count: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ConversationNullablePromise
@@ -5646,6 +5712,7 @@ export interface ConversationNullablePromise
   }) => T;
   job: <T = JobPromise>() => T;
   createdAt: () => Promise<DateTimeOutput>;
+  count: () => Promise<String>;
 }
 
 export interface Message {
@@ -7403,6 +7470,7 @@ export interface ConversationSubscriptionPayloadSubscription
 export interface ConversationPreviousValues {
   id: ID_Output;
   createdAt: DateTimeOutput;
+  count?: String;
 }
 
 export interface ConversationPreviousValuesPromise
@@ -7410,6 +7478,7 @@ export interface ConversationPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
+  count: () => Promise<String>;
 }
 
 export interface ConversationPreviousValuesSubscription
@@ -7417,6 +7486,7 @@ export interface ConversationPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  count: () => Promise<AsyncIterator<String>>;
 }
 
 export interface CountSubscriptionPayload {

@@ -65,6 +65,7 @@ type Conversation {
   participants(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   job: Job
   createdAt: DateTime!
+  count: String
 }
 
 type ConversationConnection {
@@ -78,6 +79,7 @@ input ConversationCreateInput {
   messages: MessageCreateManyWithoutConversationInput
   participants: UserCreateManyWithoutConversationsInput
   job: JobCreateOneWithoutConversationsInput
+  count: String
 }
 
 input ConversationCreateManyWithoutJobInput {
@@ -99,18 +101,21 @@ input ConversationCreateWithoutJobInput {
   id: ID
   messages: MessageCreateManyWithoutConversationInput
   participants: UserCreateManyWithoutConversationsInput
+  count: String
 }
 
 input ConversationCreateWithoutMessagesInput {
   id: ID
   participants: UserCreateManyWithoutConversationsInput
   job: JobCreateOneWithoutConversationsInput
+  count: String
 }
 
 input ConversationCreateWithoutParticipantsInput {
   id: ID
   messages: MessageCreateManyWithoutConversationInput
   job: JobCreateOneWithoutConversationsInput
+  count: String
 }
 
 type ConversationEdge {
@@ -123,11 +128,14 @@ enum ConversationOrderByInput {
   id_DESC
   createdAt_ASC
   createdAt_DESC
+  count_ASC
+  count_DESC
 }
 
 type ConversationPreviousValues {
   id: ID!
   createdAt: DateTime!
+  count: String
 }
 
 input ConversationScalarWhereInput {
@@ -153,6 +161,20 @@ input ConversationScalarWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
+  count: String
+  count_not: String
+  count_in: [String!]
+  count_not_in: [String!]
+  count_lt: String
+  count_lte: String
+  count_gt: String
+  count_gte: String
+  count_contains: String
+  count_not_contains: String
+  count_starts_with: String
+  count_not_starts_with: String
+  count_ends_with: String
+  count_not_ends_with: String
   AND: [ConversationScalarWhereInput!]
   OR: [ConversationScalarWhereInput!]
   NOT: [ConversationScalarWhereInput!]
@@ -180,6 +202,15 @@ input ConversationUpdateInput {
   messages: MessageUpdateManyWithoutConversationInput
   participants: UserUpdateManyWithoutConversationsInput
   job: JobUpdateOneWithoutConversationsInput
+  count: String
+}
+
+input ConversationUpdateManyDataInput {
+  count: String
+}
+
+input ConversationUpdateManyMutationInput {
+  count: String
 }
 
 input ConversationUpdateManyWithoutJobInput {
@@ -191,6 +222,7 @@ input ConversationUpdateManyWithoutJobInput {
   update: [ConversationUpdateWithWhereUniqueWithoutJobInput!]
   upsert: [ConversationUpsertWithWhereUniqueWithoutJobInput!]
   deleteMany: [ConversationScalarWhereInput!]
+  updateMany: [ConversationUpdateManyWithWhereNestedInput!]
 }
 
 input ConversationUpdateManyWithoutParticipantsInput {
@@ -202,6 +234,12 @@ input ConversationUpdateManyWithoutParticipantsInput {
   update: [ConversationUpdateWithWhereUniqueWithoutParticipantsInput!]
   upsert: [ConversationUpsertWithWhereUniqueWithoutParticipantsInput!]
   deleteMany: [ConversationScalarWhereInput!]
+  updateMany: [ConversationUpdateManyWithWhereNestedInput!]
+}
+
+input ConversationUpdateManyWithWhereNestedInput {
+  where: ConversationScalarWhereInput!
+  data: ConversationUpdateManyDataInput!
 }
 
 input ConversationUpdateOneWithoutMessagesInput {
@@ -216,16 +254,19 @@ input ConversationUpdateOneWithoutMessagesInput {
 input ConversationUpdateWithoutJobDataInput {
   messages: MessageUpdateManyWithoutConversationInput
   participants: UserUpdateManyWithoutConversationsInput
+  count: String
 }
 
 input ConversationUpdateWithoutMessagesDataInput {
   participants: UserUpdateManyWithoutConversationsInput
   job: JobUpdateOneWithoutConversationsInput
+  count: String
 }
 
 input ConversationUpdateWithoutParticipantsDataInput {
   messages: MessageUpdateManyWithoutConversationInput
   job: JobUpdateOneWithoutConversationsInput
+  count: String
 }
 
 input ConversationUpdateWithWhereUniqueWithoutJobInput {
@@ -285,6 +326,20 @@ input ConversationWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
+  count: String
+  count_not: String
+  count_in: [String!]
+  count_not_in: [String!]
+  count_lt: String
+  count_lte: String
+  count_gt: String
+  count_gte: String
+  count_contains: String
+  count_not_contains: String
+  count_starts_with: String
+  count_not_starts_with: String
+  count_ends_with: String
+  count_not_ends_with: String
   AND: [ConversationWhereInput!]
   OR: [ConversationWhereInput!]
   NOT: [ConversationWhereInput!]
@@ -2843,6 +2898,7 @@ input MessageWhereUniqueInput {
 type Mutation {
   createConversation(data: ConversationCreateInput!): Conversation!
   updateConversation(data: ConversationUpdateInput!, where: ConversationWhereUniqueInput!): Conversation
+  updateManyConversations(data: ConversationUpdateManyMutationInput!, where: ConversationWhereInput): BatchPayload!
   upsertConversation(where: ConversationWhereUniqueInput!, create: ConversationCreateInput!, update: ConversationUpdateInput!): Conversation!
   deleteConversation(where: ConversationWhereUniqueInput!): Conversation
   deleteManyConversations(where: ConversationWhereInput): BatchPayload!

@@ -55,7 +55,7 @@ type Query {
   getJob(jobId: String!): Job
   getJobs: [Job]
   getMessages(jobId: String!): [Message]
-  getConversations: User
+  getConversations: [Conversation]
   getConversation(conversationId: String!, page: Int!): Conversation
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
@@ -184,10 +184,10 @@ type Job {
 type Conversation {
   id: ID!
   messages: [Message]
+  unreadMessages: String
   participants: [User]
   job: Job
   createdAt: String
-  count: String
 }
 
 type User {

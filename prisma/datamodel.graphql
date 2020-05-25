@@ -43,10 +43,10 @@ type Invite {
 type Conversation {
   id: ID! @id
   messages: [Message] @relation(link: TABLE)
+  unreadMessages: String
   participants: [User]
   job: Job
   createdAt: DateTime! @createdAt
-  count: String
 }
 
 type Job {

@@ -5,7 +5,7 @@ const { emailNewMessage } = require('../../../email');
 
 async function markAsRead(parent, args, context, info) {
   const conversationId = args.conversationId;
-  await context.prisma.updateMessages({
+  await context.prisma.updateManyMessages({
     data: {
       status: 'read',
     },
@@ -13,6 +13,7 @@ async function markAsRead(parent, args, context, info) {
       conversation: { id: conversationId },
     },
   });
+  console.log('done');
 }
 
 async function updateMessage(parent, args, context, info) {

@@ -101,8 +101,10 @@ async function getJobs(parent, args, context, info) {
 async function getConversations(parent, args, context, info) {
   const userId = getUserId(context);
 
-  const conversations = await context.prisma.user({
-    id: userId,
+  const conversations = await context.prisma.conversations({
+    where: {
+      participants_some: { id_in: [userId] },
+    },
   });
 
   return conversations;

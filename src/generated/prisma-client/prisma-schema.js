@@ -62,10 +62,10 @@ type BatchPayload {
 type Conversation {
   id: ID!
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  unreadMessages: String
   participants(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
   job: Job
   createdAt: DateTime!
-  count: String
 }
 
 type ConversationConnection {
@@ -77,9 +77,9 @@ type ConversationConnection {
 input ConversationCreateInput {
   id: ID
   messages: MessageCreateManyWithoutConversationInput
+  unreadMessages: String
   participants: UserCreateManyWithoutConversationsInput
   job: JobCreateOneWithoutConversationsInput
-  count: String
 }
 
 input ConversationCreateManyWithoutJobInput {
@@ -100,22 +100,22 @@ input ConversationCreateOneWithoutMessagesInput {
 input ConversationCreateWithoutJobInput {
   id: ID
   messages: MessageCreateManyWithoutConversationInput
+  unreadMessages: String
   participants: UserCreateManyWithoutConversationsInput
-  count: String
 }
 
 input ConversationCreateWithoutMessagesInput {
   id: ID
+  unreadMessages: String
   participants: UserCreateManyWithoutConversationsInput
   job: JobCreateOneWithoutConversationsInput
-  count: String
 }
 
 input ConversationCreateWithoutParticipantsInput {
   id: ID
   messages: MessageCreateManyWithoutConversationInput
+  unreadMessages: String
   job: JobCreateOneWithoutConversationsInput
-  count: String
 }
 
 type ConversationEdge {
@@ -126,16 +126,16 @@ type ConversationEdge {
 enum ConversationOrderByInput {
   id_ASC
   id_DESC
+  unreadMessages_ASC
+  unreadMessages_DESC
   createdAt_ASC
   createdAt_DESC
-  count_ASC
-  count_DESC
 }
 
 type ConversationPreviousValues {
   id: ID!
+  unreadMessages: String
   createdAt: DateTime!
-  count: String
 }
 
 input ConversationScalarWhereInput {
@@ -153,6 +153,20 @@ input ConversationScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  unreadMessages: String
+  unreadMessages_not: String
+  unreadMessages_in: [String!]
+  unreadMessages_not_in: [String!]
+  unreadMessages_lt: String
+  unreadMessages_lte: String
+  unreadMessages_gt: String
+  unreadMessages_gte: String
+  unreadMessages_contains: String
+  unreadMessages_not_contains: String
+  unreadMessages_starts_with: String
+  unreadMessages_not_starts_with: String
+  unreadMessages_ends_with: String
+  unreadMessages_not_ends_with: String
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -161,20 +175,6 @@ input ConversationScalarWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
-  count: String
-  count_not: String
-  count_in: [String!]
-  count_not_in: [String!]
-  count_lt: String
-  count_lte: String
-  count_gt: String
-  count_gte: String
-  count_contains: String
-  count_not_contains: String
-  count_starts_with: String
-  count_not_starts_with: String
-  count_ends_with: String
-  count_not_ends_with: String
   AND: [ConversationScalarWhereInput!]
   OR: [ConversationScalarWhereInput!]
   NOT: [ConversationScalarWhereInput!]
@@ -200,17 +200,17 @@ input ConversationSubscriptionWhereInput {
 
 input ConversationUpdateInput {
   messages: MessageUpdateManyWithoutConversationInput
+  unreadMessages: String
   participants: UserUpdateManyWithoutConversationsInput
   job: JobUpdateOneWithoutConversationsInput
-  count: String
 }
 
 input ConversationUpdateManyDataInput {
-  count: String
+  unreadMessages: String
 }
 
 input ConversationUpdateManyMutationInput {
-  count: String
+  unreadMessages: String
 }
 
 input ConversationUpdateManyWithoutJobInput {
@@ -253,20 +253,20 @@ input ConversationUpdateOneWithoutMessagesInput {
 
 input ConversationUpdateWithoutJobDataInput {
   messages: MessageUpdateManyWithoutConversationInput
+  unreadMessages: String
   participants: UserUpdateManyWithoutConversationsInput
-  count: String
 }
 
 input ConversationUpdateWithoutMessagesDataInput {
+  unreadMessages: String
   participants: UserUpdateManyWithoutConversationsInput
   job: JobUpdateOneWithoutConversationsInput
-  count: String
 }
 
 input ConversationUpdateWithoutParticipantsDataInput {
   messages: MessageUpdateManyWithoutConversationInput
+  unreadMessages: String
   job: JobUpdateOneWithoutConversationsInput
-  count: String
 }
 
 input ConversationUpdateWithWhereUniqueWithoutJobInput {
@@ -314,6 +314,20 @@ input ConversationWhereInput {
   messages_every: MessageWhereInput
   messages_some: MessageWhereInput
   messages_none: MessageWhereInput
+  unreadMessages: String
+  unreadMessages_not: String
+  unreadMessages_in: [String!]
+  unreadMessages_not_in: [String!]
+  unreadMessages_lt: String
+  unreadMessages_lte: String
+  unreadMessages_gt: String
+  unreadMessages_gte: String
+  unreadMessages_contains: String
+  unreadMessages_not_contains: String
+  unreadMessages_starts_with: String
+  unreadMessages_not_starts_with: String
+  unreadMessages_ends_with: String
+  unreadMessages_not_ends_with: String
   participants_every: UserWhereInput
   participants_some: UserWhereInput
   participants_none: UserWhereInput
@@ -326,20 +340,6 @@ input ConversationWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
-  count: String
-  count_not: String
-  count_in: [String!]
-  count_not_in: [String!]
-  count_lt: String
-  count_lte: String
-  count_gt: String
-  count_gte: String
-  count_contains: String
-  count_not_contains: String
-  count_starts_with: String
-  count_not_starts_with: String
-  count_ends_with: String
-  count_not_ends_with: String
   AND: [ConversationWhereInput!]
   OR: [ConversationWhereInput!]
   NOT: [ConversationWhereInput!]

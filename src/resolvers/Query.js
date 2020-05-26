@@ -178,6 +178,34 @@ async function getInvites(parent, args, context) {
   return invites;
 }
 
+async function determineConversationId(parent, { jobId }, context) {
+  const userId = getUserId(context);
+  const conversation = await context.prisma.conversations({
+    where: {
+      job: { id: jobId },
+      participants_some: { id_in: [userId] },
+    },
+  });
+
+  const job = await context.prisma
+    .job({
+      id: jobId,
+    })
+    .user();
+
+  if (conversation.length === 0) {
+    const conversationNew = await context.prisma.createConversation({
+      participants: {
+        connect: [{ id: userId }, { id: job.id }],
+      },
+      job: { connect: { id: jobId } },
+    });
+    return conversationNew.id;
+  }
+
+  return conversation[0].id;
+}
+
 async function counts(parent, args, context) {
   const userId = getUserId(context);
   const invites = await context.prisma.invites({
@@ -233,6 +261,7 @@ module.exports = {
   sectionsPreview,
   getCreatives,
   getInvites,
+  determineConversationId,
   counts,
   getMessages,
   getConversations,

@@ -14,6 +14,7 @@ const User = require('./resolvers/User');
 const Invite = require('./resolvers/Invite');
 const Message = require('./resolvers/Message');
 const Conversation = require('./resolvers/Conversation');
+const Subscription = require('./resolvers/Subscription');
 
 const resolvers = {
   Query,
@@ -26,6 +27,7 @@ const resolvers = {
   Invite,
   Message,
   Conversation,
+  Subscription,
 };
 
 const server = new GraphQLServer({

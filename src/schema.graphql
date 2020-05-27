@@ -182,6 +182,10 @@ type Job {
   messages: [Message]
 }
 
+type Subscription {
+  newMessage: Message
+}
+
 type Conversation {
   id: ID!
   messages: [Message]

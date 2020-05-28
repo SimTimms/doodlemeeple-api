@@ -1,6 +1,12 @@
 function newMessageSubscribe(parent, args, context, info) {
-  console.log('subscribed');
-  return context.prisma.$subscribe.message({ mutation_in: ['CREATED'] }).node();
+  console.log(args.conversationId);
+
+  return context.prisma.$subscribe
+    .message({
+      mutation_in: ['CREATED'],
+      conversation: { id: args.conversationId },
+    })
+    .node();
 }
 
 const newMessage = {

@@ -183,7 +183,7 @@ type Job {
 }
 
 type Subscription {
-  newMessage: Message
+  newMessage(conversationId: String!): Message
 }
 
 type Conversation {

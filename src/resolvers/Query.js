@@ -100,10 +100,15 @@ async function getJobs(parent, args, context, info) {
 
 async function getConversations(parent, args, context, info) {
   const userId = getUserId(context);
-
   const conversations = await context.prisma.conversations({
     where: {
       participants_some: { id_in: [userId] },
+      job: {
+        invite_some: {
+          status: args.status,
+          OR: [{ receiver: { id: userId } }, { user: { id: userId } }],
+        },
+      },
     },
   });
 
@@ -161,9 +166,10 @@ async function getTestimonials(parent, args, context) {
 }
 
 async function getCreatives(parent, args, context) {
-  const section = await context.prisma.users();
+  const userId = getUserId(context);
+  const users = await context.prisma.users({ where: { id_not: userId } });
 
-  return section;
+  return users;
 }
 
 async function getInvites(parent, args, context) {

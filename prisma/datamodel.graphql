@@ -42,7 +42,7 @@ type Invite {
 
 type Conversation {
   id: ID! @id
-  messages: [Message] @relation(link: TABLE)
+  messages: [Message] @relation(link: TABLE, onDelete: CASCADE)
   unreadMessages: String
   participants: [User]
   job: Job

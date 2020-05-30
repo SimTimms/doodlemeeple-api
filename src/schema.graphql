@@ -55,7 +55,7 @@ type Query {
   getJob(jobId: String!): Job
   getJobs: [Job]
   getMessages(jobId: String!): [Message]
-  getConversations: [Conversation]
+  getConversations(status: String!): [Conversation]
   getConversation(conversationId: String!, page: Int!): Conversation
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]

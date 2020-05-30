@@ -35,28 +35,40 @@ async function submitBrief(parent, args, context, info) {
 
   Promise.all(results).then();
 
-  emailAddresses.map((email) => {
-    const request = emailInvite(email, jobDeets);
+  emailAddresses
+    .filter((user) => {
+      user.id !== userId;
+    })
+    .map((email) => {
+      const request = emailInvite(email, jobDeets);
 
-    request
-      .then((result) => {
-        //  console.log(result);
-      })
-      .catch((err) => {
-        console.log(err.statusCode);
-      });
-  });
-
-  const results2 = emailAddresses.map(async (user) => {
-    await context.prisma.createConversation({
-      participants: {
-        connect: [{ id: user.id }, { id: userId }],
-      },
-      job: { connect: { id: jobId } },
+      request
+        .then((result) => {
+          //  console.log(result);
+        })
+        .catch((err) => {
+          console.log(err.statusCode);
+        });
     });
+
+  const conversationExists = await context.prisma.$exists.conversation({
+    participants_some: { id_in: [userId] },
+    job: { id: jobId },
   });
 
-  Promise.all(results2).then();
+  console.log(conversationExists);
+  if (!conversationExists) {
+    const results2 = emailAddresses.map(async (user) => {
+      await context.prisma.createConversation({
+        participants: {
+          connect: [{ id: user.id }, { id: userId }],
+        },
+        job: { connect: { id: jobId } },
+      });
+    });
+
+    Promise.all(results2).then();
+  }
 
   await context.prisma.updateManyInvites({
     data: {
@@ -66,8 +78,6 @@ async function submitBrief(parent, args, context, info) {
       job: { id: jobId },
     },
   });
-
-  //Create a conversation for each person
 
   return true;
 }

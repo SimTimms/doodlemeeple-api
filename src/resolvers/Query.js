@@ -225,6 +225,7 @@ async function counts(parent, args, context) {
     where: {
       status: 'unread',
       conversation: { participants_some: { id: userId } },
+      sender: { id_not: userId },
     },
   });
 

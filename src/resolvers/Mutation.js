@@ -19,6 +19,12 @@ const {
 const { addFavourite } = require('./mutations/favourites');
 const { updateGame, createGame, removeGame } = require('./mutations/game');
 const {
+  createMessage,
+  updateMessage,
+  removeMessage,
+  markAsRead,
+} = require('./mutations/message');
+const {
   updateJob,
   createJob,
   removeJob,
@@ -103,7 +109,20 @@ async function removeNotification(parent, args, context) {
     id: args.id,
   });
 
-  return args.id;
+  const userId = getUserId(context);
+
+  const notifications = await context.prisma.notifications({
+    orderBy: 'createdAt_DESC',
+    where: {
+      user: {
+        id: userId,
+      },
+    },
+    skip: 0,
+    first: 5,
+  });
+
+  return notifications;
 }
 
 async function updateEmail(parent, args, context, info) {
@@ -358,6 +377,10 @@ module.exports = {
   updateGame,
   createGame,
   removeGame,
+  createMessage,
+  updateMessage,
+  removeMessage,
+  markAsRead,
   updateJob,
   createJob,
   removeJob,

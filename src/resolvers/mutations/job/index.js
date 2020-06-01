@@ -4,6 +4,7 @@ const { createNotification } = require('../utils');
 const { INVITED } = require('../../../utils/notifications');
 
 async function submitBrief(parent, args, context, info) {
+  const userId = getUserId(context);
   const { jobId } = args;
 
   const jobDeets = await context.prisma.job({
@@ -34,17 +35,40 @@ async function submitBrief(parent, args, context, info) {
 
   Promise.all(results).then();
 
-  emailAddresses.map((email) => {
-    const request = emailInvite(email, jobDeets);
+  emailAddresses
+    .filter((user) => {
+      user.id !== userId;
+    })
+    .map((email) => {
+      const request = emailInvite(email, jobDeets);
 
-    request
-      .then((result) => {
-        //  console.log(result);
-      })
-      .catch((err) => {
-        console.log(err.statusCode);
-      });
+      request
+        .then((result) => {
+          //  console.log(result);
+        })
+        .catch((err) => {
+          console.log(err.statusCode);
+        });
+    });
+
+  const conversationExists = await context.prisma.$exists.conversation({
+    participants_some: { id_in: [userId] },
+    job: { id: jobId },
   });
+
+  console.log(conversationExists);
+  if (!conversationExists) {
+    const results2 = emailAddresses.map(async (user) => {
+      await context.prisma.createConversation({
+        participants: {
+          connect: [{ id: user.id }, { id: userId }],
+        },
+        job: { connect: { id: jobId } },
+      });
+    });
+
+    Promise.all(results2).then();
+  }
 
   await context.prisma.updateManyInvites({
     data: {
@@ -110,6 +134,7 @@ async function createJob(parent, args, context, info) {
     showreel,
     game: { connect: { id: gameId } },
   });
+
   return returnObj.id;
 }
 

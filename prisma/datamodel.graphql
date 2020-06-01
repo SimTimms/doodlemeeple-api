@@ -17,11 +17,16 @@ type User {
   sections: [Section!] @relation(link: TABLE, onDelete: CASCADE)
   notifications: [Notification!]! @relation(link: TABLE, onDelete: CASCADE)
   games: [Game!] @relation(link: TABLE, onDelete: CASCADE)
+  conversations: [Conversation] @relation(link: TABLE)
   jobs: [Job!] @relation(link: TABLE, onDelete: CASCADE)
   invites: [Invite!]
     @relation(link: TABLE, onDelete: CASCADE, name: "InviteUser")
   invitesReceived: [Invite!]
     @relation(link: TABLE, onDelete: CASCADE, name: "InviteReceived")
+  messagesSent: [Message!]
+    @relation(link: TABLE, onDelete: CASCADE, name: "MessageSent")
+  messagesReceived: [Message!]
+    @relation(link: TABLE, onDelete: CASCADE, name: "MessageReceived")
 }
 
 type Invite {
@@ -33,6 +38,51 @@ type Invite {
   job: Job!
   user: User! @relation(name: "InviteUser")
   receiver: User! @relation(name: "InviteReceived")
+}
+
+type Conversation {
+  id: ID! @id
+  messages: [Message] @relation(link: TABLE, onDelete: CASCADE)
+  unreadMessages: String
+  participants: [User]
+  job: Job
+  createdAt: DateTime! @createdAt
+}
+
+type Job {
+  id: ID! @id
+  name: String!
+  keywords: [String] @scalarList(strategy: RELATION)
+  img: String
+  summary: String
+  creativeSummary: String
+  location: String
+  gallery: Gallery
+  showreel: String
+  user: User!
+  type: String
+  createdAt: DateTime! @createdAt
+  game: Game! @relation(link: INLINE)
+  submitted: Boolean
+  invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
+  messages: [Message] @relation(link: TABLE, onDelete: CASCADE)
+  conversations: [Conversation] @relation(link: TABLE)
+}
+
+input MessageInput {
+  messageStr: String!
+  conversationId: String!
+}
+
+type Message {
+  id: ID! @id
+  messageStr: String!
+  job: Job
+  sender: User! @relation(name: "MessageSent")
+  receiver: User @relation(name: "MessageReceived")
+  createdAt: DateTime! @createdAt
+  status: String
+  conversation: Conversation
 }
 
 input InviteInput {
@@ -70,27 +120,10 @@ type Game {
   jobs: [Job]
 }
 
-type Job {
-  id: ID! @id
-  name: String!
-  keywords: [String] @scalarList(strategy: RELATION)
-  img: String
-  summary: String
-  creativeSummary: String
-  location: String
-  gallery: Gallery
-  showreel: String
-  user: User!
-  type: String
-  createdAt: DateTime! @createdAt
-  game: Game! @relation(link: INLINE)
-  submitted: Boolean
-  invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
-}
-
 type Count {
   id: ID! @id
   invites: String
+  messages: String
 }
 
 input GameInput {

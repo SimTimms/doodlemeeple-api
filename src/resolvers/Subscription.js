@@ -1,0 +1,19 @@
+function newMessageSubscribe(parent, args, context, info) {
+  return context.prisma.$subscribe
+    .message({
+      mutation_in: ['CREATED'],
+      node: { conversation: { id: args.conversationId } },
+    })
+    .node();
+}
+
+const newMessage = {
+  subscribe: newMessageSubscribe,
+  resolve: (payload) => {
+    return payload;
+  },
+};
+
+module.exports = {
+  newMessage,
+};

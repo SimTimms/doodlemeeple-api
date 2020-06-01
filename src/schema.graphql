@@ -14,6 +14,7 @@ type Mutation {
     sections: [SectionInput]
     autosave: Boolean
   ): User
+  markAsRead(conversationId: String!): String
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
@@ -40,8 +41,11 @@ type Mutation {
   createProject(project: NotableProjectsInput!, sectionId: String!): String
   removeSection(id: String!): Boolean
   removeNotableProject(id: String!): Boolean
-  removeNotification(id: String!): String
+  removeNotification(id: String!): [Notification]
   removeTestimonial(id: String!): Boolean
+  createMessage(id: String!, message: MessageInput!): String
+  updateMessage(id: String!, message: MessageInput!): String
+  removeMessage(id: String!): Boolean
 }
 
 type Query {
@@ -50,6 +54,9 @@ type Query {
   getGames: [Game]
   getJob(jobId: String!): Job
   getJobs: [Job]
+  getMessages(jobId: String!): [Message]
+  getConversations(status: String!): [Conversation]
+  getConversation(conversationId: String!, page: Int!): Conversation
   profilePreview(userId: String!): User!
   sectionsPreview(userId: String!): [Section!]
   getNotifications: [Notification!]
@@ -59,6 +66,7 @@ type Query {
   getTestimonials(sectionId: String!): [Section!]
   getCreatives: [User!]
   getInvites: [Invite!]
+  determineConversationId(jobId: String): String
   counts: Count
 }
 
@@ -92,6 +100,22 @@ input JobInput {
   showreel: String
   type: String
   submitted: Boolean
+}
+
+input MessageInput {
+  messageStr: String!
+  conversationId: String!
+}
+
+type Message {
+  id: ID!
+  messageStr: String!
+  job: Job
+  sender: User!
+  receiver: User
+  createdAt: String
+  status: String
+  conversation: Conversation
 }
 
 input SectionInput {
@@ -136,6 +160,7 @@ type Game {
 type Count {
   id: ID!
   invites: String
+  messages: String
 }
 
 type Job {
@@ -154,6 +179,20 @@ type Job {
   game: Game!
   submitted: Boolean
   invite: [Invite!]
+  messages: [Message]
+}
+
+type Subscription {
+  newMessage(conversationId: String!): Message
+}
+
+type Conversation {
+  id: ID!
+  messages: [Message]
+  unreadMessages: String
+  participants: [User]
+  job: Job
+  createdAt: String
 }
 
 type User {
@@ -176,6 +215,7 @@ type User {
   notifications: [Notification!]!
   invites: [Invite!]
   invitesReceived: [Invite!]
+  conversations: [Conversation]
 }
 
 type Invite {

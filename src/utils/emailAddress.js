@@ -7,6 +7,7 @@ const emailAddress = {
   signoffPlain: 'The DoodleMeeple Team',
   signoffHTML: '<strong>The DoodleMeeple Team</strong>',
   appURL: 'https://app.doodlemeeple.com',
+  messagesURL: 'https://app.doodlemeeple.com/messages/conversations',
 };
 
 module.exports = {

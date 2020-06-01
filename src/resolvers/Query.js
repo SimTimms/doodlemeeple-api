@@ -98,6 +98,53 @@ async function getJobs(parent, args, context, info) {
   return games;
 }
 
+async function getConversations(parent, args, context, info) {
+  const userId = getUserId(context);
+  const conversations = await context.prisma.conversations({
+    where: {
+      participants_some: { id_in: [userId] },
+      job: {
+        invite_some: {
+          status: args.status,
+          OR: [{ receiver: { id: userId } }, { user: { id: userId } }],
+        },
+      },
+    },
+  });
+
+  return conversations;
+}
+
+async function getConversation(parent, args, context, info) {
+  const conversationId = args.conversationId;
+
+  const conversation = await context.prisma.conversation({
+    id: conversationId,
+  });
+
+  return conversation;
+}
+
+async function getMessages(parent, args, context, info) {
+  const userId = getUserId(context);
+  console.log(args);
+  const messages = await context.prisma.messages({
+    where: {
+      OR: [
+        {
+          sender: {
+            id: userId,
+          },
+        },
+        { receiver: { id: userId } },
+      ],
+      job: { id: args.jobId },
+    },
+  });
+
+  return messages;
+}
+
 async function profilePreview(parent, args, context, info) {
   const userId = args.userId;
 
@@ -119,9 +166,10 @@ async function getTestimonials(parent, args, context) {
 }
 
 async function getCreatives(parent, args, context) {
-  const section = await context.prisma.users();
+  const userId = getUserId(context);
+  const users = await context.prisma.users({ where: { id_not: userId } });
 
-  return section;
+  return users;
 }
 
 async function getInvites(parent, args, context) {
@@ -136,6 +184,34 @@ async function getInvites(parent, args, context) {
   return invites;
 }
 
+async function determineConversationId(parent, { jobId }, context) {
+  const userId = getUserId(context);
+  const conversation = await context.prisma.conversations({
+    where: {
+      job: { id: jobId },
+      participants_some: { id_in: [userId] },
+    },
+  });
+
+  const job = await context.prisma
+    .job({
+      id: jobId,
+    })
+    .user();
+
+  if (conversation.length === 0) {
+    const conversationNew = await context.prisma.createConversation({
+      participants: {
+        connect: [{ id: userId }, { id: job.id }],
+      },
+      job: { connect: { id: jobId } },
+    });
+    return conversationNew.id;
+  }
+
+  return conversation[0].id;
+}
+
 async function counts(parent, args, context) {
   const userId = getUserId(context);
   const invites = await context.prisma.invites({
@@ -145,13 +221,26 @@ async function counts(parent, args, context) {
     },
   });
 
-  return { invites: invites.length, id: 'counts' };
+  const messages = await context.prisma.messages({
+    where: {
+      status: 'unread',
+      conversation: { participants_some: { id: userId } },
+      sender: { id_not: userId },
+    },
+  });
+
+  return {
+    invites: invites.length,
+    id: 'counts',
+    messages: messages.length,
+  };
 }
 
 async function getNotifications(parent, args, context) {
   const userId = getUserId(context);
 
   const notifications = await context.prisma.notifications({
+    orderBy: 'createdAt_DESC',
     where: {
       user: {
         id: userId,
@@ -179,5 +268,9 @@ module.exports = {
   sectionsPreview,
   getCreatives,
   getInvites,
+  determineConversationId,
   counts,
+  getMessages,
+  getConversations,
+  getConversation,
 };

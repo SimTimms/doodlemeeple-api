@@ -85,6 +85,18 @@ async function getJob(parent, args, context, info) {
   return job;
 }
 
+async function getContract(parent, args, context, info) {
+  const contract = await context.prisma.contracts({
+    where: {
+      invite: {
+        id: args.inviteId,
+      },
+    },
+  });
+
+  return contract;
+}
+
 async function getJobs(parent, args, context, info) {
   const userId = getUserId(context);
   const games = await context.prisma.jobs({
@@ -127,7 +139,6 @@ async function getConversation(parent, args, context, info) {
 
 async function getMessages(parent, args, context, info) {
   const userId = getUserId(context);
-  console.log(args);
   const messages = await context.prisma.messages({
     where: {
       OR: [
@@ -273,4 +284,5 @@ module.exports = {
   getMessages,
   getConversations,
   getConversation,
+  getContract,
 };

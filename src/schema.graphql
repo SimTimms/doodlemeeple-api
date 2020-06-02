@@ -18,6 +18,9 @@ type Mutation {
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
+  updateContract(id: String!, contract: ContractInput!): String
+  createContract(id: String!, contract: ContractInput!): String
+  removeContract(id: String!): Boolean
   updateJob(id: String!, job: JobInput!): String
   createJob(id: String!, job: JobInput!): String
   removeJob(id: String!): Boolean
@@ -54,6 +57,7 @@ type Query {
   getGames: [Game]
   getJob(jobId: String!): Job
   getJobs: [Job]
+  getContract(inviteId: String!): [Contract]
   getMessages(jobId: String!): [Message]
   getConversations(status: String!): [Conversation]
   getConversation(conversationId: String!, page: Int!): Conversation
@@ -68,6 +72,36 @@ type Query {
   getInvites: [Invite!]
   determineConversationId(jobId: String): String
   counts: Count
+}
+
+input ContractInput {
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: [PaymentTermInput]
+  currency: String!
+  inviteId: String
+}
+
+type Contract {
+  id: String!
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: [PaymentTerm]
+  currency: String!
+  invite: Invite!
+}
+
+input PaymentTermInput {
+  percent: Int
+  description: String!
+}
+
+type PaymentTerm {
+  id: String!
+  percent: Int
+  description: String!
 }
 
 input InviteInput {
@@ -227,6 +261,7 @@ type Invite {
   job: Job!
   user: User!
   receiver: User!
+  contracts: [Contract]
 }
 
 type Notification {

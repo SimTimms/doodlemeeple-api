@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateConversation {
+/* GraphQL */ `type AggregateContract {
+  count: Int!
+}
+
+type AggregateConversation {
   count: Int!
 }
 
@@ -43,6 +47,10 @@ type AggregateNotification {
   count: Int!
 }
 
+type AggregatePaymentTerm {
+  count: Int!
+}
+
 type AggregateSection {
   count: Int!
 }
@@ -57,6 +65,297 @@ type AggregateUser {
 
 type BatchPayload {
   count: Long!
+}
+
+type Contract {
+  id: ID!
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms(where: PaymentTermWhereInput, orderBy: PaymentTermOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PaymentTerm!]
+  currency: String!
+  invite: Invite!
+}
+
+type ContractConnection {
+  pageInfo: PageInfo!
+  edges: [ContractEdge]!
+  aggregate: AggregateContract!
+}
+
+input ContractCreateInput {
+  id: ID
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermCreateManyInput
+  currency: String!
+  invite: InviteCreateOneWithoutContractsInput!
+}
+
+input ContractCreateManyWithoutInviteInput {
+  create: [ContractCreateWithoutInviteInput!]
+  connect: [ContractWhereUniqueInput!]
+}
+
+input ContractCreateWithoutInviteInput {
+  id: ID
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermCreateManyInput
+  currency: String!
+}
+
+type ContractEdge {
+  node: Contract!
+  cursor: String!
+}
+
+enum ContractOrderByInput {
+  id_ASC
+  id_DESC
+  notes_ASC
+  notes_DESC
+  deadline_ASC
+  deadline_DESC
+  cost_ASC
+  cost_DESC
+  currency_ASC
+  currency_DESC
+}
+
+type ContractPreviousValues {
+  id: ID!
+  notes: String
+  deadline: String
+  cost: Int
+  currency: String!
+}
+
+input ContractScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  notes: String
+  notes_not: String
+  notes_in: [String!]
+  notes_not_in: [String!]
+  notes_lt: String
+  notes_lte: String
+  notes_gt: String
+  notes_gte: String
+  notes_contains: String
+  notes_not_contains: String
+  notes_starts_with: String
+  notes_not_starts_with: String
+  notes_ends_with: String
+  notes_not_ends_with: String
+  deadline: String
+  deadline_not: String
+  deadline_in: [String!]
+  deadline_not_in: [String!]
+  deadline_lt: String
+  deadline_lte: String
+  deadline_gt: String
+  deadline_gte: String
+  deadline_contains: String
+  deadline_not_contains: String
+  deadline_starts_with: String
+  deadline_not_starts_with: String
+  deadline_ends_with: String
+  deadline_not_ends_with: String
+  cost: Int
+  cost_not: Int
+  cost_in: [Int!]
+  cost_not_in: [Int!]
+  cost_lt: Int
+  cost_lte: Int
+  cost_gt: Int
+  cost_gte: Int
+  currency: String
+  currency_not: String
+  currency_in: [String!]
+  currency_not_in: [String!]
+  currency_lt: String
+  currency_lte: String
+  currency_gt: String
+  currency_gte: String
+  currency_contains: String
+  currency_not_contains: String
+  currency_starts_with: String
+  currency_not_starts_with: String
+  currency_ends_with: String
+  currency_not_ends_with: String
+  AND: [ContractScalarWhereInput!]
+  OR: [ContractScalarWhereInput!]
+  NOT: [ContractScalarWhereInput!]
+}
+
+type ContractSubscriptionPayload {
+  mutation: MutationType!
+  node: Contract
+  updatedFields: [String!]
+  previousValues: ContractPreviousValues
+}
+
+input ContractSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ContractWhereInput
+  AND: [ContractSubscriptionWhereInput!]
+  OR: [ContractSubscriptionWhereInput!]
+  NOT: [ContractSubscriptionWhereInput!]
+}
+
+input ContractUpdateInput {
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermUpdateManyInput
+  currency: String
+  invite: InviteUpdateOneRequiredWithoutContractsInput
+}
+
+input ContractUpdateManyDataInput {
+  notes: String
+  deadline: String
+  cost: Int
+  currency: String
+}
+
+input ContractUpdateManyMutationInput {
+  notes: String
+  deadline: String
+  cost: Int
+  currency: String
+}
+
+input ContractUpdateManyWithoutInviteInput {
+  create: [ContractCreateWithoutInviteInput!]
+  delete: [ContractWhereUniqueInput!]
+  connect: [ContractWhereUniqueInput!]
+  set: [ContractWhereUniqueInput!]
+  disconnect: [ContractWhereUniqueInput!]
+  update: [ContractUpdateWithWhereUniqueWithoutInviteInput!]
+  upsert: [ContractUpsertWithWhereUniqueWithoutInviteInput!]
+  deleteMany: [ContractScalarWhereInput!]
+  updateMany: [ContractUpdateManyWithWhereNestedInput!]
+}
+
+input ContractUpdateManyWithWhereNestedInput {
+  where: ContractScalarWhereInput!
+  data: ContractUpdateManyDataInput!
+}
+
+input ContractUpdateWithoutInviteDataInput {
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermUpdateManyInput
+  currency: String
+}
+
+input ContractUpdateWithWhereUniqueWithoutInviteInput {
+  where: ContractWhereUniqueInput!
+  data: ContractUpdateWithoutInviteDataInput!
+}
+
+input ContractUpsertWithWhereUniqueWithoutInviteInput {
+  where: ContractWhereUniqueInput!
+  update: ContractUpdateWithoutInviteDataInput!
+  create: ContractCreateWithoutInviteInput!
+}
+
+input ContractWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  notes: String
+  notes_not: String
+  notes_in: [String!]
+  notes_not_in: [String!]
+  notes_lt: String
+  notes_lte: String
+  notes_gt: String
+  notes_gte: String
+  notes_contains: String
+  notes_not_contains: String
+  notes_starts_with: String
+  notes_not_starts_with: String
+  notes_ends_with: String
+  notes_not_ends_with: String
+  deadline: String
+  deadline_not: String
+  deadline_in: [String!]
+  deadline_not_in: [String!]
+  deadline_lt: String
+  deadline_lte: String
+  deadline_gt: String
+  deadline_gte: String
+  deadline_contains: String
+  deadline_not_contains: String
+  deadline_starts_with: String
+  deadline_not_starts_with: String
+  deadline_ends_with: String
+  deadline_not_ends_with: String
+  cost: Int
+  cost_not: Int
+  cost_in: [Int!]
+  cost_not_in: [Int!]
+  cost_lt: Int
+  cost_lte: Int
+  cost_gt: Int
+  cost_gte: Int
+  paymentTerms_every: PaymentTermWhereInput
+  paymentTerms_some: PaymentTermWhereInput
+  paymentTerms_none: PaymentTermWhereInput
+  currency: String
+  currency_not: String
+  currency_in: [String!]
+  currency_not_in: [String!]
+  currency_lt: String
+  currency_lte: String
+  currency_gt: String
+  currency_gte: String
+  currency_contains: String
+  currency_not_contains: String
+  currency_starts_with: String
+  currency_not_starts_with: String
+  currency_ends_with: String
+  currency_not_ends_with: String
+  invite: InviteWhereInput
+  AND: [ContractWhereInput!]
+  OR: [ContractWhereInput!]
+  NOT: [ContractWhereInput!]
+}
+
+input ContractWhereUniqueInput {
+  id: ID
 }
 
 type Conversation {
@@ -1423,6 +1722,7 @@ type Invite {
   job: Job!
   user: User!
   receiver: User!
+  contracts(where: ContractWhereInput, orderBy: ContractOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Contract!]
 }
 
 type InviteConnection {
@@ -1440,6 +1740,7 @@ input InviteCreateInput {
   job: JobCreateOneWithoutInviteInput!
   user: UserCreateOneWithoutInvitesInput!
   receiver: UserCreateOneWithoutInvitesReceivedInput!
+  contracts: ContractCreateManyWithoutInviteInput
 }
 
 input InviteCreateManyWithoutJobInput {
@@ -1457,6 +1758,22 @@ input InviteCreateManyWithoutUserInput {
   connect: [InviteWhereUniqueInput!]
 }
 
+input InviteCreateOneWithoutContractsInput {
+  create: InviteCreateWithoutContractsInput
+  connect: InviteWhereUniqueInput
+}
+
+input InviteCreateWithoutContractsInput {
+  id: ID
+  title: String!
+  message: String!
+  status: String
+  game: GameCreateOneInput!
+  job: JobCreateOneWithoutInviteInput!
+  user: UserCreateOneWithoutInvitesInput!
+  receiver: UserCreateOneWithoutInvitesReceivedInput!
+}
+
 input InviteCreateWithoutJobInput {
   id: ID
   title: String!
@@ -1465,6 +1782,7 @@ input InviteCreateWithoutJobInput {
   game: GameCreateOneInput!
   user: UserCreateOneWithoutInvitesInput!
   receiver: UserCreateOneWithoutInvitesReceivedInput!
+  contracts: ContractCreateManyWithoutInviteInput
 }
 
 input InviteCreateWithoutReceiverInput {
@@ -1475,6 +1793,7 @@ input InviteCreateWithoutReceiverInput {
   game: GameCreateOneInput!
   job: JobCreateOneWithoutInviteInput!
   user: UserCreateOneWithoutInvitesInput!
+  contracts: ContractCreateManyWithoutInviteInput
 }
 
 input InviteCreateWithoutUserInput {
@@ -1485,6 +1804,7 @@ input InviteCreateWithoutUserInput {
   game: GameCreateOneInput!
   job: JobCreateOneWithoutInviteInput!
   receiver: UserCreateOneWithoutInvitesReceivedInput!
+  contracts: ContractCreateManyWithoutInviteInput
 }
 
 type InviteEdge {
@@ -1598,6 +1918,7 @@ input InviteUpdateInput {
   job: JobUpdateOneRequiredWithoutInviteInput
   user: UserUpdateOneRequiredWithoutInvitesInput
   receiver: UserUpdateOneRequiredWithoutInvitesReceivedInput
+  contracts: ContractUpdateManyWithoutInviteInput
 }
 
 input InviteUpdateManyDataInput {
@@ -1653,6 +1974,23 @@ input InviteUpdateManyWithWhereNestedInput {
   data: InviteUpdateManyDataInput!
 }
 
+input InviteUpdateOneRequiredWithoutContractsInput {
+  create: InviteCreateWithoutContractsInput
+  update: InviteUpdateWithoutContractsDataInput
+  upsert: InviteUpsertWithoutContractsInput
+  connect: InviteWhereUniqueInput
+}
+
+input InviteUpdateWithoutContractsDataInput {
+  title: String
+  message: String
+  status: String
+  game: GameUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutInviteInput
+  user: UserUpdateOneRequiredWithoutInvitesInput
+  receiver: UserUpdateOneRequiredWithoutInvitesReceivedInput
+}
+
 input InviteUpdateWithoutJobDataInput {
   title: String
   message: String
@@ -1660,6 +1998,7 @@ input InviteUpdateWithoutJobDataInput {
   game: GameUpdateOneRequiredInput
   user: UserUpdateOneRequiredWithoutInvitesInput
   receiver: UserUpdateOneRequiredWithoutInvitesReceivedInput
+  contracts: ContractUpdateManyWithoutInviteInput
 }
 
 input InviteUpdateWithoutReceiverDataInput {
@@ -1669,6 +2008,7 @@ input InviteUpdateWithoutReceiverDataInput {
   game: GameUpdateOneRequiredInput
   job: JobUpdateOneRequiredWithoutInviteInput
   user: UserUpdateOneRequiredWithoutInvitesInput
+  contracts: ContractUpdateManyWithoutInviteInput
 }
 
 input InviteUpdateWithoutUserDataInput {
@@ -1678,6 +2018,7 @@ input InviteUpdateWithoutUserDataInput {
   game: GameUpdateOneRequiredInput
   job: JobUpdateOneRequiredWithoutInviteInput
   receiver: UserUpdateOneRequiredWithoutInvitesReceivedInput
+  contracts: ContractUpdateManyWithoutInviteInput
 }
 
 input InviteUpdateWithWhereUniqueWithoutJobInput {
@@ -1693,6 +2034,11 @@ input InviteUpdateWithWhereUniqueWithoutReceiverInput {
 input InviteUpdateWithWhereUniqueWithoutUserInput {
   where: InviteWhereUniqueInput!
   data: InviteUpdateWithoutUserDataInput!
+}
+
+input InviteUpsertWithoutContractsInput {
+  update: InviteUpdateWithoutContractsDataInput!
+  create: InviteCreateWithoutContractsInput!
 }
 
 input InviteUpsertWithWhereUniqueWithoutJobInput {
@@ -1774,6 +2120,9 @@ input InviteWhereInput {
   job: JobWhereInput
   user: UserWhereInput
   receiver: UserWhereInput
+  contracts_every: ContractWhereInput
+  contracts_some: ContractWhereInput
+  contracts_none: ContractWhereInput
   AND: [InviteWhereInput!]
   OR: [InviteWhereInput!]
   NOT: [InviteWhereInput!]
@@ -2896,6 +3245,12 @@ input MessageWhereUniqueInput {
 }
 
 type Mutation {
+  createContract(data: ContractCreateInput!): Contract!
+  updateContract(data: ContractUpdateInput!, where: ContractWhereUniqueInput!): Contract
+  updateManyContracts(data: ContractUpdateManyMutationInput!, where: ContractWhereInput): BatchPayload!
+  upsertContract(where: ContractWhereUniqueInput!, create: ContractCreateInput!, update: ContractUpdateInput!): Contract!
+  deleteContract(where: ContractWhereUniqueInput!): Contract
+  deleteManyContracts(where: ContractWhereInput): BatchPayload!
   createConversation(data: ConversationCreateInput!): Conversation!
   updateConversation(data: ConversationUpdateInput!, where: ConversationWhereUniqueInput!): Conversation
   updateManyConversations(data: ConversationUpdateManyMutationInput!, where: ConversationWhereInput): BatchPayload!
@@ -2956,6 +3311,12 @@ type Mutation {
   upsertNotification(where: NotificationWhereUniqueInput!, create: NotificationCreateInput!, update: NotificationUpdateInput!): Notification!
   deleteNotification(where: NotificationWhereUniqueInput!): Notification
   deleteManyNotifications(where: NotificationWhereInput): BatchPayload!
+  createPaymentTerm(data: PaymentTermCreateInput!): PaymentTerm!
+  updatePaymentTerm(data: PaymentTermUpdateInput!, where: PaymentTermWhereUniqueInput!): PaymentTerm
+  updateManyPaymentTerms(data: PaymentTermUpdateManyMutationInput!, where: PaymentTermWhereInput): BatchPayload!
+  upsertPaymentTerm(where: PaymentTermWhereUniqueInput!, create: PaymentTermCreateInput!, update: PaymentTermUpdateInput!): PaymentTerm!
+  deletePaymentTerm(where: PaymentTermWhereUniqueInput!): PaymentTerm
+  deleteManyPaymentTerms(where: PaymentTermWhereInput): BatchPayload!
   createSection(data: SectionCreateInput!): Section!
   updateSection(data: SectionUpdateInput!, where: SectionWhereUniqueInput!): Section
   updateManySections(data: SectionUpdateManyMutationInput!, where: SectionWhereInput): BatchPayload!
@@ -3568,7 +3929,207 @@ type PageInfo {
   endCursor: String
 }
 
+type PaymentTerm {
+  id: ID!
+  percent: Int
+  description: String!
+}
+
+type PaymentTermConnection {
+  pageInfo: PageInfo!
+  edges: [PaymentTermEdge]!
+  aggregate: AggregatePaymentTerm!
+}
+
+input PaymentTermCreateInput {
+  id: ID
+  percent: Int
+  description: String!
+}
+
+input PaymentTermCreateManyInput {
+  create: [PaymentTermCreateInput!]
+  connect: [PaymentTermWhereUniqueInput!]
+}
+
+type PaymentTermEdge {
+  node: PaymentTerm!
+  cursor: String!
+}
+
+enum PaymentTermOrderByInput {
+  id_ASC
+  id_DESC
+  percent_ASC
+  percent_DESC
+  description_ASC
+  description_DESC
+}
+
+type PaymentTermPreviousValues {
+  id: ID!
+  percent: Int
+  description: String!
+}
+
+input PaymentTermScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  percent: Int
+  percent_not: Int
+  percent_in: [Int!]
+  percent_not_in: [Int!]
+  percent_lt: Int
+  percent_lte: Int
+  percent_gt: Int
+  percent_gte: Int
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  AND: [PaymentTermScalarWhereInput!]
+  OR: [PaymentTermScalarWhereInput!]
+  NOT: [PaymentTermScalarWhereInput!]
+}
+
+type PaymentTermSubscriptionPayload {
+  mutation: MutationType!
+  node: PaymentTerm
+  updatedFields: [String!]
+  previousValues: PaymentTermPreviousValues
+}
+
+input PaymentTermSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: PaymentTermWhereInput
+  AND: [PaymentTermSubscriptionWhereInput!]
+  OR: [PaymentTermSubscriptionWhereInput!]
+  NOT: [PaymentTermSubscriptionWhereInput!]
+}
+
+input PaymentTermUpdateDataInput {
+  percent: Int
+  description: String
+}
+
+input PaymentTermUpdateInput {
+  percent: Int
+  description: String
+}
+
+input PaymentTermUpdateManyDataInput {
+  percent: Int
+  description: String
+}
+
+input PaymentTermUpdateManyInput {
+  create: [PaymentTermCreateInput!]
+  update: [PaymentTermUpdateWithWhereUniqueNestedInput!]
+  upsert: [PaymentTermUpsertWithWhereUniqueNestedInput!]
+  delete: [PaymentTermWhereUniqueInput!]
+  connect: [PaymentTermWhereUniqueInput!]
+  set: [PaymentTermWhereUniqueInput!]
+  disconnect: [PaymentTermWhereUniqueInput!]
+  deleteMany: [PaymentTermScalarWhereInput!]
+  updateMany: [PaymentTermUpdateManyWithWhereNestedInput!]
+}
+
+input PaymentTermUpdateManyMutationInput {
+  percent: Int
+  description: String
+}
+
+input PaymentTermUpdateManyWithWhereNestedInput {
+  where: PaymentTermScalarWhereInput!
+  data: PaymentTermUpdateManyDataInput!
+}
+
+input PaymentTermUpdateWithWhereUniqueNestedInput {
+  where: PaymentTermWhereUniqueInput!
+  data: PaymentTermUpdateDataInput!
+}
+
+input PaymentTermUpsertWithWhereUniqueNestedInput {
+  where: PaymentTermWhereUniqueInput!
+  update: PaymentTermUpdateDataInput!
+  create: PaymentTermCreateInput!
+}
+
+input PaymentTermWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  percent: Int
+  percent_not: Int
+  percent_in: [Int!]
+  percent_not_in: [Int!]
+  percent_lt: Int
+  percent_lte: Int
+  percent_gt: Int
+  percent_gte: Int
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  AND: [PaymentTermWhereInput!]
+  OR: [PaymentTermWhereInput!]
+  NOT: [PaymentTermWhereInput!]
+}
+
+input PaymentTermWhereUniqueInput {
+  id: ID
+}
+
 type Query {
+  contract(where: ContractWhereUniqueInput!): Contract
+  contracts(where: ContractWhereInput, orderBy: ContractOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Contract]!
+  contractsConnection(where: ContractWhereInput, orderBy: ContractOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ContractConnection!
   conversation(where: ConversationWhereUniqueInput!): Conversation
   conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation]!
   conversationsConnection(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ConversationConnection!
@@ -3599,6 +4160,9 @@ type Query {
   notification(where: NotificationWhereUniqueInput!): Notification
   notifications(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Notification]!
   notificationsConnection(where: NotificationWhereInput, orderBy: NotificationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): NotificationConnection!
+  paymentTerm(where: PaymentTermWhereUniqueInput!): PaymentTerm
+  paymentTerms(where: PaymentTermWhereInput, orderBy: PaymentTermOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [PaymentTerm]!
+  paymentTermsConnection(where: PaymentTermWhereInput, orderBy: PaymentTermOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PaymentTermConnection!
   section(where: SectionWhereUniqueInput!): Section
   sections(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Section]!
   sectionsConnection(where: SectionWhereInput, orderBy: SectionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SectionConnection!
@@ -3969,6 +4533,7 @@ input SectionWhereUniqueInput {
 }
 
 type Subscription {
+  contract(where: ContractSubscriptionWhereInput): ContractSubscriptionPayload
   conversation(where: ConversationSubscriptionWhereInput): ConversationSubscriptionPayload
   count(where: CountSubscriptionWhereInput): CountSubscriptionPayload
   gallery(where: GallerySubscriptionWhereInput): GallerySubscriptionPayload
@@ -3979,6 +4544,7 @@ type Subscription {
   message(where: MessageSubscriptionWhereInput): MessageSubscriptionPayload
   notableProjects(where: NotableProjectsSubscriptionWhereInput): NotableProjectsSubscriptionPayload
   notification(where: NotificationSubscriptionWhereInput): NotificationSubscriptionPayload
+  paymentTerm(where: PaymentTermSubscriptionWhereInput): PaymentTermSubscriptionPayload
   section(where: SectionSubscriptionWhereInput): SectionSubscriptionPayload
   testimonial(where: TestimonialSubscriptionWhereInput): TestimonialSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload

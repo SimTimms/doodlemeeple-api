@@ -36,6 +36,11 @@ const {
   removeInvite,
   declineInvite,
 } = require('./mutations/invite');
+const {
+  updateContract,
+  createContract,
+  removeContract,
+} = require('./mutations/contract');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
@@ -389,6 +394,9 @@ module.exports = {
   createInvite,
   removeInvite,
   declineInvite,
+  updateContract,
+  createContract,
+  removeContract,
   addFavourite,
   removeSection,
   createNotification,

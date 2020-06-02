@@ -15,6 +15,7 @@ const Invite = require('./resolvers/Invite');
 const Message = require('./resolvers/Message');
 const Conversation = require('./resolvers/Conversation');
 const Subscription = require('./resolvers/Subscription');
+const Contract = require('./resolvers/Contract');
 
 const resolvers = {
   Query,
@@ -22,6 +23,7 @@ const resolvers = {
   User,
   Section,
   Gallery,
+  Contract,
   Game,
   Job,
   Invite,
@@ -45,7 +47,6 @@ const server = new GraphQLServer({
 server.start();
 
 const customRouter = express.Router();
-console.log(process.env.PORT);
 customRouter.use(bodyParser.urlencoded({ extended: true }));
 customRouter.use(bodyParser.json());
 customRouter.post('/sign_s3', (req, res) => {

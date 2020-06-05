@@ -86,10 +86,27 @@ async function getJob(parent, args, context, info) {
 }
 
 async function getContract(parent, args, context, info) {
+  const userId = getUserId(context);
+
   const contract = await context.prisma.contracts({
     where: {
-      invite: {
-        id: args.inviteId,
+      job: {
+        id: args.jobId,
+      },
+      user: { id: userId },
+    },
+  });
+
+  return contract;
+}
+
+async function getPaymentTerms(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const contract = await context.prisma.paymentTerms({
+    where: {
+      contract: {
+        id: args.contractId,
       },
     },
   });
@@ -285,4 +302,5 @@ module.exports = {
   getConversations,
   getConversation,
   getContract,
+  getPaymentTerms,
 };

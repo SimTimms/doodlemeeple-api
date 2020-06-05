@@ -27,6 +27,7 @@ type User {
     @relation(link: TABLE, onDelete: CASCADE, name: "MessageSent")
   messagesReceived: [Message!]
     @relation(link: TABLE, onDelete: CASCADE, name: "MessageReceived")
+  contracts: [Contract!]! @relation(link: TABLE, onDelete: CASCADE)
 }
 
 input ContractInput {
@@ -35,12 +36,14 @@ input ContractInput {
   cost: Int
   paymentTerms: [PaymentTermInput]
   currency: String!
-  inviteId: String
+  jobId: String
 }
 
 input PaymentTermInput {
+  id: String
   percent: Int
   description: String!
+  contractId: String!
 }
 
 type Contract {
@@ -50,13 +53,16 @@ type Contract {
   cost: Int
   paymentTerms: [PaymentTerm] @relation(link: TABLE, onDelete: CASCADE)
   currency: String!
-  invite: Invite!
+  job: Job!
+  status: String
+  user: User
 }
 
 type PaymentTerm {
   id: ID! @id
   percent: Int
   description: String!
+  contract: Contract
 }
 
 type Invite {

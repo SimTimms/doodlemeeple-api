@@ -1,11 +1,16 @@
+const { getUserId } = require('../../../utils');
+
 async function updateContract(parent, args, context, info) {
-  const { inviteId } = args.contract;
+  const { notes, deadline, cost, currency } = args.contract;
   const returnObj = await context.prisma.updateContract({
     data: {
-      ...args,
+      notes,
+      deadline,
+      cost,
+      currency,
     },
     where: {
-      invite: { id: inviteId },
+      id: args.id,
     },
   });
 
@@ -13,21 +18,34 @@ async function updateContract(parent, args, context, info) {
 }
 
 async function createContract(parent, args, context, info) {
+  const userId = getUserId(context);
   const {
     notes,
     deadline,
     cost,
     paymentTerms,
     currency,
-    inviteId,
+    jobId,
   } = args.contract;
+
+  //Update the status of all previous contracts to obsolete
+  await context.prisma.updateManyContracts({
+    data: {
+      status: 'removed',
+    },
+    where: {
+      user: { id: userId },
+      job: { id: jobId },
+    },
+  });
 
   const returnObj = await context.prisma.createContract({
     notes,
     deadline,
     cost,
     currency,
-    invite: { connect: { id: inviteId } },
+    job: { connect: { id: jobId } },
+    user: { connect: { id: userId } },
   });
 
   return returnObj.id;

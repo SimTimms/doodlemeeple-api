@@ -18,6 +18,9 @@ type Mutation {
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
+  updatePaymentTerm(id: String!, paymentTerm: PaymentTermInput!): String
+  createPaymentTerm(id: String!, paymentTerm: PaymentTermInput!): String
+  removePaymentTerm(id: String!): Boolean
   updateContract(id: String!, contract: ContractInput!): String
   createContract(id: String!, contract: ContractInput!): String
   removeContract(id: String!): Boolean
@@ -57,7 +60,8 @@ type Query {
   getGames: [Game]
   getJob(jobId: String!): Job
   getJobs: [Job]
-  getContract(inviteId: String!): [Contract]
+  getContract(jobId: String!): [Contract]
+  getPaymentTerms(contractId: String!): [PaymentTerm]
   getMessages(jobId: String!): [Message]
   getConversations(status: String!): [Conversation]
   getConversation(conversationId: String!, page: Int!): Conversation
@@ -80,7 +84,7 @@ input ContractInput {
   cost: Int
   paymentTerms: [PaymentTermInput]
   currency: String!
-  inviteId: String
+  jobId: String
 }
 
 type Contract {
@@ -90,18 +94,23 @@ type Contract {
   cost: Int
   paymentTerms: [PaymentTerm]
   currency: String!
-  invite: Invite!
+  status: String
+  job: Job!
+  user: User
 }
 
 input PaymentTermInput {
+  id: String
   percent: Int
   description: String!
+  contractId: String!
 }
 
 type PaymentTerm {
   id: String!
   percent: Int
   description: String!
+  contract: Contract
 }
 
 input InviteInput {
@@ -250,6 +259,7 @@ type User {
   invites: [Invite!]
   invitesReceived: [Invite!]
   conversations: [Conversation]
+  contracts: [Contract!]!
 }
 
 type Invite {

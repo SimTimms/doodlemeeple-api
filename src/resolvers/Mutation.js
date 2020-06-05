@@ -41,6 +41,11 @@ const {
   createContract,
   removeContract,
 } = require('./mutations/contract');
+const {
+  updatePaymentTerm,
+  createPaymentTerm,
+  removePaymentTerm,
+} = require('./mutations/paymentTerm');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
@@ -385,6 +390,9 @@ module.exports = {
   createMessage,
   updateMessage,
   removeMessage,
+  updatePaymentTerm,
+  createPaymentTerm,
+  removePaymentTerm,
   markAsRead,
   updateJob,
   createJob,

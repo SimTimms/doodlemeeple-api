@@ -37,6 +37,7 @@ input ContractInput {
   paymentTerms: [PaymentTermInput]
   currency: String!
   jobId: String
+  status: String
 }
 
 input PaymentTermInput {

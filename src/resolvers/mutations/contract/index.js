@@ -1,16 +1,34 @@
 const { getUserId } = require('../../../utils');
 
 async function updateContract(parent, args, context, info) {
-  const { notes, deadline, cost, currency } = args.contract;
+  const { notes, deadline, cost, currency, status } = args.contract;
   const returnObj = await context.prisma.updateContract({
     data: {
       notes,
       deadline,
       cost,
       currency,
+      status,
     },
     where: {
       id: args.id,
+    },
+  });
+
+  return returnObj.id;
+}
+
+async function submitContract(parent, args, context, info) {
+  const { id } = args;
+  const userId = getUserId(context);
+
+  const returnObj = await context.prisma.updateContract({
+    data: {
+      status: 'submitted',
+    },
+    where: {
+      id: id,
+      user: { id: userId },
     },
   });
 
@@ -63,4 +81,5 @@ module.exports = {
   updateContract,
   createContract,
   removeContract,
+  submitContract,
 };

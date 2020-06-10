@@ -22,7 +22,7 @@ async function submitContract(parent, args, context, info) {
   const { id } = args;
   const userId = getUserId(context);
 
-  const returnObj = await context.prisma.updateContract({
+  const returnObj = await context.prisma.updateManyContracts({
     data: {
       status: 'submitted',
     },

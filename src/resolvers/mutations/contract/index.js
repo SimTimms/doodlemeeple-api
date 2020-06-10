@@ -1,4 +1,7 @@
 const { getUserId } = require('../../../utils');
+const { CONTRACT_SUBMITTED } = require('../../../utils/notifications');
+const { createNotification } = require('../utils');
+const { emailQuote } = require('../../../email');
 
 async function updateContract(parent, args, context, info) {
   const { notes, deadline, cost, currency, status } = args.contract;
@@ -22,6 +25,22 @@ async function submitContract(parent, args, context, info) {
   const { id } = args;
   const userId = getUserId(context);
 
+  const contract = await context.prisma.contract({
+    id,
+  });
+
+  const getContract = await context.prisma
+    .contract({
+      id,
+    })
+    .job();
+
+  const user = await context.prisma
+    .job({
+      id: getContract.id,
+    })
+    .user();
+
   const returnObj = await context.prisma.updateManyContracts({
     data: {
       status: 'submitted',
@@ -31,6 +50,16 @@ async function submitContract(parent, args, context, info) {
       user: { id: userId },
     },
   });
+  CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${id}`;
+
+  createNotification(CONTRACT_SUBMITTED, user.id, context);
+  const request = emailQuote(user, contract);
+
+  request
+    .then((result) => {})
+    .catch((err) => {
+      console.log(err.statusCode);
+    });
 
   return returnObj.id;
 }

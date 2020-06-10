@@ -37,6 +37,39 @@ async function emailInvite(user, jobDeets) {
   return request;
 }
 
+async function emailQuote(user, quoteDeets) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: `You've got an invite`,
+        TextPart: `You have been asked to provide a quote for "${
+          quoteDeets.name
+        }"`,
+        HTMLPart: `<p>Hi ${user.name},</p>
+        <p>You have been asked to provide a quote for "${
+          quoteDeets.summary
+        }"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${
+          quoteDeets.cost
+        }</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
+          emailAddress.appURL
+        }'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
 async function emailNewMessage(user, subject) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -155,4 +188,5 @@ module.exports = {
   emailSignup,
   emailInvite,
   emailNewMessage,
+  emailQuote,
 };

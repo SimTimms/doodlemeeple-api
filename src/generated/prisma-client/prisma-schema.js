@@ -77,6 +77,8 @@ type Contract {
   job: Job!
   status: String
   user: User
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type ContractConnection {
@@ -152,6 +154,10 @@ enum ContractOrderByInput {
   currency_DESC
   status_ASC
   status_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
 }
 
 type ContractPreviousValues {
@@ -161,6 +167,8 @@ type ContractPreviousValues {
   cost: Int
   currency: String!
   status: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 input ContractScalarWhereInput {
@@ -242,6 +250,22 @@ input ContractScalarWhereInput {
   status_not_starts_with: String
   status_ends_with: String
   status_not_ends_with: String
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [ContractScalarWhereInput!]
   OR: [ContractScalarWhereInput!]
   NOT: [ContractScalarWhereInput!]
@@ -472,6 +496,22 @@ input ContractWhereInput {
   status_ends_with: String
   status_not_ends_with: String
   user: UserWhereInput
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
   AND: [ContractWhereInput!]
   OR: [ContractWhereInput!]
   NOT: [ContractWhereInput!]

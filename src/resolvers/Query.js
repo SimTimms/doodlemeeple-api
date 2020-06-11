@@ -220,25 +220,19 @@ async function getInvites(parent, args, context) {
   return invites;
 }
 
-async function determineConversationId(parent, { jobId }, context) {
-  const userId = getUserId(context);
+async function determineConversationId(parent, { jobId, userId }, context) {
+  const thisUserId = getUserId(context);
   const conversation = await context.prisma.conversations({
     where: {
       job: { id: jobId },
-      participants_some: { id_in: [userId] },
+      participants_some: { id_in: [thisUserId] },
     },
   });
-
-  const job = await context.prisma
-    .job({
-      id: jobId,
-    })
-    .user();
-
+  console.log(jobId, userId, thisUserId);
   if (conversation.length === 0) {
     const conversationNew = await context.prisma.createConversation({
       participants: {
-        connect: [{ id: userId }, { id: job.id }],
+        connect: [{ id: thisUserId }, { id: userId }],
       },
       job: { connect: { id: jobId } },
     });

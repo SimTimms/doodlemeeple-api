@@ -29,7 +29,7 @@ async function submitContract(parent, args, context, info) {
     id,
   });
 
-  const getContract = await context.prisma
+  const job = await context.prisma
     .contract({
       id,
     })
@@ -37,7 +37,7 @@ async function submitContract(parent, args, context, info) {
 
   const user = await context.prisma
     .job({
-      id: getContract.id,
+      id: job.id,
     })
     .user();
 
@@ -54,12 +54,27 @@ async function submitContract(parent, args, context, info) {
 
   createNotification(CONTRACT_SUBMITTED, user.id, context);
   const request = emailQuote(user, contract);
-
   request
     .then((result) => {})
     .catch((err) => {
       console.log(err.statusCode);
     });
+
+  const conversation = await context.prisma.conversations({
+    where: {
+      job: { id: job.id },
+      participants_some: { id_in: [userId] },
+    },
+  });
+
+  console.log(conversation);
+
+  await context.prisma.createMessage({
+    sender: { connect: { id: userId } },
+    messageStr: `QUOTE SUBMITTED:/app/view-contract/${contract.id}`,
+    conversation: { connect: { id: conversation[0].id } },
+    status: 'unread',
+  });
 
   return returnObj.id;
 }

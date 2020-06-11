@@ -76,7 +76,7 @@ type Query {
   getTestimonials(sectionId: String!): [Section!]
   getCreatives: [User!]
   getInvites: [Invite!]
-  determineConversationId(jobId: String): String
+  determineConversationId(jobId: String, userId: String): String
   counts: Count
 }
 

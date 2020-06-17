@@ -23,6 +23,7 @@ type Mutation {
   removePaymentTerm(id: String!): Boolean
   updateContract(id: String!, contract: ContractInput!): String
   submitContract(id: String!): String
+  signContract(contractId: String!): String
   createContract(id: String!, contract: ContractInput!): String
   removeContract(id: String!): Boolean
   updateJob(id: String!, job: JobInput!): String
@@ -88,6 +89,7 @@ input ContractInput {
   currency: String!
   jobId: String
   status: String
+  signedBy: User
 }
 
 type Contract {
@@ -100,6 +102,7 @@ type Contract {
   status: String
   job: Job!
   user: User
+  signedBy: [User]
   createdAt: String
   updatedAt: String
 }

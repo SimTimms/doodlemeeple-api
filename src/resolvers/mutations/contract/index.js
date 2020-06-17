@@ -79,16 +79,25 @@ async function submitContract(parent, args, context, info) {
   return returnObj.id;
 }
 
+async function signContract(parent, args, context, info) {
+  const { contractId } = args;
+  const userId = getUserId(context);
+
+  const returnObj = await context.prisma.updateManyContracts({
+    data: {
+      signedBy: { connect: { id: contractId } },
+    },
+    where: {
+      id: contractId,
+    },
+  });
+
+  return returnObj.id;
+}
+
 async function createContract(parent, args, context, info) {
   const userId = getUserId(context);
-  const {
-    notes,
-    deadline,
-    cost,
-    paymentTerms,
-    currency,
-    jobId,
-  } = args.contract;
+  const { notes, deadline, cost, currency, jobId } = args.contract;
 
   //Update the status of all previous contracts to obsolete
   await context.prisma.updateManyContracts({
@@ -126,4 +135,5 @@ module.exports = {
   createContract,
   removeContract,
   submitContract,
+  signContract,
 };

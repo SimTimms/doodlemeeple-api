@@ -41,6 +41,7 @@ const {
   createContract,
   removeContract,
   submitContract,
+  signContract,
 } = require('./mutations/contract');
 const {
   updatePaymentTerm,
@@ -407,6 +408,7 @@ module.exports = {
   createContract,
   removeContract,
   submitContract,
+  signContract,
   addFavourite,
   removeSection,
   createNotification,

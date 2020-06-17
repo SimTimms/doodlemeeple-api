@@ -27,7 +27,10 @@ type User {
     @relation(link: TABLE, onDelete: CASCADE, name: "MessageSent")
   messagesReceived: [Message!]
     @relation(link: TABLE, onDelete: CASCADE, name: "MessageReceived")
-  contracts: [Contract!]! @relation(link: TABLE, onDelete: CASCADE)
+  contracts: [Contract!]!
+    @relation(link: TABLE, name: "ContractUser", onDelete: CASCADE)
+  signedBy: [Contract!]!
+    @relation(link: TABLE, name: "SignedByUser", onDelete: CASCADE)
 }
 
 input ContractInput {
@@ -38,6 +41,7 @@ input ContractInput {
   currency: String!
   jobId: String
   status: String
+  signedBy: User
 }
 
 input PaymentTermInput {
@@ -56,9 +60,10 @@ type Contract {
   currency: String!
   job: Job!
   status: String
-  user: User
+  user: User @relation(name: "ContractUser")
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  signedBy: [User] @relation(name: "SignedByUser")
 }
 
 type PaymentTerm {

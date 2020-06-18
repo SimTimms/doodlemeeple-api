@@ -1179,6 +1179,9 @@ export interface JobWhereInput {
   conversations_every?: Maybe<ConversationWhereInput>;
   conversations_some?: Maybe<ConversationWhereInput>;
   conversations_none?: Maybe<ConversationWhereInput>;
+  contracts_every?: Maybe<ContractWhereInput>;
+  contracts_some?: Maybe<ContractWhereInput>;
+  contracts_none?: Maybe<ContractWhereInput>;
   AND?: Maybe<JobWhereInput[] | JobWhereInput>;
   OR?: Maybe<JobWhereInput[] | JobWhereInput>;
   NOT?: Maybe<JobWhereInput[] | JobWhereInput>;
@@ -2199,7 +2202,7 @@ export interface ContractCreateInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermCreateManyWithoutContractInput>;
   currency: String;
-  job: JobCreateOneInput;
+  job: JobCreateOneWithoutContractsInput;
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
@@ -2220,12 +2223,12 @@ export interface PaymentTermCreateWithoutContractInput {
   description: String;
 }
 
-export interface JobCreateOneInput {
-  create?: Maybe<JobCreateInput>;
+export interface JobCreateOneWithoutContractsInput {
+  create?: Maybe<JobCreateWithoutContractsInput>;
   connect?: Maybe<JobWhereUniqueInput>;
 }
 
-export interface JobCreateInput {
+export interface JobCreateWithoutContractsInput {
   id?: Maybe<ID_Input>;
   name: String;
   keywords?: Maybe<JobCreatekeywordsInput>;
@@ -2406,6 +2409,7 @@ export interface JobCreateWithoutGameInput {
   invite?: Maybe<InviteCreateManyWithoutJobInput>;
   messages?: Maybe<MessageCreateManyWithoutJobInput>;
   conversations?: Maybe<ConversationCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
 }
 
 export interface UserCreateOneWithoutJobsInput {
@@ -2541,6 +2545,7 @@ export interface JobCreateWithoutMessagesInput {
   submitted?: Maybe<Boolean>;
   invite?: Maybe<InviteCreateManyWithoutJobInput>;
   conversations?: Maybe<ConversationCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
 }
 
 export interface GameCreateOneWithoutJobsInput {
@@ -2616,6 +2621,7 @@ export interface JobCreateWithoutUserInput {
   invite?: Maybe<InviteCreateManyWithoutJobInput>;
   messages?: Maybe<MessageCreateManyWithoutJobInput>;
   conversations?: Maybe<ConversationCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
 }
 
 export interface InviteCreateManyWithoutJobInput {
@@ -2726,6 +2732,7 @@ export interface JobCreateWithoutInviteInput {
   submitted?: Maybe<Boolean>;
   messages?: Maybe<MessageCreateManyWithoutJobInput>;
   conversations?: Maybe<ConversationCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
 }
 
 export interface MessageCreateManyWithoutJobInput {
@@ -2887,7 +2894,7 @@ export interface ContractCreateWithoutUserInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermCreateManyWithoutContractInput>;
   currency: String;
-  job: JobCreateOneInput;
+  job: JobCreateOneWithoutContractsInput;
   status?: Maybe<String>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
@@ -3005,7 +3012,7 @@ export interface ContractCreateWithoutSignedByInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermCreateManyWithoutContractInput>;
   currency: String;
-  job: JobCreateOneInput;
+  job: JobCreateOneWithoutContractsInput;
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedDate?: Maybe<DateTimeInput>;
@@ -3065,6 +3072,27 @@ export interface JobCreateWithoutConversationsInput {
   submitted?: Maybe<Boolean>;
   invite?: Maybe<InviteCreateManyWithoutJobInput>;
   messages?: Maybe<MessageCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
+}
+
+export interface ContractCreateManyWithoutJobInput {
+  create?: Maybe<
+    ContractCreateWithoutJobInput[] | ContractCreateWithoutJobInput
+  >;
+  connect?: Maybe<ContractWhereUniqueInput[] | ContractWhereUniqueInput>;
+}
+
+export interface ContractCreateWithoutJobInput {
+  id?: Maybe<ID_Input>;
+  notes?: Maybe<String>;
+  deadline?: Maybe<String>;
+  cost?: Maybe<Int>;
+  paymentTerms?: Maybe<PaymentTermCreateManyWithoutContractInput>;
+  currency: String;
+  status?: Maybe<String>;
+  user?: Maybe<UserCreateOneWithoutContractsInput>;
+  signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface ContractCreateManyInput {
@@ -3094,7 +3122,7 @@ export interface ContractUpdateInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
   currency?: Maybe<String>;
-  job?: Maybe<JobUpdateOneRequiredInput>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
@@ -3197,14 +3225,14 @@ export interface PaymentTermUpdateManyDataInput {
   description?: Maybe<String>;
 }
 
-export interface JobUpdateOneRequiredInput {
-  create?: Maybe<JobCreateInput>;
-  update?: Maybe<JobUpdateDataInput>;
-  upsert?: Maybe<JobUpsertNestedInput>;
+export interface JobUpdateOneRequiredWithoutContractsInput {
+  create?: Maybe<JobCreateWithoutContractsInput>;
+  update?: Maybe<JobUpdateWithoutContractsDataInput>;
+  upsert?: Maybe<JobUpsertWithoutContractsInput>;
   connect?: Maybe<JobWhereUniqueInput>;
 }
 
-export interface JobUpdateDataInput {
+export interface JobUpdateWithoutContractsDataInput {
   name?: Maybe<String>;
   keywords?: Maybe<JobUpdatekeywordsInput>;
   img?: Maybe<String>;
@@ -3779,6 +3807,7 @@ export interface JobUpdateWithoutGameDataInput {
   invite?: Maybe<InviteUpdateManyWithoutJobInput>;
   messages?: Maybe<MessageUpdateManyWithoutJobInput>;
   conversations?: Maybe<ConversationUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
 }
 
 export interface UserUpdateOneRequiredWithoutJobsInput {
@@ -4172,6 +4201,7 @@ export interface JobUpdateWithoutMessagesDataInput {
   submitted?: Maybe<Boolean>;
   invite?: Maybe<InviteUpdateManyWithoutJobInput>;
   conversations?: Maybe<ConversationUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
 }
 
 export interface GameUpdateOneRequiredWithoutJobsInput {
@@ -4268,6 +4298,7 @@ export interface JobUpdateWithoutUserDataInput {
   invite?: Maybe<InviteUpdateManyWithoutJobInput>;
   messages?: Maybe<MessageUpdateManyWithoutJobInput>;
   conversations?: Maybe<ConversationUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
 }
 
 export interface InviteUpdateManyWithoutJobInput {
@@ -4426,6 +4457,7 @@ export interface JobUpdateWithoutInviteDataInput {
   submitted?: Maybe<Boolean>;
   messages?: Maybe<MessageUpdateManyWithoutJobInput>;
   conversations?: Maybe<ConversationUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
 }
 
 export interface MessageUpdateManyWithoutJobInput {
@@ -4672,7 +4704,7 @@ export interface ContractUpdateWithoutUserDataInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
   currency?: Maybe<String>;
-  job?: Maybe<JobUpdateOneRequiredInput>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
   status?: Maybe<String>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
@@ -4871,7 +4903,7 @@ export interface ContractUpdateWithoutSignedByDataInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
   currency?: Maybe<String>;
-  job?: Maybe<JobUpdateOneRequiredInput>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedDate?: Maybe<DateTimeInput>;
@@ -5274,6 +5306,53 @@ export interface JobUpdateWithoutConversationsDataInput {
   submitted?: Maybe<Boolean>;
   invite?: Maybe<InviteUpdateManyWithoutJobInput>;
   messages?: Maybe<MessageUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
+}
+
+export interface ContractUpdateManyWithoutJobInput {
+  create?: Maybe<
+    ContractCreateWithoutJobInput[] | ContractCreateWithoutJobInput
+  >;
+  delete?: Maybe<ContractWhereUniqueInput[] | ContractWhereUniqueInput>;
+  connect?: Maybe<ContractWhereUniqueInput[] | ContractWhereUniqueInput>;
+  set?: Maybe<ContractWhereUniqueInput[] | ContractWhereUniqueInput>;
+  disconnect?: Maybe<ContractWhereUniqueInput[] | ContractWhereUniqueInput>;
+  update?: Maybe<
+    | ContractUpdateWithWhereUniqueWithoutJobInput[]
+    | ContractUpdateWithWhereUniqueWithoutJobInput
+  >;
+  upsert?: Maybe<
+    | ContractUpsertWithWhereUniqueWithoutJobInput[]
+    | ContractUpsertWithWhereUniqueWithoutJobInput
+  >;
+  deleteMany?: Maybe<ContractScalarWhereInput[] | ContractScalarWhereInput>;
+  updateMany?: Maybe<
+    | ContractUpdateManyWithWhereNestedInput[]
+    | ContractUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ContractUpdateWithWhereUniqueWithoutJobInput {
+  where: ContractWhereUniqueInput;
+  data: ContractUpdateWithoutJobDataInput;
+}
+
+export interface ContractUpdateWithoutJobDataInput {
+  notes?: Maybe<String>;
+  deadline?: Maybe<String>;
+  cost?: Maybe<Int>;
+  paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
+  currency?: Maybe<String>;
+  status?: Maybe<String>;
+  user?: Maybe<UserUpdateOneWithoutContractsInput>;
+  signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
+}
+
+export interface ContractUpsertWithWhereUniqueWithoutJobInput {
+  where: ContractWhereUniqueInput;
+  update: ContractUpdateWithoutJobDataInput;
+  create: ContractCreateWithoutJobInput;
 }
 
 export interface JobUpsertWithoutConversationsInput {
@@ -5418,7 +5497,7 @@ export interface ContractUpdateDataInput {
   cost?: Maybe<Int>;
   paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
   currency?: Maybe<String>;
-  job?: Maybe<JobUpdateOneRequiredInput>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
@@ -5992,9 +6071,9 @@ export interface GalleryUpsertNestedInput {
   create: GalleryCreateInput;
 }
 
-export interface JobUpsertNestedInput {
-  update: JobUpdateDataInput;
-  create: JobCreateInput;
+export interface JobUpsertWithoutContractsInput {
+  update: JobUpdateWithoutContractsDataInput;
+  create: JobCreateWithoutContractsInput;
 }
 
 export interface ContractUpdateManyMutationInput {
@@ -6153,6 +6232,26 @@ export interface InviteUpdateManyMutationInput {
   status?: Maybe<String>;
 }
 
+export interface JobCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  keywords?: Maybe<JobCreatekeywordsInput>;
+  img?: Maybe<String>;
+  summary?: Maybe<String>;
+  creativeSummary?: Maybe<String>;
+  location?: Maybe<String>;
+  gallery?: Maybe<GalleryCreateOneInput>;
+  showreel?: Maybe<String>;
+  user: UserCreateOneWithoutJobsInput;
+  type?: Maybe<String>;
+  game: GameCreateOneWithoutJobsInput;
+  submitted?: Maybe<Boolean>;
+  invite?: Maybe<InviteCreateManyWithoutJobInput>;
+  messages?: Maybe<MessageCreateManyWithoutJobInput>;
+  conversations?: Maybe<ConversationCreateManyWithoutJobInput>;
+  contracts?: Maybe<ContractCreateManyWithoutJobInput>;
+}
+
 export interface JobUpdateInput {
   name?: Maybe<String>;
   keywords?: Maybe<JobUpdatekeywordsInput>;
@@ -6169,6 +6268,7 @@ export interface JobUpdateInput {
   invite?: Maybe<InviteUpdateManyWithoutJobInput>;
   messages?: Maybe<MessageUpdateManyWithoutJobInput>;
   conversations?: Maybe<ConversationUpdateManyWithoutJobInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutJobInput>;
 }
 
 export interface JobUpdateManyMutationInput {
@@ -6336,7 +6436,7 @@ export interface ContractCreateWithoutPaymentTermsInput {
   deadline?: Maybe<String>;
   cost?: Maybe<Int>;
   currency: String;
-  job: JobCreateOneInput;
+  job: JobCreateOneWithoutContractsInput;
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
@@ -6363,7 +6463,7 @@ export interface ContractUpdateWithoutPaymentTermsDataInput {
   deadline?: Maybe<String>;
   cost?: Maybe<Int>;
   currency?: Maybe<String>;
-  job?: Maybe<JobUpdateOneRequiredInput>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
@@ -6909,6 +7009,15 @@ export interface JobPromise extends Promise<Job>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  contracts: <T = FragmentableArray<Contract>>(args?: {
+    where?: ContractWhereInput;
+    orderBy?: ContractOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface JobSubscription
@@ -6955,6 +7064,15 @@ export interface JobSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  contracts: <T = Promise<AsyncIterator<ContractSubscription>>>(args?: {
+    where?: ContractWhereInput;
+    orderBy?: ContractOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface JobNullablePromise extends Promise<Job | null>, Fragmentable {
@@ -6993,6 +7111,15 @@ export interface JobNullablePromise extends Promise<Job | null>, Fragmentable {
   conversations: <T = FragmentableArray<Conversation>>(args?: {
     where?: ConversationWhereInput;
     orderBy?: ConversationOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  contracts: <T = FragmentableArray<Contract>>(args?: {
+    where?: ContractWhereInput;
+    orderBy?: ContractOrderByInput;
     skip?: Int;
     after?: String;
     before?: String;

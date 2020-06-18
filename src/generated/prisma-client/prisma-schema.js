@@ -96,7 +96,7 @@ input ContractCreateInput {
   cost: Int
   paymentTerms: PaymentTermCreateManyWithoutContractInput
   currency: String!
-  job: JobCreateOneInput!
+  job: JobCreateOneWithoutContractsInput!
   status: String
   user: UserCreateOneWithoutContractsInput
   signedBy: UserCreateManyWithoutSignedByInput
@@ -105,6 +105,11 @@ input ContractCreateInput {
 
 input ContractCreateManyInput {
   create: [ContractCreateInput!]
+  connect: [ContractWhereUniqueInput!]
+}
+
+input ContractCreateManyWithoutJobInput {
+  create: [ContractCreateWithoutJobInput!]
   connect: [ContractWhereUniqueInput!]
 }
 
@@ -123,13 +128,26 @@ input ContractCreateOneWithoutPaymentTermsInput {
   connect: ContractWhereUniqueInput
 }
 
+input ContractCreateWithoutJobInput {
+  id: ID
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermCreateManyWithoutContractInput
+  currency: String!
+  status: String
+  user: UserCreateOneWithoutContractsInput
+  signedBy: UserCreateManyWithoutSignedByInput
+  signedDate: DateTime
+}
+
 input ContractCreateWithoutPaymentTermsInput {
   id: ID
   notes: String
   deadline: String
   cost: Int
   currency: String!
-  job: JobCreateOneInput!
+  job: JobCreateOneWithoutContractsInput!
   status: String
   user: UserCreateOneWithoutContractsInput
   signedBy: UserCreateManyWithoutSignedByInput
@@ -143,7 +161,7 @@ input ContractCreateWithoutSignedByInput {
   cost: Int
   paymentTerms: PaymentTermCreateManyWithoutContractInput
   currency: String!
-  job: JobCreateOneInput!
+  job: JobCreateOneWithoutContractsInput!
   status: String
   user: UserCreateOneWithoutContractsInput
   signedDate: DateTime
@@ -156,7 +174,7 @@ input ContractCreateWithoutUserInput {
   cost: Int
   paymentTerms: PaymentTermCreateManyWithoutContractInput
   currency: String!
-  job: JobCreateOneInput!
+  job: JobCreateOneWithoutContractsInput!
   status: String
   signedBy: UserCreateManyWithoutSignedByInput
   signedDate: DateTime
@@ -332,7 +350,7 @@ input ContractUpdateDataInput {
   cost: Int
   paymentTerms: PaymentTermUpdateManyWithoutContractInput
   currency: String
-  job: JobUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutContractsInput
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
@@ -345,7 +363,7 @@ input ContractUpdateInput {
   cost: Int
   paymentTerms: PaymentTermUpdateManyWithoutContractInput
   currency: String
-  job: JobUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutContractsInput
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
@@ -380,6 +398,18 @@ input ContractUpdateManyMutationInput {
   currency: String
   status: String
   signedDate: DateTime
+}
+
+input ContractUpdateManyWithoutJobInput {
+  create: [ContractCreateWithoutJobInput!]
+  delete: [ContractWhereUniqueInput!]
+  connect: [ContractWhereUniqueInput!]
+  set: [ContractWhereUniqueInput!]
+  disconnect: [ContractWhereUniqueInput!]
+  update: [ContractUpdateWithWhereUniqueWithoutJobInput!]
+  upsert: [ContractUpsertWithWhereUniqueWithoutJobInput!]
+  deleteMany: [ContractScalarWhereInput!]
+  updateMany: [ContractUpdateManyWithWhereNestedInput!]
 }
 
 input ContractUpdateManyWithoutSignedByInput {
@@ -420,12 +450,24 @@ input ContractUpdateOneWithoutPaymentTermsInput {
   connect: ContractWhereUniqueInput
 }
 
+input ContractUpdateWithoutJobDataInput {
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: PaymentTermUpdateManyWithoutContractInput
+  currency: String
+  status: String
+  user: UserUpdateOneWithoutContractsInput
+  signedBy: UserUpdateManyWithoutSignedByInput
+  signedDate: DateTime
+}
+
 input ContractUpdateWithoutPaymentTermsDataInput {
   notes: String
   deadline: String
   cost: Int
   currency: String
-  job: JobUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutContractsInput
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
@@ -438,7 +480,7 @@ input ContractUpdateWithoutSignedByDataInput {
   cost: Int
   paymentTerms: PaymentTermUpdateManyWithoutContractInput
   currency: String
-  job: JobUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutContractsInput
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedDate: DateTime
@@ -450,7 +492,7 @@ input ContractUpdateWithoutUserDataInput {
   cost: Int
   paymentTerms: PaymentTermUpdateManyWithoutContractInput
   currency: String
-  job: JobUpdateOneRequiredInput
+  job: JobUpdateOneRequiredWithoutContractsInput
   status: String
   signedBy: UserUpdateManyWithoutSignedByInput
   signedDate: DateTime
@@ -459,6 +501,11 @@ input ContractUpdateWithoutUserDataInput {
 input ContractUpdateWithWhereUniqueNestedInput {
   where: ContractWhereUniqueInput!
   data: ContractUpdateDataInput!
+}
+
+input ContractUpdateWithWhereUniqueWithoutJobInput {
+  where: ContractWhereUniqueInput!
+  data: ContractUpdateWithoutJobDataInput!
 }
 
 input ContractUpdateWithWhereUniqueWithoutSignedByInput {
@@ -480,6 +527,12 @@ input ContractUpsertWithWhereUniqueNestedInput {
   where: ContractWhereUniqueInput!
   update: ContractUpdateDataInput!
   create: ContractCreateInput!
+}
+
+input ContractUpsertWithWhereUniqueWithoutJobInput {
+  where: ContractWhereUniqueInput!
+  update: ContractUpdateWithoutJobDataInput!
+  create: ContractCreateWithoutJobInput!
 }
 
 input ContractUpsertWithWhereUniqueWithoutSignedByInput {
@@ -2368,6 +2421,7 @@ type Job {
   invite(where: InviteWhereInput, orderBy: InviteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Invite!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation!]
+  contracts(where: ContractWhereInput, orderBy: ContractOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Contract!]
 }
 
 type JobConnection {
@@ -2393,6 +2447,7 @@ input JobCreateInput {
   invite: InviteCreateManyWithoutJobInput
   messages: MessageCreateManyWithoutJobInput
   conversations: ConversationCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 input JobCreatekeywordsInput {
@@ -2409,8 +2464,8 @@ input JobCreateManyWithoutUserInput {
   connect: [JobWhereUniqueInput!]
 }
 
-input JobCreateOneInput {
-  create: JobCreateInput
+input JobCreateOneWithoutContractsInput {
+  create: JobCreateWithoutContractsInput
   connect: JobWhereUniqueInput
 }
 
@@ -2429,6 +2484,25 @@ input JobCreateOneWithoutMessagesInput {
   connect: JobWhereUniqueInput
 }
 
+input JobCreateWithoutContractsInput {
+  id: ID
+  name: String!
+  keywords: JobCreatekeywordsInput
+  img: String
+  summary: String
+  creativeSummary: String
+  location: String
+  gallery: GalleryCreateOneInput
+  showreel: String
+  user: UserCreateOneWithoutJobsInput!
+  type: String
+  game: GameCreateOneWithoutJobsInput!
+  submitted: Boolean
+  invite: InviteCreateManyWithoutJobInput
+  messages: MessageCreateManyWithoutJobInput
+  conversations: ConversationCreateManyWithoutJobInput
+}
+
 input JobCreateWithoutConversationsInput {
   id: ID
   name: String!
@@ -2445,6 +2519,7 @@ input JobCreateWithoutConversationsInput {
   submitted: Boolean
   invite: InviteCreateManyWithoutJobInput
   messages: MessageCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutGameInput {
@@ -2463,6 +2538,7 @@ input JobCreateWithoutGameInput {
   invite: InviteCreateManyWithoutJobInput
   messages: MessageCreateManyWithoutJobInput
   conversations: ConversationCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutInviteInput {
@@ -2481,6 +2557,7 @@ input JobCreateWithoutInviteInput {
   submitted: Boolean
   messages: MessageCreateManyWithoutJobInput
   conversations: ConversationCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutMessagesInput {
@@ -2499,6 +2576,7 @@ input JobCreateWithoutMessagesInput {
   submitted: Boolean
   invite: InviteCreateManyWithoutJobInput
   conversations: ConversationCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 input JobCreateWithoutUserInput {
@@ -2517,6 +2595,7 @@ input JobCreateWithoutUserInput {
   invite: InviteCreateManyWithoutJobInput
   messages: MessageCreateManyWithoutJobInput
   conversations: ConversationCreateManyWithoutJobInput
+  contracts: ContractCreateManyWithoutJobInput
 }
 
 type JobEdge {
@@ -2707,24 +2786,6 @@ input JobSubscriptionWhereInput {
   NOT: [JobSubscriptionWhereInput!]
 }
 
-input JobUpdateDataInput {
-  name: String
-  keywords: JobUpdatekeywordsInput
-  img: String
-  summary: String
-  creativeSummary: String
-  location: String
-  gallery: GalleryUpdateOneInput
-  showreel: String
-  user: UserUpdateOneRequiredWithoutJobsInput
-  type: String
-  game: GameUpdateOneRequiredWithoutJobsInput
-  submitted: Boolean
-  invite: InviteUpdateManyWithoutJobInput
-  messages: MessageUpdateManyWithoutJobInput
-  conversations: ConversationUpdateManyWithoutJobInput
-}
-
 input JobUpdateInput {
   name: String
   keywords: JobUpdatekeywordsInput
@@ -2741,6 +2802,7 @@ input JobUpdateInput {
   invite: InviteUpdateManyWithoutJobInput
   messages: MessageUpdateManyWithoutJobInput
   conversations: ConversationUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdatekeywordsInput {
@@ -2800,10 +2862,10 @@ input JobUpdateManyWithWhereNestedInput {
   data: JobUpdateManyDataInput!
 }
 
-input JobUpdateOneRequiredInput {
-  create: JobCreateInput
-  update: JobUpdateDataInput
-  upsert: JobUpsertNestedInput
+input JobUpdateOneRequiredWithoutContractsInput {
+  create: JobCreateWithoutContractsInput
+  update: JobUpdateWithoutContractsDataInput
+  upsert: JobUpsertWithoutContractsInput
   connect: JobWhereUniqueInput
 }
 
@@ -2832,6 +2894,24 @@ input JobUpdateOneWithoutMessagesInput {
   connect: JobWhereUniqueInput
 }
 
+input JobUpdateWithoutContractsDataInput {
+  name: String
+  keywords: JobUpdatekeywordsInput
+  img: String
+  summary: String
+  creativeSummary: String
+  location: String
+  gallery: GalleryUpdateOneInput
+  showreel: String
+  user: UserUpdateOneRequiredWithoutJobsInput
+  type: String
+  game: GameUpdateOneRequiredWithoutJobsInput
+  submitted: Boolean
+  invite: InviteUpdateManyWithoutJobInput
+  messages: MessageUpdateManyWithoutJobInput
+  conversations: ConversationUpdateManyWithoutJobInput
+}
+
 input JobUpdateWithoutConversationsDataInput {
   name: String
   keywords: JobUpdatekeywordsInput
@@ -2847,6 +2927,7 @@ input JobUpdateWithoutConversationsDataInput {
   submitted: Boolean
   invite: InviteUpdateManyWithoutJobInput
   messages: MessageUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutGameDataInput {
@@ -2864,6 +2945,7 @@ input JobUpdateWithoutGameDataInput {
   invite: InviteUpdateManyWithoutJobInput
   messages: MessageUpdateManyWithoutJobInput
   conversations: ConversationUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutInviteDataInput {
@@ -2881,6 +2963,7 @@ input JobUpdateWithoutInviteDataInput {
   submitted: Boolean
   messages: MessageUpdateManyWithoutJobInput
   conversations: ConversationUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutMessagesDataInput {
@@ -2898,6 +2981,7 @@ input JobUpdateWithoutMessagesDataInput {
   submitted: Boolean
   invite: InviteUpdateManyWithoutJobInput
   conversations: ConversationUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithoutUserDataInput {
@@ -2915,6 +2999,7 @@ input JobUpdateWithoutUserDataInput {
   invite: InviteUpdateManyWithoutJobInput
   messages: MessageUpdateManyWithoutJobInput
   conversations: ConversationUpdateManyWithoutJobInput
+  contracts: ContractUpdateManyWithoutJobInput
 }
 
 input JobUpdateWithWhereUniqueWithoutGameInput {
@@ -2927,9 +3012,9 @@ input JobUpdateWithWhereUniqueWithoutUserInput {
   data: JobUpdateWithoutUserDataInput!
 }
 
-input JobUpsertNestedInput {
-  update: JobUpdateDataInput!
-  create: JobCreateInput!
+input JobUpsertWithoutContractsInput {
+  update: JobUpdateWithoutContractsDataInput!
+  create: JobCreateWithoutContractsInput!
 }
 
 input JobUpsertWithoutConversationsInput {
@@ -3094,6 +3179,9 @@ input JobWhereInput {
   conversations_every: ConversationWhereInput
   conversations_some: ConversationWhereInput
   conversations_none: ConversationWhereInput
+  contracts_every: ContractWhereInput
+  contracts_some: ContractWhereInput
+  contracts_none: ContractWhereInput
   AND: [JobWhereInput!]
   OR: [JobWhereInput!]
   NOT: [JobWhereInput!]

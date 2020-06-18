@@ -232,6 +232,7 @@ type Job {
   submitted: Boolean
   invite: [Invite!]
   messages: [Message]
+  contracts: [Contract]
 }
 
 type Subscription {

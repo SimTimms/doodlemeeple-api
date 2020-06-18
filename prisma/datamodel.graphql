@@ -113,6 +113,7 @@ type Job {
   invite: [Invite!] @relation(link: TABLE, onDelete: CASCADE)
   messages: [Message] @relation(link: TABLE, onDelete: CASCADE)
   conversations: [Conversation] @relation(link: TABLE)
+  contracts: [Contract] @relation(link: TABLE, onDelete: CASCADE)
 }
 
 input MessageInput {

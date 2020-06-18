@@ -67,8 +67,6 @@ async function submitContract(parent, args, context, info) {
     },
   });
 
-  console.log(conversation);
-
   await context.prisma.createMessage({
     sender: { connect: { id: userId } },
     messageStr: `QUOTE SUBMITTED:/app/view-contract/${contract.id}`,
@@ -83,9 +81,10 @@ async function signContract(parent, args, context, info) {
   const { contractId } = args;
   const userId = getUserId(context);
 
-  const returnObj = await context.prisma.updateManyContracts({
+  const returnObj = await context.prisma.updateContract({
     data: {
-      signedBy: { connect: { id: contractId } },
+      signedBy: { connect: { id: userId } },
+      signedDate: new Date(),
     },
     where: {
       id: contractId,

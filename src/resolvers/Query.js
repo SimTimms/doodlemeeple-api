@@ -225,9 +225,10 @@ async function determineConversationId(parent, { jobId, userId }, context) {
   const conversation = await context.prisma.conversations({
     where: {
       job: { id: jobId },
-      participants_some: { id_in: [thisUserId] },
+      participants_some: { id_in: [userId] },
     },
   });
+
   if (conversation.length === 0) {
     const conversationNew = await context.prisma.createConversation({
       participants: {

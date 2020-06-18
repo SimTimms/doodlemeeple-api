@@ -41,7 +41,7 @@ input ContractInput {
   currency: String!
   jobId: String
   status: String
-  signedBy: User
+  signedBy: String
 }
 
 input PaymentTermInput {
@@ -64,6 +64,7 @@ type Contract {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   signedBy: [User] @relation(name: "SignedByUser")
+  signedDate: DateTime
 }
 
 type PaymentTerm {

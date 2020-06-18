@@ -80,6 +80,7 @@ type Contract {
   createdAt: DateTime!
   updatedAt: DateTime!
   signedBy(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  signedDate: DateTime
 }
 
 type ContractConnection {
@@ -99,6 +100,7 @@ input ContractCreateInput {
   status: String
   user: UserCreateOneWithoutContractsInput
   signedBy: UserCreateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractCreateManyInput {
@@ -131,6 +133,7 @@ input ContractCreateWithoutPaymentTermsInput {
   status: String
   user: UserCreateOneWithoutContractsInput
   signedBy: UserCreateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractCreateWithoutSignedByInput {
@@ -143,6 +146,7 @@ input ContractCreateWithoutSignedByInput {
   job: JobCreateOneInput!
   status: String
   user: UserCreateOneWithoutContractsInput
+  signedDate: DateTime
 }
 
 input ContractCreateWithoutUserInput {
@@ -155,6 +159,7 @@ input ContractCreateWithoutUserInput {
   job: JobCreateOneInput!
   status: String
   signedBy: UserCreateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 type ContractEdge {
@@ -179,6 +184,8 @@ enum ContractOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  signedDate_ASC
+  signedDate_DESC
 }
 
 type ContractPreviousValues {
@@ -190,6 +197,7 @@ type ContractPreviousValues {
   status: String
   createdAt: DateTime!
   updatedAt: DateTime!
+  signedDate: DateTime
 }
 
 input ContractScalarWhereInput {
@@ -287,6 +295,14 @@ input ContractScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  signedDate: DateTime
+  signedDate_not: DateTime
+  signedDate_in: [DateTime!]
+  signedDate_not_in: [DateTime!]
+  signedDate_lt: DateTime
+  signedDate_lte: DateTime
+  signedDate_gt: DateTime
+  signedDate_gte: DateTime
   AND: [ContractScalarWhereInput!]
   OR: [ContractScalarWhereInput!]
   NOT: [ContractScalarWhereInput!]
@@ -320,6 +336,7 @@ input ContractUpdateDataInput {
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractUpdateInput {
@@ -332,6 +349,7 @@ input ContractUpdateInput {
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractUpdateManyDataInput {
@@ -340,6 +358,7 @@ input ContractUpdateManyDataInput {
   cost: Int
   currency: String
   status: String
+  signedDate: DateTime
 }
 
 input ContractUpdateManyInput {
@@ -360,6 +379,7 @@ input ContractUpdateManyMutationInput {
   cost: Int
   currency: String
   status: String
+  signedDate: DateTime
 }
 
 input ContractUpdateManyWithoutSignedByInput {
@@ -409,6 +429,7 @@ input ContractUpdateWithoutPaymentTermsDataInput {
   status: String
   user: UserUpdateOneWithoutContractsInput
   signedBy: UserUpdateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractUpdateWithoutSignedByDataInput {
@@ -420,6 +441,7 @@ input ContractUpdateWithoutSignedByDataInput {
   job: JobUpdateOneRequiredInput
   status: String
   user: UserUpdateOneWithoutContractsInput
+  signedDate: DateTime
 }
 
 input ContractUpdateWithoutUserDataInput {
@@ -431,6 +453,7 @@ input ContractUpdateWithoutUserDataInput {
   job: JobUpdateOneRequiredInput
   status: String
   signedBy: UserUpdateManyWithoutSignedByInput
+  signedDate: DateTime
 }
 
 input ContractUpdateWithWhereUniqueNestedInput {
@@ -574,6 +597,14 @@ input ContractWhereInput {
   signedBy_every: UserWhereInput
   signedBy_some: UserWhereInput
   signedBy_none: UserWhereInput
+  signedDate: DateTime
+  signedDate_not: DateTime
+  signedDate_in: [DateTime!]
+  signedDate_not_in: [DateTime!]
+  signedDate_lt: DateTime
+  signedDate_lte: DateTime
+  signedDate_gt: DateTime
+  signedDate_gte: DateTime
   AND: [ContractWhereInput!]
   OR: [ContractWhereInput!]
   NOT: [ContractWhereInput!]

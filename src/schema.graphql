@@ -89,7 +89,7 @@ input ContractInput {
   currency: String!
   jobId: String
   status: String
-  signedBy: User
+  signedBy: String
 }
 
 type Contract {
@@ -105,6 +105,7 @@ type Contract {
   signedBy: [User]
   createdAt: String
   updatedAt: String
+  signedDate: String
 }
 
 input PaymentTermInput {

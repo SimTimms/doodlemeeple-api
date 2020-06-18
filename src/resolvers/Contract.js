@@ -10,8 +10,13 @@ async function user(parent, args, context) {
   return await context.prisma.contract({ id: parent.id }).user();
 }
 
+async function signedBy(parent, args, context) {
+  return await context.prisma.contract({ id: parent.id }).signedBy();
+}
+
 module.exports = {
   job,
   paymentTerms,
   user,
+  signedBy,
 };

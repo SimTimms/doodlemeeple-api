@@ -853,7 +853,9 @@ export type ContractOrderByInput =
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
-  | "updatedAt_DESC";
+  | "updatedAt_DESC"
+  | "signedDate_ASC"
+  | "signedDate_DESC";
 
 export type GalleryImageOrderByInput =
   | "id_ASC"
@@ -1029,6 +1031,14 @@ export interface ContractWhereInput {
   signedBy_every?: Maybe<UserWhereInput>;
   signedBy_some?: Maybe<UserWhereInput>;
   signedBy_none?: Maybe<UserWhereInput>;
+  signedDate?: Maybe<DateTimeInput>;
+  signedDate_not?: Maybe<DateTimeInput>;
+  signedDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  signedDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  signedDate_lt?: Maybe<DateTimeInput>;
+  signedDate_lte?: Maybe<DateTimeInput>;
+  signedDate_gt?: Maybe<DateTimeInput>;
+  signedDate_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<ContractWhereInput[] | ContractWhereInput>;
   OR?: Maybe<ContractWhereInput[] | ContractWhereInput>;
   NOT?: Maybe<ContractWhereInput[] | ContractWhereInput>;
@@ -2193,6 +2203,7 @@ export interface ContractCreateInput {
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface PaymentTermCreateManyWithoutContractInput {
@@ -2879,6 +2890,7 @@ export interface ContractCreateWithoutUserInput {
   job: JobCreateOneInput;
   status?: Maybe<String>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface UserCreateManyWithoutSignedByInput {
@@ -2996,6 +3008,7 @@ export interface ContractCreateWithoutSignedByInput {
   job: JobCreateOneInput;
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface UserCreateOneWithoutContractsInput {
@@ -3085,6 +3098,7 @@ export interface ContractUpdateInput {
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface PaymentTermUpdateManyWithoutContractInput {
@@ -4661,6 +4675,7 @@ export interface ContractUpdateWithoutUserDataInput {
   job?: Maybe<JobUpdateOneRequiredInput>;
   status?: Maybe<String>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface UserUpdateManyWithoutSignedByInput {
@@ -4859,6 +4874,7 @@ export interface ContractUpdateWithoutSignedByDataInput {
   job?: Maybe<JobUpdateOneRequiredInput>;
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface UserUpdateOneWithoutContractsInput {
@@ -5003,6 +5019,14 @@ export interface ContractScalarWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
+  signedDate?: Maybe<DateTimeInput>;
+  signedDate_not?: Maybe<DateTimeInput>;
+  signedDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  signedDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  signedDate_lt?: Maybe<DateTimeInput>;
+  signedDate_lte?: Maybe<DateTimeInput>;
+  signedDate_gt?: Maybe<DateTimeInput>;
+  signedDate_gte?: Maybe<DateTimeInput>;
   AND?: Maybe<ContractScalarWhereInput[] | ContractScalarWhereInput>;
   OR?: Maybe<ContractScalarWhereInput[] | ContractScalarWhereInput>;
   NOT?: Maybe<ContractScalarWhereInput[] | ContractScalarWhereInput>;
@@ -5019,6 +5043,7 @@ export interface ContractUpdateManyDataInput {
   cost?: Maybe<Int>;
   currency?: Maybe<String>;
   status?: Maybe<String>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface UserUpsertWithWhereUniqueWithoutConversationsInput {
@@ -5397,6 +5422,7 @@ export interface ContractUpdateDataInput {
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface ContractUpsertWithWhereUniqueNestedInput {
@@ -5977,6 +6003,7 @@ export interface ContractUpdateManyMutationInput {
   cost?: Maybe<Int>;
   currency?: Maybe<String>;
   status?: Maybe<String>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface ConversationCreateInput {
@@ -6313,6 +6340,7 @@ export interface ContractCreateWithoutPaymentTermsInput {
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface PaymentTermUpdateInput {
@@ -6339,6 +6367,7 @@ export interface ContractUpdateWithoutPaymentTermsDataInput {
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
 }
 
 export interface ContractUpsertWithoutPaymentTermsInput {
@@ -6690,6 +6719,7 @@ export interface Contract {
   status?: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
+  signedDate?: DateTimeOutput;
 }
 
 export interface ContractPromise extends Promise<Contract>, Fragmentable {
@@ -6721,6 +6751,7 @@ export interface ContractPromise extends Promise<Contract>, Fragmentable {
     first?: Int;
     last?: Int;
   }) => T;
+  signedDate: () => Promise<DateTimeOutput>;
 }
 
 export interface ContractSubscription
@@ -6754,6 +6785,7 @@ export interface ContractSubscription
     first?: Int;
     last?: Int;
   }) => T;
+  signedDate: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface ContractNullablePromise
@@ -6787,6 +6819,7 @@ export interface ContractNullablePromise
     first?: Int;
     last?: Int;
   }) => T;
+  signedDate: () => Promise<DateTimeOutput>;
 }
 
 export interface PaymentTerm {
@@ -8861,6 +8894,7 @@ export interface ContractPreviousValues {
   status?: String;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
+  signedDate?: DateTimeOutput;
 }
 
 export interface ContractPreviousValuesPromise
@@ -8874,6 +8908,7 @@ export interface ContractPreviousValuesPromise
   status: () => Promise<String>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
+  signedDate: () => Promise<DateTimeOutput>;
 }
 
 export interface ContractPreviousValuesSubscription
@@ -8887,6 +8922,7 @@ export interface ContractPreviousValuesSubscription
   status: () => Promise<AsyncIterator<String>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  signedDate: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface ConversationSubscriptionPayload {

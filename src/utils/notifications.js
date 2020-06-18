@@ -7,7 +7,7 @@ const UPDATED_PROFILE = {
 
 const CONTRACT_SUBMITTED = {
   title: `You've got a Quote`,
-  message: 'Check it our',
+  message: 'Check it out',
   linkTo: '/app/view-contract/',
   icon: 'send',
 };

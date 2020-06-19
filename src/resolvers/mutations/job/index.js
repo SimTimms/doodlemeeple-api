@@ -56,7 +56,6 @@ async function submitBrief(parent, args, context, info) {
     job: { id: jobId },
   });
 
-  console.log(conversationExists);
   if (!conversationExists) {
     const results2 = emailAddresses.map(async (user) => {
       await context.prisma.createConversation({

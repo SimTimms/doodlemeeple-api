@@ -36,6 +36,18 @@ const {
   removeInvite,
   declineInvite,
 } = require('./mutations/invite');
+const {
+  updateContract,
+  createContract,
+  removeContract,
+  submitContract,
+  signContract,
+} = require('./mutations/contract');
+const {
+  updatePaymentTerm,
+  createPaymentTerm,
+  removePaymentTerm,
+} = require('./mutations/paymentTerm');
 var validator = require('email-validator');
 const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
@@ -380,6 +392,9 @@ module.exports = {
   createMessage,
   updateMessage,
   removeMessage,
+  updatePaymentTerm,
+  createPaymentTerm,
+  removePaymentTerm,
   markAsRead,
   updateJob,
   createJob,
@@ -389,6 +404,11 @@ module.exports = {
   createInvite,
   removeInvite,
   declineInvite,
+  updateContract,
+  createContract,
+  removeContract,
+  submitContract,
+  signContract,
   addFavourite,
   removeSection,
   createNotification,

@@ -18,6 +18,14 @@ type Mutation {
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
+  updatePaymentTerm(id: String!, paymentTerm: PaymentTermInput!): String
+  createPaymentTerm(id: String!, paymentTerm: PaymentTermInput!): String
+  removePaymentTerm(id: String!): Boolean
+  updateContract(id: String!, contract: ContractInput!): String
+  submitContract(id: String!): String
+  signContract(contractId: String!): String
+  createContract(id: String!, contract: ContractInput!): String
+  removeContract(id: String!): Boolean
   updateJob(id: String!, job: JobInput!): String
   createJob(id: String!, job: JobInput!): String
   removeJob(id: String!): Boolean
@@ -54,6 +62,9 @@ type Query {
   getGames: [Game]
   getJob(jobId: String!): Job
   getJobs: [Job]
+  getContract(jobId: String!): [Contract]
+  previewContract(contractId: String!): Contract
+  getPaymentTerms(contractId: String!): [PaymentTerm]
   getMessages(jobId: String!): [Message]
   getConversations(status: String!): [Conversation]
   getConversation(conversationId: String!, page: Int!): Conversation
@@ -66,8 +77,49 @@ type Query {
   getTestimonials(sectionId: String!): [Section!]
   getCreatives: [User!]
   getInvites: [Invite!]
-  determineConversationId(jobId: String): String
+  determineConversationId(jobId: String, userId: String): String
   counts: Count
+}
+
+input ContractInput {
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: [PaymentTermInput]
+  currency: String!
+  jobId: String
+  status: String
+  signedBy: String
+}
+
+type Contract {
+  id: String!
+  notes: String
+  deadline: String
+  cost: Int
+  paymentTerms: [PaymentTerm]
+  currency: String!
+  status: String
+  job: Job!
+  user: User
+  signedBy: [User]
+  createdAt: String
+  updatedAt: String
+  signedDate: String
+}
+
+input PaymentTermInput {
+  id: String
+  percent: Int
+  description: String!
+  contractId: String!
+}
+
+type PaymentTerm {
+  id: String!
+  percent: Int
+  description: String!
+  contract: Contract
 }
 
 input InviteInput {
@@ -180,6 +232,7 @@ type Job {
   submitted: Boolean
   invite: [Invite!]
   messages: [Message]
+  contracts: [Contract]
 }
 
 type Subscription {
@@ -216,6 +269,7 @@ type User {
   invites: [Invite!]
   invitesReceived: [Invite!]
   conversations: [Conversation]
+  contracts: [Contract!]!
 }
 
 type Invite {
@@ -227,6 +281,7 @@ type Invite {
   job: Job!
   user: User!
   receiver: User!
+  contracts: [Contract]
 }
 
 type Notification {

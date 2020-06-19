@@ -85,6 +85,43 @@ async function getJob(parent, args, context, info) {
   return job;
 }
 
+async function previewContract(parent, args, context, info) {
+  const contract = await context.prisma.contract({
+    id: args.contractId,
+  });
+
+  return contract;
+}
+
+async function getContract(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const contract = await context.prisma.contracts({
+    where: {
+      job: {
+        id: args.jobId,
+      },
+      user: { id: userId },
+    },
+  });
+
+  return contract;
+}
+
+async function getPaymentTerms(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const contract = await context.prisma.paymentTerms({
+    where: {
+      contract: {
+        id: args.contractId,
+      },
+    },
+  });
+
+  return contract;
+}
+
 async function getJobs(parent, args, context, info) {
   const userId = getUserId(context);
   const games = await context.prisma.jobs({
@@ -127,7 +164,6 @@ async function getConversation(parent, args, context, info) {
 
 async function getMessages(parent, args, context, info) {
   const userId = getUserId(context);
-  console.log(args);
   const messages = await context.prisma.messages({
     where: {
       OR: [
@@ -184,8 +220,8 @@ async function getInvites(parent, args, context) {
   return invites;
 }
 
-async function determineConversationId(parent, { jobId }, context) {
-  const userId = getUserId(context);
+async function determineConversationId(parent, { jobId, userId }, context) {
+  const thisUserId = getUserId(context);
   const conversation = await context.prisma.conversations({
     where: {
       job: { id: jobId },
@@ -193,16 +229,10 @@ async function determineConversationId(parent, { jobId }, context) {
     },
   });
 
-  const job = await context.prisma
-    .job({
-      id: jobId,
-    })
-    .user();
-
   if (conversation.length === 0) {
     const conversationNew = await context.prisma.createConversation({
       participants: {
-        connect: [{ id: userId }, { id: job.id }],
+        connect: [{ id: thisUserId }, { id: userId }],
       },
       job: { connect: { id: jobId } },
     });
@@ -273,4 +303,7 @@ module.exports = {
   getMessages,
   getConversations,
   getConversation,
+  getContract,
+  getPaymentTerms,
+  previewContract,
 };

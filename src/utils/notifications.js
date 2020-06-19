@@ -5,6 +5,13 @@ const UPDATED_PROFILE = {
   icon: 'insert_photo',
 };
 
+const CONTRACT_SUBMITTED = {
+  title: `You've got a Quote`,
+  message: 'Check it out',
+  linkTo: '/app/view-contract/',
+  icon: 'send',
+};
+
 const INVITED = {
   title: `You've been invited`,
   message: '',
@@ -23,4 +30,5 @@ module.exports = {
   UPDATED_PROFILE,
   INVITED,
   MESSAGE_SENT,
+  CONTRACT_SUBMITTED,
 };

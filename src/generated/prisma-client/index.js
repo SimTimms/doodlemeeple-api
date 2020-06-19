@@ -9,6 +9,14 @@ var models = [
     embedded: false
   },
   {
+    name: "Contract",
+    embedded: false
+  },
+  {
+    name: "PaymentTerm",
+    embedded: false
+  },
+  {
     name: "Invite",
     embedded: false
   },

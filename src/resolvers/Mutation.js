@@ -53,7 +53,9 @@ const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
 require('dotenv').config();
 const { getSections, getGalleries, getImages } = require('./Query');
-
+const stripe = require('stripe')('sk_test_QNXN8z6uArf5cGSN7zr1SwCB00k7lukflt', {
+  apiVersion: '',
+});
 aws.config.update({
   region: 'eu-west-2',
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -90,6 +92,18 @@ async function deleteAccount(parent, args, context, info) {
   });
 
   await context.prisma.deleteUser({ id: userId });
+}
+
+async function makePayment(parent, args, context) {
+  console.log(args.amount * 100);
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: args.amount * 100,
+    currency: 'gbp',
+    // Verify your integration in this guide by including this parameter
+    metadata: { integration_check: 'accept_a_payment' },
+  });
+
+  return paymentIntent.client_secret;
 }
 
 async function removeSection(parent, args, context) {
@@ -417,4 +431,5 @@ module.exports = {
   removeTestimonial,
   deleteAccount,
   login,
+  makePayment,
 };

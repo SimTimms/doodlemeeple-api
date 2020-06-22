@@ -15,6 +15,7 @@ type Mutation {
     autosave: Boolean
   ): User
   markAsRead(conversationId: String!): String
+  makePayment(amount: String!): String
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean

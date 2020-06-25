@@ -27,6 +27,7 @@ export interface Exists {
   message: (where?: MessageWhereInput) => Promise<boolean>;
   notableProjects: (where?: NotableProjectsWhereInput) => Promise<boolean>;
   notification: (where?: NotificationWhereInput) => Promise<boolean>;
+  payment: (where?: PaymentWhereInput) => Promise<boolean>;
   paymentTerm: (where?: PaymentTermWhereInput) => Promise<boolean>;
   section: (where?: SectionWhereInput) => Promise<boolean>;
   testimonial: (where?: TestimonialWhereInput) => Promise<boolean>;
@@ -269,6 +270,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => NotificationConnectionPromise;
+  payment: (where: PaymentWhereUniqueInput) => PaymentNullablePromise;
+  payments: (args?: {
+    where?: PaymentWhereInput;
+    orderBy?: PaymentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Payment>;
+  paymentsConnection: (args?: {
+    where?: PaymentWhereInput;
+    orderBy?: PaymentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => PaymentConnectionPromise;
   paymentTerm: (
     where: PaymentTermWhereUniqueInput
   ) => PaymentTermNullablePromise;
@@ -549,6 +569,22 @@ export interface Prisma {
   deleteManyNotifications: (
     where?: NotificationWhereInput
   ) => BatchPayloadPromise;
+  createPayment: (data: PaymentCreateInput) => PaymentPromise;
+  updatePayment: (args: {
+    data: PaymentUpdateInput;
+    where: PaymentWhereUniqueInput;
+  }) => PaymentPromise;
+  updateManyPayments: (args: {
+    data: PaymentUpdateManyMutationInput;
+    where?: PaymentWhereInput;
+  }) => BatchPayloadPromise;
+  upsertPayment: (args: {
+    where: PaymentWhereUniqueInput;
+    create: PaymentCreateInput;
+    update: PaymentUpdateInput;
+  }) => PaymentPromise;
+  deletePayment: (where: PaymentWhereUniqueInput) => PaymentPromise;
+  deleteManyPayments: (where?: PaymentWhereInput) => BatchPayloadPromise;
   createPaymentTerm: (data: PaymentTermCreateInput) => PaymentTermPromise;
   updatePaymentTerm: (args: {
     data: PaymentTermUpdateInput;
@@ -659,6 +695,9 @@ export interface Subscription {
   notification: (
     where?: NotificationSubscriptionWhereInput
   ) => NotificationSubscriptionPayloadSubscription;
+  payment: (
+    where?: PaymentSubscriptionWhereInput
+  ) => PaymentSubscriptionPayloadSubscription;
   paymentTerm: (
     where?: PaymentTermSubscriptionWhereInput
   ) => PaymentTermSubscriptionPayloadSubscription;
@@ -865,6 +904,22 @@ export type GalleryImageOrderByInput =
   | "title_ASC"
   | "title_DESC";
 
+export type PaymentOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "amount_ASC"
+  | "amount_DESC"
+  | "currency_ASC"
+  | "currency_DESC"
+  | "paymentId_ASC"
+  | "paymentId_DESC"
+  | "status_ASC"
+  | "status_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
+
 export type CountOrderByInput =
   | "id_ASC"
   | "id_DESC"
@@ -1039,6 +1094,9 @@ export interface ContractWhereInput {
   signedDate_lte?: Maybe<DateTimeInput>;
   signedDate_gt?: Maybe<DateTimeInput>;
   signedDate_gte?: Maybe<DateTimeInput>;
+  payments_every?: Maybe<PaymentWhereInput>;
+  payments_some?: Maybe<PaymentWhereInput>;
+  payments_none?: Maybe<PaymentWhereInput>;
   AND?: Maybe<ContractWhereInput[] | ContractWhereInput>;
   OR?: Maybe<ContractWhereInput[] | ContractWhereInput>;
   NOT?: Maybe<ContractWhereInput[] | ContractWhereInput>;
@@ -2089,6 +2147,94 @@ export interface GalleryImageWhereInput {
   NOT?: Maybe<GalleryImageWhereInput[] | GalleryImageWhereInput>;
 }
 
+export interface PaymentWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  amount?: Maybe<Int>;
+  amount_not?: Maybe<Int>;
+  amount_in?: Maybe<Int[] | Int>;
+  amount_not_in?: Maybe<Int[] | Int>;
+  amount_lt?: Maybe<Int>;
+  amount_lte?: Maybe<Int>;
+  amount_gt?: Maybe<Int>;
+  amount_gte?: Maybe<Int>;
+  currency?: Maybe<String>;
+  currency_not?: Maybe<String>;
+  currency_in?: Maybe<String[] | String>;
+  currency_not_in?: Maybe<String[] | String>;
+  currency_lt?: Maybe<String>;
+  currency_lte?: Maybe<String>;
+  currency_gt?: Maybe<String>;
+  currency_gte?: Maybe<String>;
+  currency_contains?: Maybe<String>;
+  currency_not_contains?: Maybe<String>;
+  currency_starts_with?: Maybe<String>;
+  currency_not_starts_with?: Maybe<String>;
+  currency_ends_with?: Maybe<String>;
+  currency_not_ends_with?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  paymentId_not?: Maybe<String>;
+  paymentId_in?: Maybe<String[] | String>;
+  paymentId_not_in?: Maybe<String[] | String>;
+  paymentId_lt?: Maybe<String>;
+  paymentId_lte?: Maybe<String>;
+  paymentId_gt?: Maybe<String>;
+  paymentId_gte?: Maybe<String>;
+  paymentId_contains?: Maybe<String>;
+  paymentId_not_contains?: Maybe<String>;
+  paymentId_starts_with?: Maybe<String>;
+  paymentId_not_starts_with?: Maybe<String>;
+  paymentId_ends_with?: Maybe<String>;
+  paymentId_not_ends_with?: Maybe<String>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
+  paidBy?: Maybe<UserWhereInput>;
+  contract?: Maybe<ContractWhereInput>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<PaymentWhereInput[] | PaymentWhereInput>;
+  OR?: Maybe<PaymentWhereInput[] | PaymentWhereInput>;
+  NOT?: Maybe<PaymentWhereInput[] | PaymentWhereInput>;
+}
+
 export type ConversationWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
@@ -2177,6 +2323,10 @@ export type NotificationWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export type PaymentWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export type PaymentTermWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
@@ -2207,6 +2357,7 @@ export interface ContractCreateInput {
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentCreateManyWithoutContractInput>;
 }
 
 export interface PaymentTermCreateManyWithoutContractInput {
@@ -2898,6 +3049,7 @@ export interface ContractCreateWithoutUserInput {
   status?: Maybe<String>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentCreateManyWithoutContractInput>;
 }
 
 export interface UserCreateManyWithoutSignedByInput {
@@ -3016,6 +3168,7 @@ export interface ContractCreateWithoutSignedByInput {
   status?: Maybe<String>;
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentCreateManyWithoutContractInput>;
 }
 
 export interface UserCreateOneWithoutContractsInput {
@@ -3048,6 +3201,56 @@ export interface UserCreateWithoutContractsInput {
   invitesReceived?: Maybe<InviteCreateManyWithoutReceiverInput>;
   messagesSent?: Maybe<MessageCreateManyWithoutSenderInput>;
   messagesReceived?: Maybe<MessageCreateManyWithoutReceiverInput>;
+  signedBy?: Maybe<ContractCreateManyWithoutSignedByInput>;
+}
+
+export interface PaymentCreateManyWithoutContractInput {
+  create?: Maybe<
+    PaymentCreateWithoutContractInput[] | PaymentCreateWithoutContractInput
+  >;
+  connect?: Maybe<PaymentWhereUniqueInput[] | PaymentWhereUniqueInput>;
+}
+
+export interface PaymentCreateWithoutContractInput {
+  id?: Maybe<ID_Input>;
+  amount?: Maybe<Int>;
+  currency: String;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
+  paidBy: UserCreateOneInput;
+}
+
+export interface UserCreateOneInput {
+  create?: Maybe<UserCreateInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  resetToken?: Maybe<String>;
+  password: String;
+  keywords?: Maybe<UserCreatekeywordsInput>;
+  profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
+  profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  favourites?: Maybe<UserCreatefavouritesInput>;
+  img?: Maybe<String>;
+  sections?: Maybe<SectionCreateManyWithoutUserInput>;
+  notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
+  games?: Maybe<GameCreateManyWithoutUserInput>;
+  conversations?: Maybe<ConversationCreateManyWithoutParticipantsInput>;
+  jobs?: Maybe<JobCreateManyWithoutUserInput>;
+  invites?: Maybe<InviteCreateManyWithoutUserInput>;
+  invitesReceived?: Maybe<InviteCreateManyWithoutReceiverInput>;
+  messagesSent?: Maybe<MessageCreateManyWithoutSenderInput>;
+  messagesReceived?: Maybe<MessageCreateManyWithoutReceiverInput>;
+  contracts?: Maybe<ContractCreateManyWithoutUserInput>;
   signedBy?: Maybe<ContractCreateManyWithoutSignedByInput>;
 }
 
@@ -3093,6 +3296,7 @@ export interface ContractCreateWithoutJobInput {
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentCreateManyWithoutContractInput>;
 }
 
 export interface ContractCreateManyInput {
@@ -3127,6 +3331,7 @@ export interface ContractUpdateInput {
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface PaymentTermUpdateManyWithoutContractInput {
@@ -4708,6 +4913,7 @@ export interface ContractUpdateWithoutUserDataInput {
   status?: Maybe<String>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface UserUpdateManyWithoutSignedByInput {
@@ -4907,6 +5113,7 @@ export interface ContractUpdateWithoutSignedByDataInput {
   status?: Maybe<String>;
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface UserUpdateOneWithoutContractsInput {
@@ -4948,6 +5155,186 @@ export interface UserUpdateWithoutContractsDataInput {
 export interface UserUpsertWithoutContractsInput {
   update: UserUpdateWithoutContractsDataInput;
   create: UserCreateWithoutContractsInput;
+}
+
+export interface PaymentUpdateManyWithoutContractInput {
+  create?: Maybe<
+    PaymentCreateWithoutContractInput[] | PaymentCreateWithoutContractInput
+  >;
+  delete?: Maybe<PaymentWhereUniqueInput[] | PaymentWhereUniqueInput>;
+  connect?: Maybe<PaymentWhereUniqueInput[] | PaymentWhereUniqueInput>;
+  set?: Maybe<PaymentWhereUniqueInput[] | PaymentWhereUniqueInput>;
+  disconnect?: Maybe<PaymentWhereUniqueInput[] | PaymentWhereUniqueInput>;
+  update?: Maybe<
+    | PaymentUpdateWithWhereUniqueWithoutContractInput[]
+    | PaymentUpdateWithWhereUniqueWithoutContractInput
+  >;
+  upsert?: Maybe<
+    | PaymentUpsertWithWhereUniqueWithoutContractInput[]
+    | PaymentUpsertWithWhereUniqueWithoutContractInput
+  >;
+  deleteMany?: Maybe<PaymentScalarWhereInput[] | PaymentScalarWhereInput>;
+  updateMany?: Maybe<
+    | PaymentUpdateManyWithWhereNestedInput[]
+    | PaymentUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface PaymentUpdateWithWhereUniqueWithoutContractInput {
+  where: PaymentWhereUniqueInput;
+  data: PaymentUpdateWithoutContractDataInput;
+}
+
+export interface PaymentUpdateWithoutContractDataInput {
+  amount?: Maybe<Int>;
+  currency?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
+  paidBy?: Maybe<UserUpdateOneRequiredInput>;
+}
+
+export interface UserUpdateOneRequiredInput {
+  create?: Maybe<UserCreateInput>;
+  update?: Maybe<UserUpdateDataInput>;
+  upsert?: Maybe<UserUpsertNestedInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  resetToken?: Maybe<String>;
+  password?: Maybe<String>;
+  keywords?: Maybe<UserUpdatekeywordsInput>;
+  profileImg?: Maybe<String>;
+  profileImgStyle?: Maybe<String>;
+  profileBG?: Maybe<String>;
+  profileBGStyle?: Maybe<String>;
+  autosave?: Maybe<Boolean>;
+  summary?: Maybe<String>;
+  location?: Maybe<String>;
+  favourites?: Maybe<UserUpdatefavouritesInput>;
+  img?: Maybe<String>;
+  sections?: Maybe<SectionUpdateManyWithoutUserInput>;
+  notifications?: Maybe<NotificationUpdateManyWithoutUserInput>;
+  games?: Maybe<GameUpdateManyWithoutUserInput>;
+  conversations?: Maybe<ConversationUpdateManyWithoutParticipantsInput>;
+  jobs?: Maybe<JobUpdateManyWithoutUserInput>;
+  invites?: Maybe<InviteUpdateManyWithoutUserInput>;
+  invitesReceived?: Maybe<InviteUpdateManyWithoutReceiverInput>;
+  messagesSent?: Maybe<MessageUpdateManyWithoutSenderInput>;
+  messagesReceived?: Maybe<MessageUpdateManyWithoutReceiverInput>;
+  contracts?: Maybe<ContractUpdateManyWithoutUserInput>;
+  signedBy?: Maybe<ContractUpdateManyWithoutSignedByInput>;
+}
+
+export interface UserUpsertNestedInput {
+  update: UserUpdateDataInput;
+  create: UserCreateInput;
+}
+
+export interface PaymentUpsertWithWhereUniqueWithoutContractInput {
+  where: PaymentWhereUniqueInput;
+  update: PaymentUpdateWithoutContractDataInput;
+  create: PaymentCreateWithoutContractInput;
+}
+
+export interface PaymentScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  amount?: Maybe<Int>;
+  amount_not?: Maybe<Int>;
+  amount_in?: Maybe<Int[] | Int>;
+  amount_not_in?: Maybe<Int[] | Int>;
+  amount_lt?: Maybe<Int>;
+  amount_lte?: Maybe<Int>;
+  amount_gt?: Maybe<Int>;
+  amount_gte?: Maybe<Int>;
+  currency?: Maybe<String>;
+  currency_not?: Maybe<String>;
+  currency_in?: Maybe<String[] | String>;
+  currency_not_in?: Maybe<String[] | String>;
+  currency_lt?: Maybe<String>;
+  currency_lte?: Maybe<String>;
+  currency_gt?: Maybe<String>;
+  currency_gte?: Maybe<String>;
+  currency_contains?: Maybe<String>;
+  currency_not_contains?: Maybe<String>;
+  currency_starts_with?: Maybe<String>;
+  currency_not_starts_with?: Maybe<String>;
+  currency_ends_with?: Maybe<String>;
+  currency_not_ends_with?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  paymentId_not?: Maybe<String>;
+  paymentId_in?: Maybe<String[] | String>;
+  paymentId_not_in?: Maybe<String[] | String>;
+  paymentId_lt?: Maybe<String>;
+  paymentId_lte?: Maybe<String>;
+  paymentId_gt?: Maybe<String>;
+  paymentId_gte?: Maybe<String>;
+  paymentId_contains?: Maybe<String>;
+  paymentId_not_contains?: Maybe<String>;
+  paymentId_starts_with?: Maybe<String>;
+  paymentId_not_starts_with?: Maybe<String>;
+  paymentId_ends_with?: Maybe<String>;
+  paymentId_not_ends_with?: Maybe<String>;
+  status?: Maybe<String>;
+  status_not?: Maybe<String>;
+  status_in?: Maybe<String[] | String>;
+  status_not_in?: Maybe<String[] | String>;
+  status_lt?: Maybe<String>;
+  status_lte?: Maybe<String>;
+  status_gt?: Maybe<String>;
+  status_gte?: Maybe<String>;
+  status_contains?: Maybe<String>;
+  status_not_contains?: Maybe<String>;
+  status_starts_with?: Maybe<String>;
+  status_not_starts_with?: Maybe<String>;
+  status_ends_with?: Maybe<String>;
+  status_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<PaymentScalarWhereInput[] | PaymentScalarWhereInput>;
+  OR?: Maybe<PaymentScalarWhereInput[] | PaymentScalarWhereInput>;
+  NOT?: Maybe<PaymentScalarWhereInput[] | PaymentScalarWhereInput>;
+}
+
+export interface PaymentUpdateManyWithWhereNestedInput {
+  where: PaymentScalarWhereInput;
+  data: PaymentUpdateManyDataInput;
+}
+
+export interface PaymentUpdateManyDataInput {
+  amount?: Maybe<Int>;
+  currency?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
 }
 
 export interface ContractUpsertWithWhereUniqueWithoutSignedByInput {
@@ -5347,6 +5734,7 @@ export interface ContractUpdateWithoutJobDataInput {
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface ContractUpsertWithWhereUniqueWithoutJobInput {
@@ -5502,6 +5890,7 @@ export interface ContractUpdateDataInput {
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface ContractUpsertWithWhereUniqueNestedInput {
@@ -6418,6 +6807,78 @@ export interface NotificationUpdateManyMutationInput {
   icon?: Maybe<String>;
 }
 
+export interface PaymentCreateInput {
+  id?: Maybe<ID_Input>;
+  amount?: Maybe<Int>;
+  currency: String;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
+  paidBy: UserCreateOneInput;
+  contract?: Maybe<ContractCreateOneWithoutPaymentsInput>;
+}
+
+export interface ContractCreateOneWithoutPaymentsInput {
+  create?: Maybe<ContractCreateWithoutPaymentsInput>;
+  connect?: Maybe<ContractWhereUniqueInput>;
+}
+
+export interface ContractCreateWithoutPaymentsInput {
+  id?: Maybe<ID_Input>;
+  notes?: Maybe<String>;
+  deadline?: Maybe<String>;
+  cost?: Maybe<Int>;
+  paymentTerms?: Maybe<PaymentTermCreateManyWithoutContractInput>;
+  currency: String;
+  job: JobCreateOneWithoutContractsInput;
+  status?: Maybe<String>;
+  user?: Maybe<UserCreateOneWithoutContractsInput>;
+  signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
+}
+
+export interface PaymentUpdateInput {
+  amount?: Maybe<Int>;
+  currency?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
+  paidBy?: Maybe<UserUpdateOneRequiredInput>;
+  contract?: Maybe<ContractUpdateOneWithoutPaymentsInput>;
+}
+
+export interface ContractUpdateOneWithoutPaymentsInput {
+  create?: Maybe<ContractCreateWithoutPaymentsInput>;
+  update?: Maybe<ContractUpdateWithoutPaymentsDataInput>;
+  upsert?: Maybe<ContractUpsertWithoutPaymentsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<ContractWhereUniqueInput>;
+}
+
+export interface ContractUpdateWithoutPaymentsDataInput {
+  notes?: Maybe<String>;
+  deadline?: Maybe<String>;
+  cost?: Maybe<Int>;
+  paymentTerms?: Maybe<PaymentTermUpdateManyWithoutContractInput>;
+  currency?: Maybe<String>;
+  job?: Maybe<JobUpdateOneRequiredWithoutContractsInput>;
+  status?: Maybe<String>;
+  user?: Maybe<UserUpdateOneWithoutContractsInput>;
+  signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
+  signedDate?: Maybe<DateTimeInput>;
+}
+
+export interface ContractUpsertWithoutPaymentsInput {
+  update: ContractUpdateWithoutPaymentsDataInput;
+  create: ContractCreateWithoutPaymentsInput;
+}
+
+export interface PaymentUpdateManyMutationInput {
+  amount?: Maybe<Int>;
+  currency?: Maybe<String>;
+  paymentId?: Maybe<String>;
+  status?: Maybe<String>;
+}
+
 export interface PaymentTermCreateInput {
   id?: Maybe<ID_Input>;
   percent?: Maybe<Int>;
@@ -6441,6 +6902,7 @@ export interface ContractCreateWithoutPaymentTermsInput {
   user?: Maybe<UserCreateOneWithoutContractsInput>;
   signedBy?: Maybe<UserCreateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentCreateManyWithoutContractInput>;
 }
 
 export interface PaymentTermUpdateInput {
@@ -6468,6 +6930,7 @@ export interface ContractUpdateWithoutPaymentTermsDataInput {
   user?: Maybe<UserUpdateOneWithoutContractsInput>;
   signedBy?: Maybe<UserUpdateManyWithoutSignedByInput>;
   signedDate?: Maybe<DateTimeInput>;
+  payments?: Maybe<PaymentUpdateManyWithoutContractInput>;
 }
 
 export interface ContractUpsertWithoutPaymentTermsInput {
@@ -6522,35 +6985,6 @@ export interface TestimonialUpdateManyMutationInput {
   image?: Maybe<String>;
   name?: Maybe<String>;
   status?: Maybe<Boolean>;
-}
-
-export interface UserCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  resetToken?: Maybe<String>;
-  password: String;
-  keywords?: Maybe<UserCreatekeywordsInput>;
-  profileImg?: Maybe<String>;
-  profileImgStyle?: Maybe<String>;
-  profileBG?: Maybe<String>;
-  profileBGStyle?: Maybe<String>;
-  autosave?: Maybe<Boolean>;
-  summary?: Maybe<String>;
-  location?: Maybe<String>;
-  favourites?: Maybe<UserCreatefavouritesInput>;
-  img?: Maybe<String>;
-  sections?: Maybe<SectionCreateManyWithoutUserInput>;
-  notifications?: Maybe<NotificationCreateManyWithoutUserInput>;
-  games?: Maybe<GameCreateManyWithoutUserInput>;
-  conversations?: Maybe<ConversationCreateManyWithoutParticipantsInput>;
-  jobs?: Maybe<JobCreateManyWithoutUserInput>;
-  invites?: Maybe<InviteCreateManyWithoutUserInput>;
-  invitesReceived?: Maybe<InviteCreateManyWithoutReceiverInput>;
-  messagesSent?: Maybe<MessageCreateManyWithoutSenderInput>;
-  messagesReceived?: Maybe<MessageCreateManyWithoutReceiverInput>;
-  contracts?: Maybe<ContractCreateManyWithoutUserInput>;
-  signedBy?: Maybe<ContractCreateManyWithoutSignedByInput>;
 }
 
 export interface UserUpdateInput {
@@ -6750,6 +7184,17 @@ export interface NotificationSubscriptionWhereInput {
   >;
 }
 
+export interface PaymentSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<PaymentWhereInput>;
+  AND?: Maybe<PaymentSubscriptionWhereInput[] | PaymentSubscriptionWhereInput>;
+  OR?: Maybe<PaymentSubscriptionWhereInput[] | PaymentSubscriptionWhereInput>;
+  NOT?: Maybe<PaymentSubscriptionWhereInput[] | PaymentSubscriptionWhereInput>;
+}
+
 export interface PaymentTermSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
@@ -6852,6 +7297,15 @@ export interface ContractPromise extends Promise<Contract>, Fragmentable {
     last?: Int;
   }) => T;
   signedDate: () => Promise<DateTimeOutput>;
+  payments: <T = FragmentableArray<Payment>>(args?: {
+    where?: PaymentWhereInput;
+    orderBy?: PaymentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface ContractSubscription
@@ -6886,6 +7340,15 @@ export interface ContractSubscription
     last?: Int;
   }) => T;
   signedDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  payments: <T = Promise<AsyncIterator<PaymentSubscription>>>(args?: {
+    where?: PaymentWhereInput;
+    orderBy?: PaymentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface ContractNullablePromise
@@ -6920,6 +7383,15 @@ export interface ContractNullablePromise
     last?: Int;
   }) => T;
   signedDate: () => Promise<DateTimeOutput>;
+  payments: <T = FragmentableArray<Payment>>(args?: {
+    where?: PaymentWhereInput;
+    orderBy?: PaymentOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface PaymentTerm {
@@ -8096,6 +8568,56 @@ export interface GalleryImageNullablePromise
   gallery: <T = GalleryPromise>() => T;
 }
 
+export interface Payment {
+  id: ID_Output;
+  amount?: Int;
+  currency: String;
+  paymentId?: String;
+  status?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface PaymentPromise extends Promise<Payment>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  amount: () => Promise<Int>;
+  currency: () => Promise<String>;
+  paymentId: () => Promise<String>;
+  status: () => Promise<String>;
+  paidBy: <T = UserPromise>() => T;
+  contract: <T = ContractPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface PaymentSubscription
+  extends Promise<AsyncIterator<Payment>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  amount: () => Promise<AsyncIterator<Int>>;
+  currency: () => Promise<AsyncIterator<String>>;
+  paymentId: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<String>>;
+  paidBy: <T = UserSubscription>() => T;
+  contract: <T = ContractSubscription>() => T;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
+export interface PaymentNullablePromise
+  extends Promise<Payment | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  amount: () => Promise<Int>;
+  currency: () => Promise<String>;
+  paymentId: () => Promise<String>;
+  status: () => Promise<String>;
+  paidBy: <T = UserPromise>() => T;
+  contract: <T = ContractPromise>() => T;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
 export interface ContractConnection {
   pageInfo: PageInfo;
   edges: ContractEdge[];
@@ -8747,6 +9269,60 @@ export interface AggregateNotificationPromise
 
 export interface AggregateNotificationSubscription
   extends Promise<AsyncIterator<AggregateNotification>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface PaymentConnection {
+  pageInfo: PageInfo;
+  edges: PaymentEdge[];
+}
+
+export interface PaymentConnectionPromise
+  extends Promise<PaymentConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PaymentEdge>>() => T;
+  aggregate: <T = AggregatePaymentPromise>() => T;
+}
+
+export interface PaymentConnectionSubscription
+  extends Promise<AsyncIterator<PaymentConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PaymentEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePaymentSubscription>() => T;
+}
+
+export interface PaymentEdge {
+  node: Payment;
+  cursor: String;
+}
+
+export interface PaymentEdgePromise extends Promise<PaymentEdge>, Fragmentable {
+  node: <T = PaymentPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PaymentEdgeSubscription
+  extends Promise<AsyncIterator<PaymentEdge>>,
+    Fragmentable {
+  node: <T = PaymentSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregatePayment {
+  count: Int;
+}
+
+export interface AggregatePaymentPromise
+  extends Promise<AggregatePayment>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePaymentSubscription
+  extends Promise<AsyncIterator<AggregatePayment>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -9585,6 +10161,65 @@ export interface NotificationPreviousValuesSubscription
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
+export interface PaymentSubscriptionPayload {
+  mutation: MutationType;
+  node: Payment;
+  updatedFields: String[];
+  previousValues: PaymentPreviousValues;
+}
+
+export interface PaymentSubscriptionPayloadPromise
+  extends Promise<PaymentSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = PaymentPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = PaymentPreviousValuesPromise>() => T;
+}
+
+export interface PaymentSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<PaymentSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = PaymentSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = PaymentPreviousValuesSubscription>() => T;
+}
+
+export interface PaymentPreviousValues {
+  id: ID_Output;
+  amount?: Int;
+  currency: String;
+  paymentId?: String;
+  status?: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+}
+
+export interface PaymentPreviousValuesPromise
+  extends Promise<PaymentPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  amount: () => Promise<Int>;
+  currency: () => Promise<String>;
+  paymentId: () => Promise<String>;
+  status: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+}
+
+export interface PaymentPreviousValuesSubscription
+  extends Promise<AsyncIterator<PaymentPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  amount: () => Promise<AsyncIterator<Int>>;
+  currency: () => Promise<AsyncIterator<String>>;
+  paymentId: () => Promise<AsyncIterator<String>>;
+  status: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+}
+
 export interface PaymentTermSubscriptionPayload {
   mutation: MutationType;
   node: PaymentTerm;
@@ -9861,6 +10496,10 @@ export type Long = string;
 export const models: Model[] = [
   {
     name: "User",
+    embedded: false
+  },
+  {
+    name: "Payment",
     embedded: false
   },
   {

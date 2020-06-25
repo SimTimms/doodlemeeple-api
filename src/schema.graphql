@@ -15,7 +15,7 @@ type Mutation {
     autosave: Boolean
   ): User
   markAsRead(conversationId: String!): String
-  makePayment(amount: String!): String
+  makePayment(amount: String!, currency: String!, contractId: String!): String
   updateGame(id: String!, game: GameInput!): String
   createGame(id: String!, game: GameInput!): String
   removeGame(id: String!): Boolean
@@ -107,6 +107,19 @@ type Contract {
   createdAt: String
   updatedAt: String
   signedDate: String
+  payments: [Payment]
+}
+
+type Payment {
+  id: String!
+  amount: Int
+  currency: String!
+  status: String
+  paidBy: User!
+  contract: Contract
+  paymentId: String
+  createdAt: String
+  updatedAt: String
 }
 
 input PaymentTermInput {

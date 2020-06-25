@@ -14,9 +14,14 @@ async function signedBy(parent, args, context) {
   return await context.prisma.contract({ id: parent.id }).signedBy();
 }
 
+async function payments(parent, args, context) {
+  return await context.prisma.contract({ id: parent.id }).payments();
+}
+
 module.exports = {
   job,
   paymentTerms,
   user,
   signedBy,
+  payments,
 };

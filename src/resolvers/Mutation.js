@@ -53,8 +53,8 @@ const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
 require('dotenv').config();
 const { getSections, getGalleries, getImages } = require('./Query');
-const stripe = require('stripe')('sk_test_QNXN8z6uArf5cGSN7zr1SwCB00k7lukflt', {
-  apiVersion: '',
+const stripe = require('stripe')(process.env.STRIPE_KEY, {
+  apiVersion: '2020-03-02',
 });
 aws.config.update({
   region: 'eu-west-2',
@@ -95,12 +95,21 @@ async function deleteAccount(parent, args, context, info) {
 }
 
 async function makePayment(parent, args, context) {
-  console.log(args.amount * 100);
+  const userId = getUserId(context);
+  const { currency, amount, contractId } = args;
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: args.amount * 100,
-    currency: 'gbp',
-    // Verify your integration in this guide by including this parameter
+    amount: amount * 100,
+    currency: currency.toLowerCase() || 'gbp',
     metadata: { integration_check: 'accept_a_payment' },
+  });
+  console.log(paymentIntent);
+  await context.prisma.createPayment({
+    amount: amount * 100,
+    currency: currency,
+    status: 'Incomplete',
+    paidBy: { connect: { id: userId } },
+    contract: { connect: { id: contractId } },
+    paymentId: paymentIntent.id,
   });
 
   return paymentIntent.client_secret;

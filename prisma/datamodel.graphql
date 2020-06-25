@@ -51,6 +51,18 @@ input PaymentTermInput {
   contractId: String!
 }
 
+type Payment {
+  id: ID! @id
+  amount: Int
+  currency: String!
+  paymentId: String
+  status: String
+  paidBy: User! @relation(link: INLINE, onDelete: CASCADE)
+  contract: Contract @relation(link: TABLE, onDelete: CASCADE)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
 type Contract {
   id: ID! @id
   notes: String
@@ -65,6 +77,7 @@ type Contract {
   updatedAt: DateTime! @updatedAt
   signedBy: [User] @relation(name: "SignedByUser")
   signedDate: DateTime
+  payments: [Payment]
 }
 
 type PaymentTerm {

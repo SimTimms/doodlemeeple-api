@@ -85,6 +85,24 @@ async function signContract(parent, args, context, info) {
     data: {
       signedBy: { connect: { id: userId } },
       signedDate: new Date(),
+      status: 'accepted',
+    },
+    where: {
+      id: contractId,
+    },
+  });
+
+  return returnObj.id;
+}
+
+async function declineContract(parent, args, context, info) {
+  const { contractId } = args;
+  const userId = getUserId(context);
+
+  const returnObj = await context.prisma.updateContract({
+    data: {
+      signedDate: new Date(),
+      status: 'declined',
     },
     where: {
       id: contractId,
@@ -135,4 +153,5 @@ module.exports = {
   removeContract,
   submitContract,
   signContract,
+  declineContract,
 };

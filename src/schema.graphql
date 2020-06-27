@@ -25,6 +25,7 @@ type Mutation {
   updateContract(id: String!, contract: ContractInput!): String
   submitContract(id: String!): String
   signContract(contractId: String!): String
+  declineContract(contractId: String!): String
   createContract(id: String!, contract: ContractInput!): String
   removeContract(id: String!): Boolean
   updateJob(id: String!, job: JobInput!): String

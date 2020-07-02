@@ -53,10 +53,6 @@ server.start();
 const customRouter = express.Router();
 customRouter.use(bodyParser.urlencoded({ extended: true }));
 
-customRouter.post('/sign_s3', (req, res) => {
-  sign_s3(req, res);
-});
-
 const endpointSecret = process.env.STRIPE_SIGNATURE;
 
 customRouter.post(
@@ -99,4 +95,8 @@ customRouter.post(
 );
 
 customRouter.use(bodyParser.json());
+customRouter.post('/sign_s3', (req, res) => {
+  sign_s3(req, res);
+});
+
 server.express.use(customRouter);

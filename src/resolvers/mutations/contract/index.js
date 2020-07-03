@@ -69,7 +69,7 @@ async function submitContract(parent, args, context, info) {
 
   await context.prisma.createMessage({
     sender: { connect: { id: userId } },
-    messageStr: `QUOTE SUBMITTED:/app/view-contract/${contract.id}`,
+    messageStr: `QUOTE SUBMITTED:${contract.id}`,
     conversation: { connect: { id: conversation[0].id } },
     status: 'unread',
   });

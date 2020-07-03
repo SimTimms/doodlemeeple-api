@@ -65,6 +65,7 @@ type Query {
   getJob(jobId: String!): Job
   getJobs: [Job]
   getContract(jobId: String!): [Contract]
+  getContractId(contractId: String!): [Contract]
   previewContract(contractId: String!): Contract
   getPaymentTerms(contractId: String!): [PaymentTerm]
   getMessages(jobId: String!): [Message]

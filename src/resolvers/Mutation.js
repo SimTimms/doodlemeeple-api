@@ -215,20 +215,6 @@ async function updateUser(parent, args, context, info) {
 
   const userId = getUserId(context);
 
-  const exists = await context.prisma.$exists.notification({
-    user: { id: userId },
-    title: 'You updated your profile',
-  });
-
-  !exists &&
-    (await context.prisma.createNotification({
-      user: { connect: { id: userId } },
-      title: 'You updated your profile',
-      message: 'Nice Work! Keep your profile up-to-date',
-      linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
-    }));
-
   const user = await context.prisma.updateUser({
     data: {
       name: args.name.replace(/[^A-Za-z0-9 ]/g, ''),
@@ -355,7 +341,7 @@ async function signup(parent, args, context, info) {
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
       linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
+      icon: 'thumb_up_alt',
     });
 
     return {

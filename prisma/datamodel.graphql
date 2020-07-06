@@ -23,10 +23,8 @@ type User {
     @relation(link: TABLE, onDelete: CASCADE, name: "InviteUser")
   invitesReceived: [Invite!]
     @relation(link: TABLE, onDelete: CASCADE, name: "InviteReceived")
-  messagesSent: [Message!]
-    @relation(link: TABLE, onDelete: CASCADE, name: "MessageSent")
-  messagesReceived: [Message!]
-    @relation(link: TABLE, onDelete: CASCADE, name: "MessageReceived")
+  messagesSent: [Message!] @relation(link: TABLE, name: "MessageSent")
+  messagesReceived: [Message!] @relation(link: TABLE, name: "MessageReceived")
   contracts: [Contract!]!
     @relation(link: TABLE, name: "ContractUser", onDelete: CASCADE)
   signedBy: [Contract!]!
@@ -177,7 +175,7 @@ type Game {
   user: User!
   type: String
   createdAt: DateTime! @createdAt
-  jobs: [Job]
+  jobs: [Job] @relation(onDelete: CASCADE)
 }
 
 type Count {

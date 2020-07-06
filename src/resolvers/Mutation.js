@@ -42,6 +42,7 @@ const {
   removeContract,
   submitContract,
   signContract,
+  declineContract,
 } = require('./mutations/contract');
 const {
   updatePaymentTerm,
@@ -53,7 +54,9 @@ const { emailAddress } = require('../utils/emailAddress');
 var aws = require('aws-sdk');
 require('dotenv').config();
 const { getSections, getGalleries, getImages } = require('./Query');
-
+const stripe = require('stripe')(process.env.STRIPE_KEY, {
+  apiVersion: '2020-03-02',
+});
 aws.config.update({
   region: 'eu-west-2',
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -90,6 +93,27 @@ async function deleteAccount(parent, args, context, info) {
   });
 
   await context.prisma.deleteUser({ id: userId });
+}
+
+async function makePayment(parent, args, context) {
+  const userId = getUserId(context);
+  const { currency, amount, contractId } = args;
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount * 100,
+    currency: currency.toLowerCase() || 'gbp',
+    metadata: { integration_check: 'accept_a_payment' },
+  });
+  console.log(paymentIntent);
+  await context.prisma.createPayment({
+    amount: amount * 100,
+    currency: currency,
+    status: 'Incomplete',
+    paidBy: { connect: { id: userId } },
+    contract: { connect: { id: contractId } },
+    paymentId: paymentIntent.id,
+  });
+
+  return paymentIntent.client_secret;
 }
 
 async function removeSection(parent, args, context) {
@@ -190,20 +214,6 @@ async function updateUser(parent, args, context, info) {
   }
 
   const userId = getUserId(context);
-
-  const exists = await context.prisma.$exists.notification({
-    user: { id: userId },
-    title: 'You updated your profile',
-  });
-
-  !exists &&
-    (await context.prisma.createNotification({
-      user: { connect: { id: userId } },
-      title: 'You updated your profile',
-      message: 'Nice Work! Keep your profile up-to-date',
-      linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
-    }));
 
   const user = await context.prisma.updateUser({
     data: {
@@ -331,7 +341,7 @@ async function signup(parent, args, context, info) {
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
       linkTo: '/app/edit-profile',
-      icon: 'contact_mail',
+      icon: 'thumb_up_alt',
     });
 
     return {
@@ -409,6 +419,7 @@ module.exports = {
   removeContract,
   submitContract,
   signContract,
+  declineContract,
   addFavourite,
   removeSection,
   createNotification,
@@ -417,4 +428,5 @@ module.exports = {
   removeTestimonial,
   deleteAccount,
   login,
+  makePayment,
 };

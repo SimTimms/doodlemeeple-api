@@ -108,6 +108,20 @@ async function getContract(parent, args, context, info) {
   return contract;
 }
 
+async function getContractId(parent, args, context, info) {
+  const userId = getUserId(context);
+
+  const contract = await context.prisma.contracts({
+    where: {
+      id: args.contractId,
+
+      user: { id: userId },
+    },
+  });
+
+  return contract;
+}
+
 async function getPaymentTerms(parent, args, context, info) {
   const userId = getUserId(context);
 
@@ -225,9 +239,11 @@ async function determineConversationId(parent, { jobId, userId }, context) {
   const conversation = await context.prisma.conversations({
     where: {
       job: { id: jobId },
-      participants_some: { id_in: [userId] },
+      participants_every: { id_in: [userId, thisUserId] },
     },
   });
+
+  console.log(conversation);
 
   if (conversation.length === 0) {
     const conversationNew = await context.prisma.createConversation({
@@ -304,6 +320,7 @@ module.exports = {
   getConversations,
   getConversation,
   getContract,
+  getContractId,
   getPaymentTerms,
   previewContract,
 };

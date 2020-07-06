@@ -36,7 +36,7 @@ exports.sign_s3 = async (req, res) => {
   const fileSize = req.body.fileSize;
 
   const approvedFileTypes = ['png', 'jpg', 'jpeg'];
-  const approvedFileSize = 2500000;
+  const approvedFileSize = 1000000;
 
   if (approvedFileTypes.indexOf(fileType.toLowerCase()) === -1) {
     res.json({ success: false, error: 'PNG or JPG only' });
@@ -47,7 +47,7 @@ exports.sign_s3 = async (req, res) => {
   if (fileSize > approvedFileSize) {
     res.json({
       success: false,
-      error: `Image must be smaller than ${approvedFileSize / 1000000} MB`,
+      error: `${approvedFileSize / 1000000} MB`,
     });
 
     return;

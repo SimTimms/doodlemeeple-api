@@ -1,12 +1,22 @@
+"use strict";
+
 const bcrypt = require('bcryptjs');
+
 const jwt = require('jsonwebtoken');
-const { emailReset, emailForgot, emailSignup } = require('../email');
+
+const {
+  emailReset,
+  emailForgot,
+  emailSignup
+} = require('../email');
+
 const {
   APP_SECRET,
   getUserId,
   signupChecks,
-  profileCheck,
+  profileCheck
 } = require('../utils');
+
 const {
   updateGallerySection,
   createGallerySection,
@@ -14,150 +24,177 @@ const {
   updateTestimonial,
   createTestimonial,
   updateProject,
-  createProject,
+  createProject
 } = require('./mutations/section');
-const { addFavourite } = require('./mutations/favourites');
-const { updateGame, createGame, removeGame } = require('./mutations/game');
+
+const {
+  addFavourite
+} = require('./mutations/favourites');
+
+const {
+  updateGame,
+  createGame,
+  removeGame
+} = require('./mutations/game');
+
 const {
   createMessage,
   updateMessage,
   removeMessage,
-  markAsRead,
+  markAsRead
 } = require('./mutations/message');
+
 const {
   updateJob,
   createJob,
   removeJob,
-  submitBrief,
+  submitBrief
 } = require('./mutations/job');
+
 const {
   updateInvite,
   createInvite,
   removeInvite,
-  declineInvite,
+  declineInvite
 } = require('./mutations/invite');
+
 const {
   updateContract,
   createContract,
   removeContract,
   submitContract,
   signContract,
-  declineContract,
+  declineContract
 } = require('./mutations/contract');
+
 const {
   updatePaymentTerm,
   createPaymentTerm,
-  removePaymentTerm,
+  removePaymentTerm
 } = require('./mutations/paymentTerm');
+
 var validator = require('email-validator');
-const { emailAddress } = require('../utils/emailAddress');
+
+const {
+  emailAddress
+} = require('../utils/emailAddress');
+
 var aws = require('aws-sdk');
+
 require('dotenv').config();
-const { getSections, getGalleries, getImages } = require('./Query');
+
+const {
+  getSections,
+  getGalleries,
+  getImages
+} = require('./Query');
+
 const stripe = require('stripe')(process.env.STRIPE_KEY, {
-  apiVersion: '2020-03-02',
+  apiVersion: '2020-03-02'
 });
+
 aws.config.update({
   region: 'eu-west-2',
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY
 });
 const S3_BUCKET = process.env.BUCKET;
-var s3 = new aws.S3();
-//DANGER!!! Don't f*ck around with this one
+var s3 = new aws.S3(); //DANGER!!! Don't f*ck around with this one
+
 async function deleteAccount(parent, args, context, info) {
   const userId = getUserId(context);
-
   const sections = await getSections(parent, args, context);
-  const galleries = await getGalleries(
-    parent,
-    { sectionId: sections.map((item) => item.id) },
-    context,
-  );
-  const images = await getImages(
-    parent,
-    { galleryId: galleries.map((item) => item.id) },
-    context,
-  );
-
-  images.map((image) => {
+  const galleries = await getGalleries(parent, {
+    sectionId: sections.map(item => item.id)
+  }, context);
+  const images = await getImages(parent, {
+    galleryId: galleries.map(item => item.id)
+  }, context);
+  images.map(image => {
     var params = {
       Bucket: S3_BUCKET,
-      Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
+      Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', '')
     };
-    s3.deleteObject(params, function(err, data) {
-      if (err) console.log(err, err.stack);
-      // error
+    s3.deleteObject(params, function (err, data) {
+      if (err) console.log(err, err.stack); // error
       else console.log('deleted'); // deleted
     });
   });
-
-  await context.prisma.deleteUser({ id: userId });
+  await context.prisma.deleteUser({
+    id: userId
+  });
 }
 
 async function makePayment(parent, args, context) {
   const userId = getUserId(context);
-  const { currency, amount, contractId } = args;
+  const {
+    currency,
+    amount,
+    contractId
+  } = args;
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amount * 100,
     currency: currency.toLowerCase() || 'gbp',
-    metadata: { integration_check: 'accept_a_payment' },
+    metadata: {
+      integration_check: 'accept_a_payment'
+    }
   });
   console.log(paymentIntent);
   await context.prisma.createPayment({
     amount: amount * 100,
     currency: currency,
     status: 'Incomplete',
-    paidBy: { connect: { id: userId } },
-    contract: { connect: { id: contractId } },
-    paymentId: paymentIntent.id,
+    paidBy: {
+      connect: {
+        id: userId
+      }
+    },
+    contract: {
+      connect: {
+        id: contractId
+      }
+    },
+    paymentId: paymentIntent.id
   });
-
   return paymentIntent.client_secret;
 }
 
 async function removeSection(parent, args, context) {
   await context.prisma.deleteSection({
-    id: args.id,
+    id: args.id
   });
-
   return true;
 }
 
 async function removeNotableProject(parent, args, context) {
   await context.prisma.deleteNotableProjects({
-    id: args.id,
+    id: args.id
   });
-
   return true;
 }
 
 async function removeTestimonial(parent, args, context) {
   await context.prisma.deleteTestimonial({
-    id: args.id,
+    id: args.id
   });
-
   return true;
 }
 
 async function removeNotification(parent, args, context) {
   await context.prisma.deleteNotification({
-    id: args.id,
+    id: args.id
   });
-
   const userId = getUserId(context);
-
   const notifications = await context.prisma.notifications({
     orderBy: 'createdAt_DESC',
     where: {
       user: {
-        id: userId,
-      },
+        id: userId
+      }
     },
     skip: 0,
-    first: 5,
+    first: 5
   });
-
   return notifications;
 }
 
@@ -169,44 +206,49 @@ async function updateEmail(parent, args, context, info) {
   }
 
   const userId = getUserId(context);
-
   const exists = await context.prisma.$exists.notification({
-    user: { id: userId },
+    user: {
+      id: userId
+    },
+    title: 'You changed your email address'
+  });
+  !exists && (await context.prisma.createNotification({
+    user: {
+      connect: {
+        id: userId
+      }
+    },
     title: 'You changed your email address',
-  });
-
-  !exists &&
-    (await context.prisma.createNotification({
-      user: { connect: { id: userId } },
-      title: 'You changed your email address',
-      message: `If this wasn't you, let us know`,
-      linkTo: '/app/edit-profile',
-      icon: 'email',
-    }));
-
+    message: `If this wasn't you, let us know`,
+    linkTo: '/app/edit-profile',
+    icon: 'email'
+  }));
   const emailExists = await context.prisma.$exists.user({
-    user: { id_not: userId },
-    email: args.email,
+    user: {
+      id_not: userId
+    },
+    email: args.email
   });
+
   if (emailExists) {
     throw new Error('Invalid Email');
   }
+
   await context.prisma.updateUser({
     data: {
-      email: args.email,
+      email: args.email
     },
     where: {
-      id: userId,
-    },
+      id: userId
+    }
   });
-
   return true;
 }
 
 async function updateUser(parent, args, context, info) {
   const validSubmission = profileCheck({
     name: args.name,
-    summary: args.summary,
+    summary: args.summary
   });
 
   if (validSubmission === false) {
@@ -214,7 +256,6 @@ async function updateUser(parent, args, context, info) {
   }
 
   const userId = getUserId(context);
-
   const user = await context.prisma.updateUser({
     data: {
       name: args.name.replace(/[^A-Za-z0-9 ]/g, ''),
@@ -223,52 +264,46 @@ async function updateUser(parent, args, context, info) {
       profileBGStyle: args.profileBGStyle,
       profileImg: args.profileImg,
       profileImgStyle: args.profileImgStyle,
-      autosave: args.autosave,
+      autosave: args.autosave
     },
     where: {
-      id: userId,
-    },
+      id: userId
+    }
   });
-
   return user;
 }
 
 async function passwordForgot(parent, args, context) {
   const user = await context.prisma.user({
-    email: args.email,
+    email: args.email
   });
-
-  const token = jwt.sign({ userId: user.id }, APP_SECRET);
-
+  const token = jwt.sign({
+    userId: user.id
+  }, APP_SECRET);
   await context.prisma.updateUser({
     data: {
-      resetToken: token,
+      resetToken: token
     },
     where: {
-      id: user.id,
-    },
+      id: user.id
+    }
   });
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
   const request = emailForgot(user, actionLink);
-
-  request
-    .then((result) => {})
-    .catch((err) => {
-      console.log(err.statusCode);
-    });
-
+  request.then(result => {}).catch(err => {
+    console.log(err.statusCode);
+  });
   return true;
 }
 
 async function passwordReset(parent, args, context) {
   const user = await context.prisma.user({
-    resetToken: args.token,
+    resetToken: args.token
   });
-
   const validSubmission = signupChecks({
     password: args.password,
     name: user.name,
-    email: user.email,
+    email: user.email
   });
 
   if (validSubmission === false) {
@@ -276,29 +311,24 @@ async function passwordReset(parent, args, context) {
   }
 
   const password = await bcrypt.hash(args.password, 10);
-
   await context.prisma.updateUser({
     data: {
       resetToken: null,
-      password: password,
+      password: password
     },
     where: {
-      id: user.id,
-    },
+      id: user.id
+    }
   });
 
   if (user) {
     const actionLink = `${process.env.EMAIL_URL}`;
     const request = emailReset(user, actionLink);
-
-    request
-      .then((result) => {
-        console.log(result);
-      })
-      .catch((err) => {
-        console.log(err.statusCode);
-      });
-
+    request.then(result => {
+      console.log(result);
+    }).catch(err => {
+      console.log(err.statusCode);
+    });
     return true;
   } else {
     return false;
@@ -309,7 +339,7 @@ async function signup(parent, args, context, info) {
   const validSubmission = signupChecks({
     password: args.password,
     name: args.name,
-    email: args.email,
+    email: args.email
   });
 
   if (validSubmission === false) {
@@ -319,34 +349,34 @@ async function signup(parent, args, context, info) {
   const password = await bcrypt.hash(args.password, 10);
 
   try {
-    const user = await context.prisma.createUser({
-      ...args,
+    const user = await context.prisma.createUser({ ...args,
       password,
-      summary: '',
+      summary: ''
     });
-    const token = jwt.sign({ userId: user.id }, APP_SECRET);
-
+    const token = jwt.sign({
+      userId: user.id
+    }, APP_SECRET);
     const request = emailSignup(args);
-    request
-      .then((result) => {
-        console.log(result.body);
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log(err.statusCode);
-      });
-
+    request.then(result => {
+      console.log(result.body);
+    }).catch(err => {
+      console.log(err);
+      console.log(err.statusCode);
+    });
     await context.prisma.createNotification({
-      user: { connect: { id: user.id } },
+      user: {
+        connect: {
+          id: user.id
+        }
+      },
       title: 'Welcome to DoodleMeeple',
       message: 'Get started by creating a profile',
       linkTo: '/app/edit-profile',
-      icon: 'thumb_up_alt',
+      icon: 'thumb_up_alt'
     });
-
     return {
       token,
-      user,
+      user
     };
   } catch (error) {
     throw new Error(error);
@@ -355,31 +385,39 @@ async function signup(parent, args, context, info) {
 
 function createNotification(parent, args, context) {
   const userId = getUserId(context);
-
   return context.prisma.createNotification({
-    user: { connect: { id: userId } },
-    message: args.message,
+    user: {
+      connect: {
+        id: userId
+      }
+    },
+    message: args.message
   });
 }
 
 async function login(parent, args, context, info) {
   // 1
-  const user = await context.prisma.user({ email: args.email });
+  const user = await context.prisma.user({
+    email: args.email
+  });
+
   if (!user) {
     throw new Error('No such user found');
   }
 
   const valid = await bcrypt.compare(args.password, user.password);
+
   if (!valid) {
     throw new Error('Invalid password');
   }
 
-  const token = jwt.sign({ userId: user.id }, APP_SECRET);
+  const token = jwt.sign({
+    userId: user.id
+  }, APP_SECRET); // 3
 
-  // 3
   return {
     token,
-    user,
+    user
   };
 }
 
@@ -428,5 +466,5 @@ module.exports = {
   removeTestimonial,
   deleteAccount,
   login,
-  makePayment,
+  makePayment
 };

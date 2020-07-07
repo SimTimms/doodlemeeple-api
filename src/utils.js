@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 const APP_SECRET = 'GraphQL-is-aw3some';
-var passwordValidator = require('password-validator');
-var validator = require('email-validator');
+import passwordValidator from 'password-validator';
+import validator from 'email-validator';
 
-function getUserId(context) {
+export function getUserId(context) {
   const Authorization = context.request.get('Authorization');
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
@@ -17,7 +17,7 @@ function getUserId(context) {
   throw new Error('Not authenticated');
 }
 
-function getUserIdWithoutContext(headers) {
+export function getUserIdWithoutContext(headers) {
   const Authorization = headers.Authorization;
 
   if (Authorization) {
@@ -32,7 +32,7 @@ function getUserIdWithoutContext(headers) {
   throw new Error('Not authenticated');
 }
 
-function signupChecks(input) {
+export function signupChecks(input) {
   let passwordSchema = new passwordValidator();
   passwordSchema
     .is()
@@ -70,7 +70,7 @@ function signupChecks(input) {
   return true;
 }
 
-function profileCheck(input) {
+export function profileCheck(input) {
   if (input.name.length < 3) {
     return false;
   }
@@ -80,11 +80,3 @@ function profileCheck(input) {
 
   return true;
 }
-
-module.exports = {
-  APP_SECRET,
-  getUserId,
-  getUserIdWithoutContext,
-  profileCheck,
-  signupChecks,
-};

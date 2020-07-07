@@ -19,17 +19,9 @@ async function emailInvite(user, jobDeets) {
           },
         ],
         Subject: `You've got an invite`,
-        TextPart: `You have been asked to provide a quote for "${
-          jobDeets.name
-        }"`,
+        TextPart: `You have been asked to provide a quote for "${jobDeets.name}"`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${
-          jobDeets.name
-        }"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${
-          jobDeets.summary
-        }</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
-          emailAddress.appURL
-        }'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -52,17 +44,9 @@ async function emailQuote(user, quoteDeets) {
           },
         ],
         Subject: `You've got an invite`,
-        TextPart: `You have been asked to provide a quote for "${
-          quoteDeets.name
-        }"`,
+        TextPart: `You have been asked to provide a quote for "${quoteDeets.name}"`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${
-          quoteDeets.summary
-        }"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${
-          quoteDeets.cost
-        }</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
-          emailAddress.appURL
-        }'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>You have been asked to provide a quote for "${quoteDeets.summary}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${quoteDeets.cost}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -89,9 +73,7 @@ async function emailNewMessage(user, subject) {
         HTMLPart: `<p>Hi ${user.name},</p>
         <p>There's a message waiting for you on Doodle Meeple!
         </p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>1 New Message
-        </p><p>Login at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
-          emailAddress.messagesURL
-        }'>${emailAddress.messagesURL}</a></p><p>${emailAddress.signoffHTML}</p>
+        </p><p>Login at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.messagesURL}'>${emailAddress.messagesURL}</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -114,14 +96,8 @@ async function emailForgot(user, actionLink) {
           },
         ],
         Subject: 'Reset your DoodleMeeple password',
-        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${
-          emailAddress.tech
-        }. ${emailAddress.signoffPain}`,
-        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${
-          emailAddress.signoffHTML
-        }</p><p style="font-size:10px">If this was not you contact <a href='${
-          emailAddress.tech
-        }'>${emailAddress.tech}</a></p>`,
+        TextPart: `You have requested a password reset, please go to: ${actionLink}. If this was not you contact ${emailAddress.tech}. ${emailAddress.signoffPain}`,
+        HTMLPart: `<p>Hi,</p><p>You have requested a password reset, please click this link to continue: </p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${actionLink}'>Reset My Password</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
       },
     ],
   });
@@ -151,7 +127,7 @@ async function emailReset(user, actionLink) {
   return request;
 }
 
-async function emailSignup(args, actionLink) {
+async function emailSignup(email, name) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -161,21 +137,13 @@ async function emailSignup(args, actionLink) {
         },
         To: [
           {
-            Email: args.email,
-            Name: args.name,
+            Email: email,
+            Name: name,
           },
         ],
         Subject: 'Welcome to DoodleMeeple',
-        TextPart: `It's great to have you on board, login and set up your profile here: ${
-          emailAddress.appURL
-        }`,
-        HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${
-          emailAddress.appURL
-        }'>Let's Begin</a><br/><br/></strong></p><p>${
-          emailAddress.signoffHTML
-        }</p><p style="font-size:10px">If this was not you contact <a href='${
-          emailAddress.tech
-        }'>${emailAddress.tech}</a></p>`,
+        TextPart: `It's great to have you on board, login and set up your profile here: ${emailAddress.appURL}`,
+        HTMLPart: `<p>Welcome to DoodleMeeple,</p><p>It's great to have you on board, login and create your profile here:</p><p><strong><br/><a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>Let's Begin</a><br/><br/></strong></p><p>${emailAddress.signoffHTML}</p><p style="font-size:10px">If this was not you contact <a href='${emailAddress.tech}'>${emailAddress.tech}</a></p>`,
       },
     ],
   });

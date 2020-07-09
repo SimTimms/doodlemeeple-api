@@ -85,7 +85,7 @@ async function deleteAccount(parent, args, context, info) {
       Bucket: S3_BUCKET,
       Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
     };
-    s3.deleteObject(params, function(err, data) {
+    s3.deleteObject(params, function (err, data) {
       if (err) console.log(err, err.stack);
       // error
       else console.log('deleted'); // deleted
@@ -134,6 +134,14 @@ async function removeNotableProject(parent, args, context) {
 
 async function removeTestimonial(parent, args, context) {
   await context.prisma.deleteTestimonial({
+    id: args.id,
+  });
+
+  return true;
+}
+
+async function removeProject(parent, args, context) {
+  await context.prisma.deleteNotableProjects({
     id: args.id,
   });
 
@@ -426,6 +434,7 @@ module.exports = {
   removeNotification,
   removeNotableProject,
   removeTestimonial,
+  removeProject,
   deleteAccount,
   login,
   makePayment,

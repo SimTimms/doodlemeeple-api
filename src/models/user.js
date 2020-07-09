@@ -53,7 +53,7 @@ UserTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    console.log(user);
+
     return user;
   },
 });
@@ -81,3 +81,23 @@ UserTC.addResolver({
     return login(args);
   },
 });
+
+
+
+UserTC.addResolver({
+  name: 'updateProfile',
+  args: { name: 'String',
+    summary:'String',
+    profileBG:'String',
+    profileImg: 'String'  
+  },
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await User.updateOne({ _id: userId },{...rp.args});
+    const user = await User.findOne({ _id: userId });
+    return user;
+  },
+});
+

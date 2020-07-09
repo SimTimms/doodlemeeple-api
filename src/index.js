@@ -6,10 +6,14 @@ const { sign_s3 } = require('./aws-upload');
 import mongoose from 'mongoose';
 import './utils/db';
 import schema from './schema';
+var cors = require('cors');
+
+const router = express.Router();
 
 dotenv.config();
 
 const app = express();
+
 
 const server = new ApolloServer({
   schema,
@@ -17,13 +21,21 @@ const server = new ApolloServer({
   playground: process.env.NODE_ENV === 'development' ? true : false,
   introspection: true,
   tracing: true,
-  path: '/graphql',
+  path:'/graphql',
   context: ({ req }) => req,
 });
 
+
+app.use(bodyParser.json());
+app.use(cors());
+app.post('/sign_s3', (req, res) => {
+  sign_s3(req, res);
+});
+
+
 server.applyMiddleware({
   app,
-  path: '/graphql',
+  path: '/',
   cors: true,
   onHealthCheck: () =>
     // eslint-disable-next-line no-undef
@@ -36,9 +48,8 @@ server.applyMiddleware({
     }),
 });
 
-app.use(bodyParser.json());
-app.post('/sign_s3', (req, res) => {
-  sign_s3(req, res);
-});
+
+
+
 
 app.listen({ port: process.env.PORT }, () => {});

@@ -39,7 +39,7 @@ NotificationTC.addResolver({
   name: 'notificationSecure',
   args: {},
   type: [NotificationTC],
-  kind: 'mutation',
+  kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const newNotifications = await Notification.find({ user: userId });

@@ -20,7 +20,7 @@ export function getUserIdWithoutContext(headers) {
     const token = Authorization.replace('Bearer ', '');
 
     // @ts-ignore
-    const { userId } = jwt.verify(token, APP_SECRET);
+    const { userId } = jwt.verify(token, process.env.APP_SECRET);
 
     return userId;
   }

@@ -8,6 +8,7 @@ const NotificationQuery = {
   notificationCount: NotificationTC.getResolver('count'),
   notificationConnection: NotificationTC.getResolver('connection'),
   notificationPagination: NotificationTC.getResolver('pagination'),
+  notificationSecure: NotificationTC.getResolver('notificationSecure'),
 };
 
 const NotificationMutation = {

@@ -18,6 +18,7 @@ const server = new ApolloServer({
   introspection: true,
   tracing: true,
   path: '/graphql',
+  context: ({ req }) => req,
 });
 
 server.applyMiddleware({

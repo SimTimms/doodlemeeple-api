@@ -3,6 +3,7 @@ import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { SectionTC, NotificationTC } from './';
 import { login } from '../resolvers';
+import { getUserId } from '../utils';
 
 export const UserSchema = new Schema(
   {
@@ -22,6 +23,7 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
+    favourites: [{ type: String }],
     sections: {
       type: Schema.Types.ObjectId,
       ref: 'Section',
@@ -43,6 +45,19 @@ UserSchema.index({ createdAt: 1, updatedAt: 1 });
 export const User = mongoose.model('User', UserSchema);
 export const UserTC = composeWithMongoose(User);
 
+UserTC.addResolver({
+  name: 'profile',
+  args: {},
+  type: UserTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.findOne({ _id: userId });
+    console.log(user);
+    return user;
+  },
+});
+
 UserTC.addRelation('sections', {
   resolver: () => SectionTC.getResolver('findByIds'),
   prepareArgs: {
@@ -59,16 +74,6 @@ UserTC.addRelation('notifications', {
 
 UserTC.addResolver({
   name: 'login',
-  args: { email: 'String', password: 'String' },
-  type: UserTC,
-  kind: 'mutation',
-  resolve: async ({ source, args }) => {
-    return login(args);
-  },
-});
-
-UserTC.addResolver({
-  name: 'profile',
   args: { email: 'String', password: 'String' },
   type: UserTC,
   kind: 'mutation',

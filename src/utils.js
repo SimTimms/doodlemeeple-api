@@ -1,15 +1,11 @@
 import jwt from 'jsonwebtoken';
-const APP_SECRET = 'GraphQL-is-aw3some';
 import passwordValidator from 'password-validator';
 import validator from 'email-validator';
 
-export function getUserId(context) {
-  const Authorization = context.request.get('Authorization');
-  if (Authorization) {
-    const token = Authorization.replace('Bearer ', '');
-
-    // @ts-ignore
-    const { userId } = jwt.verify(token, APP_SECRET);
+export function getUserId(auth) {
+  if (auth) {
+    const token = auth.replace('Bearer ', '');
+    const { userId } = jwt.verify(token, process.env.APP_SECRET);
 
     return userId;
   }

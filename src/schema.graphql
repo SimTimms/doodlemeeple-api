@@ -347,7 +347,7 @@ type Testimonial {
 
 type Gallery {
   id: ID!
-  summary: String
+  summary: StringNotableProject
   images: [GalleryImage]
   section: Section
 }

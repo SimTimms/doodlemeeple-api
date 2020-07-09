@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC } from './';
+import { getUserId } from '../utils';
 
 export const NotificationSchema = new Schema(
   {
@@ -32,4 +33,16 @@ NotificationTC.addRelation('user', {
     filter: (source) => ({ id: source._id }),
   },
   projection: { id: true },
+});
+
+NotificationTC.addResolver({
+  name: 'notificationSecure',
+  args: {},
+  type: [NotificationTC],
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const newNotifications = await Notification.find({ user: userId });
+    return newNotifications;
+  },
 });

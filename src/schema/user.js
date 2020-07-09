@@ -30,7 +30,6 @@ const UserMutation = {
   userRemoveOne: UserTC.getResolver('removeOne'),
   userRemoveMany: UserTC.getResolver('removeMany'),
   userLogin: UserTC.getResolver('login'),
-  profile: UserTC.getResolver('profile'),
 };
 
 export { UserQuery, UserMutation };

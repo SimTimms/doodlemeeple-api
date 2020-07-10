@@ -36,7 +36,7 @@ export const UserSchema = new Schema(
   },
   {
     collection: 'users',
-  },
+  }
 );
 
 UserSchema.plugin(timestamps);
@@ -59,10 +59,11 @@ UserTC.addResolver({
 });
 
 UserTC.addRelation('sections', {
-  resolver: () => SectionTC.getResolver('findByIds'),
+  resolver: () => SectionTC.getResolver('findMany'),
   prepareArgs: {
-    _ids: (source) => source,
+    filter: (source) => ({ user: source._id }),
   },
+  projection: { id: true },
 });
 
 UserTC.addRelation('notifications', {
@@ -82,22 +83,20 @@ UserTC.addResolver({
   },
 });
 
-
-
 UserTC.addResolver({
   name: 'updateProfile',
-  args: { name: 'String',
-    summary:'String',
-    profileBG:'String',
-    profileImg: 'String'  
+  args: {
+    name: 'String',
+    summary: 'String',
+    profileBG: 'String',
+    profileImg: 'String',
   },
   type: UserTC,
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    await User.updateOne({ _id: userId },{...rp.args});
-    const user = await User.findOne({ _id: userId });
+    const user = await User.updateOne({ _id: userId }, { ...rp.args });
+
     return user;
   },
 });
-

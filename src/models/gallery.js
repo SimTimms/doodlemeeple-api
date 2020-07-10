@@ -12,7 +12,7 @@ export const GallerySchema = new Schema(
   },
   {
     collection: 'galleries',
-  },
+  }
 );
 
 export const Gallery = mongoose.model('Gallery', GallerySchema);
@@ -21,7 +21,7 @@ export const GalleryTC = composeWithMongoose(Gallery);
 GalleryTC.addRelation('images', {
   resolver: () => ImageTC.getResolver('findMany'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    filter: (source) => ({ gallery: source._id }),
   },
   projection: { id: true },
 });

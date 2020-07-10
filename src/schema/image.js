@@ -1,4 +1,5 @@
-import { Image, ImageTC } from '../models';
+import { ImageTC } from '../models';
+import { getUserId } from '../utils';
 
 const ImageQuery = {
   imageById: ImageTC.getResolver('findById'),
@@ -11,7 +12,15 @@ const ImageQuery = {
 };
 
 const ImageMutation = {
-  imageCreateOne: ImageTC.getResolver('createOne'),
+  imageCreateOne: ImageTC.getResolver('createOne').wrapResolve(
+    (next) => async (rp) => {
+      const userId = getUserId(rp.context.headers.authorization);
+      rp.args.record.user = userId;
+
+      const image = await next(rp);
+      return image;
+    }
+  ),
   imageCreateMany: ImageTC.getResolver('createMany'),
   imageUpdateById: ImageTC.getResolver('updateById'),
   imageUpdateOne: ImageTC.getResolver('updateOne'),

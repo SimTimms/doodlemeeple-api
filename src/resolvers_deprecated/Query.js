@@ -243,8 +243,6 @@ async function determineConversationId(parent, { jobId, userId }, context) {
     },
   });
 
-  console.log(conversation);
-
   if (conversation.length === 0) {
     const conversationNew = await context.prisma.createConversation({
       participants: {

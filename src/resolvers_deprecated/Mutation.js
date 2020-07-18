@@ -72,12 +72,12 @@ async function deleteAccount(parent, args, context, info) {
   const galleries = await getGalleries(
     parent,
     { sectionId: sections.map((item) => item.id) },
-    context,
+    context
   );
   const images = await getImages(
     parent,
     { galleryId: galleries.map((item) => item.id) },
-    context,
+    context
   );
 
   images.map((image) => {
@@ -250,7 +250,7 @@ async function passwordForgot(parent, args, context) {
   });
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
   const request = emailForgot(user, actionLink);
-
+  console.log(actionLink);
   request
     .then((result) => {})
     .catch((err) => {

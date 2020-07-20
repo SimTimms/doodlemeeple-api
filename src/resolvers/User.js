@@ -29,7 +29,6 @@ export async function userRegistration(rp) {
 }
 
 export async function login(args) {
-  console.log('sad');
   const user = await User.findOne(
     {
       email: args.email,

@@ -1,9 +1,30 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { SectionTC, NotificationTC } from './';
-import { login } from '../resolvers';
+import {
+  SectionTC,
+  NotificationTC,
+  GalleryTC,
+  ImageTC,
+  NotableProjectTC,
+  TestimonialTC,
+  Section,
+  Image,
+  NotableProject,
+  Testimonial,
+  Gallery,
+} from './';
+import { login, userMigrate } from '../resolvers';
 import { getUserId } from '../utils';
+import aws from 'aws-sdk';
+
+aws.config.update({
+  region: 'eu-west-2',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
+const S3_BUCKET = process.env.BUCKET;
+var s3 = new aws.S3();
 
 export const UserSchema = new Schema(
   {
@@ -24,10 +45,12 @@ export const UserSchema = new Schema(
     summary: { type: String },
     location: { type: String },
     favourites: [{ type: String }],
-    sections: {
-      type: Schema.Types.ObjectId,
-      ref: 'Section',
-    },
+    sections: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Section',
+      },
+    ],
     notifications: {
       type: Schema.Types.ObjectId,
       ref: 'Notification',
@@ -80,6 +103,104 @@ UserTC.addResolver({
   kind: 'mutation',
   resolve: async ({ source, args }) => {
     return login(args);
+  },
+});
+
+UserTC.addResolver({
+  name: 'userMigrate',
+  args: {
+    username: 'String',
+    email: 'String',
+    password: 'String',
+    profileImg: 'String',
+    profileBG: 'String',
+    summary: 'String',
+    sections: () => [SectionTC.getInputType()],
+    galleries: () => [GalleryTC.getInputType()],
+    images: () => [ImageTC.getInputType()],
+    testimonials: () => [TestimonialTC.getInputType()],
+    notableProjects: () => [NotableProjectTC.getInputType()],
+  },
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async ({ source, args }) => {
+    return userMigrate(args);
+  },
+});
+
+UserTC.addResolver({
+  name: 'deleteAccount',
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const userData = await User.findOne({ _id: userId });
+    const sections = await Section.find({ user: userId });
+    const galleryIds = sections.map((section) => {
+      return section.gallery;
+    });
+    const sectionIds = sections.map((section) => {
+      return section._id;
+    });
+    const images = await Image.find({ user: userId });
+    const imageIds = images.map((item) => item._id);
+    const testimonials = await Testimonial.find({
+      section: { $in: sectionIds },
+    });
+    const testimonialIds = testimonials.map((item) => item._id);
+    const projects = await NotableProject.find({
+      section: { $in: sectionIds },
+    });
+    const projectIds = projects.map((item) => item._id);
+
+    var imageDelete = images.map(async (image) => {
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
+      };
+      await s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack);
+        else console.log('deleted'); // deleted
+      });
+    });
+
+    let params = {
+      Bucket: S3_BUCKET,
+      Key: userData.profileImg.replace(
+        'https://dm-uploads-uk.s3.amazonaws.com/',
+        ''
+      ),
+    };
+
+    await s3.deleteObject(params, function (err, data) {
+      if (err) console.log(err, err.stack);
+      else console.log('deleted'); // deleted
+    });
+
+    params = {
+      Bucket: S3_BUCKET,
+      Key: userData.profileBG.replace(
+        'https://dm-uploads-uk.s3.amazonaws.com/',
+        ''
+      ),
+    };
+    await s3.deleteObject(params, function (err, data) {
+      if (err) console.log(err, err.stack);
+      else console.log('deleted'); // deleted
+    });
+
+    Promise.all(imageDelete).then(function (results) {
+      console.log('Deleted');
+    });
+
+    await Section.deleteMany({ _id: { $in: sectionIds } });
+    await Testimonial.deleteMany({ _id: { $in: testimonialIds } });
+    await NotableProject.deleteMany({ _id: { $in: projectIds } });
+    await Image.deleteMany({ _id: { $in: imageIds } });
+    await Gallery.deleteMany({ _id: { $in: galleryIds } });
+    await User.deleteOne({ _id: userData._id });
+
+    return true;
   },
 });
 

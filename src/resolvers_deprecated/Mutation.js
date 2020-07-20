@@ -427,6 +427,6 @@ module.exports = {
   removeNotableProject,
   removeTestimonial,
   deleteAccount,
-  login,
+  login_dep,
   makePayment,
 };

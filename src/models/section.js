@@ -16,14 +16,18 @@ export const SectionSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Gallery',
     },
-    notableProjects: {
-      type: Schema.Types.ObjectId,
-      ref: 'NotableProject',
-    },
-    testimonials: {
-      type: Schema.Types.ObjectId,
-      ref: 'Testimonial',
-    },
+    notableProjects: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'NotableProject',
+      },
+    ],
+    testimonials: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Testimonial',
+      },
+    ],
   },
   {
     collection: 'sections',

@@ -250,7 +250,7 @@ async function passwordForgot(parent, args, context) {
   });
   const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
   const request = emailForgot(user, actionLink);
-  console.log(actionLink);
+
   request
     .then((result) => {})
     .catch((err) => {

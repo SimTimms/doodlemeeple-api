@@ -29,11 +29,12 @@ export async function userRegistration(rp) {
 }
 
 export async function login(args) {
+  console.log('sad');
   const user = await User.findOne(
     {
       email: args.email,
     },
-    { email: 1, password: 1, token: 1 },
+    { email: 1, password: 1, token: 1 }
   );
 
   if (!user) {

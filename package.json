@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "babel src --out-dir dist",
-    "start": "node dist/index.js",
+    "start": "yarn build && node dist/index.js",
     "dev": "nodemon --exec npx babel-node src/index.js",
     "prettier": "prettier --config ./.prettierrc --write \"**/*.js\"",
     "pretest": "eslint --ignore-path .gitignore .",

@@ -152,7 +152,7 @@ UserTC.addResolver({
       section: { $in: sectionIds },
     });
     const projectIds = projects.map((item) => item._id);
-    /*
+
     var imageDelete = images.map(async (image) => {
       const params = {
         Bucket: S3_BUCKET,
@@ -192,7 +192,6 @@ UserTC.addResolver({
     Promise.all(imageDelete).then(function (results) {
       console.log('Deleted');
     });
-    */
 
     await Section.deleteMany({ _id: { $in: sectionIds } });
     await Testimonial.deleteMany({ _id: { $in: testimonialIds } });

@@ -1,5 +1,14 @@
-import { ImageTC } from '../models';
+import { ImageTC, Image } from '../models';
 import { getUserId } from '../utils';
+import aws from 'aws-sdk';
+
+aws.config.update({
+  region: 'eu-west-2',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
+const S3_BUCKET = process.env.BUCKET;
+var s3 = new aws.S3();
 
 const ImageQuery = {
   imageById: ImageTC.getResolver('findById'),
@@ -25,7 +34,27 @@ const ImageMutation = {
   imageUpdateById: ImageTC.getResolver('updateById'),
   imageUpdateOne: ImageTC.getResolver('updateOne'),
   imageUpdateMany: ImageTC.getResolver('updateMany'),
-  imageRemoveById: ImageTC.getResolver('removeById'),
+  imageRemoveById: ImageTC.getResolver('removeById').wrapResolve(
+    (next) => async (rp) => {
+      console.log(rp.args._id);
+      const userId = getUserId(rp.context.headers.authorization);
+      const image = await Image.findOne({
+        _id: rp.args._id,
+        user: { _id: userId },
+      });
+
+      const params = {
+        Bucket: S3_BUCKET,
+        Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
+      };
+      await s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack);
+        else console.log('deleted'); // deleted
+      });
+
+      return next(rp);
+    }
+  ),
   imageRemoveOne: ImageTC.getResolver('removeOne'),
   imageRemoveMany: ImageTC.getResolver('removeMany'),
 };

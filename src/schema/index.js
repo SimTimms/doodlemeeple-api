@@ -10,6 +10,7 @@ import { ImageQuery, ImageMutation } from './image';
 import { NotableProjectQuery, NotableProjectMutation } from './notableProject';
 import { TestimonialQuery, TestimonialMutation } from './testimonial';
 import { GameQuery, GameMutation } from './game';
+import { JobQuery, JobMutation } from './job';
 import { CountQuery } from './count';
 
 schemaComposer.Query.addFields({
@@ -22,6 +23,7 @@ schemaComposer.Query.addFields({
   ...NotableProjectQuery,
   ...TestimonialQuery,
   ...GameQuery,
+  ...JobQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -33,6 +35,7 @@ schemaComposer.Mutation.addFields({
   ...NotableProjectMutation,
   ...TestimonialMutation,
   ...GameMutation,
+  ...JobMutation,
 });
 
 export default schemaComposer.buildSchema();

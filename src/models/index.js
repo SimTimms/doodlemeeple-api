@@ -7,6 +7,7 @@ import { Image, ImageTC } from './image';
 import { NotableProject, NotableProjectTC } from './notableProject';
 import { Testimonial, TestimonialTC } from './testimonial';
 import { Game, GameTC } from './game';
+import { Job, JobTC } from './job';
 export {
   User,
   UserTC,
@@ -24,6 +25,8 @@ export {
   NotableProjectTC,
   Testimonial,
   TestimonialTC,
+  Job,
+  JobTC,
   Game,
   GameTC,
 };

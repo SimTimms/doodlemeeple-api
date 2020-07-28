@@ -1,10 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, GameTC } from './';
 import { getUserId } from '../utils';
 
-export const GameSchema = new Schema(
+export const JobSchema = new Schema(
   {
     name: { type: String },
     keywords: [{ type: String }],
@@ -13,24 +13,30 @@ export const GameSchema = new Schema(
     summary: { type: String },
     location: { type: String },
     showreel: { type: String },
+    creativeSummary: { type: String },
+    submitted: { type: String },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    game: {
+      type: Schema.Types.ObjectId,
+      ref: 'Game',
+    },
     type: { type: String },
   },
   {
-    collection: 'games',
+    collection: 'jobs',
   }
 );
 
-GameSchema.plugin(timestamps);
-GameSchema.index({ createdAt: 1, updatedAt: 1 });
+JobSchema.plugin(timestamps);
+JobSchema.index({ createdAt: 1, updatedAt: 1 });
 
-export const Game = mongoose.model('Game', GameSchema);
-export const GameTC = composeWithMongoose(Game);
+export const Job = mongoose.model('Job', JobSchema);
+export const JobTC = composeWithMongoose(Job);
 
-GameTC.addRelation('user', {
+JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ id: source._id }),
@@ -38,13 +44,23 @@ GameTC.addRelation('user', {
   projection: { id: true },
 });
 
-GameTC.addResolver({
-  name: 'gamesByUser',
-  type: [GameTC],
+JobTC.addRelation('game', {
+  resolver: () => {
+    return GameTC.getResolver('findOne');
+  },
+  prepareArgs: {
+    filter: (source) => ({ _id: source._id }),
+  },
+  projection: { id: true },
+});
+
+JobTC.addResolver({
+  name: 'jobsByUser',
+  type: [JobTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const games = await Game.find({ user: userId });
-    return games;
+    const jobs = await Job.find({ user: userId });
+    return jobs;
   },
 });

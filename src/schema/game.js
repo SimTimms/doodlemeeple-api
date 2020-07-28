@@ -1,4 +1,4 @@
-import { GameTC, Game } from '../models';
+import { GameTC } from '../models';
 import { getUserId } from '../utils';
 
 const GameQuery = {

@@ -12,6 +12,7 @@ const UserQuery = {
   userConnection: UserTC.getResolver('connection'),
   userPagination: UserTC.getResolver('pagination'),
   profile: UserTC.getResolver('profile'),
+  getCreatives: UserTC.getResolver('getCreatives'),
 };
 
 const UserMutation = {

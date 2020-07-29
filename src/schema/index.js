@@ -11,6 +11,7 @@ import { NotableProjectQuery, NotableProjectMutation } from './notableProject';
 import { TestimonialQuery, TestimonialMutation } from './testimonial';
 import { GameQuery, GameMutation } from './game';
 import { JobQuery, JobMutation } from './job';
+import { InviteQuery, InviteMutation } from './invite';
 import { CountQuery } from './count';
 
 schemaComposer.Query.addFields({
@@ -24,6 +25,7 @@ schemaComposer.Query.addFields({
   ...TestimonialQuery,
   ...GameQuery,
   ...JobQuery,
+  ...InviteQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -36,6 +38,7 @@ schemaComposer.Mutation.addFields({
   ...TestimonialMutation,
   ...GameMutation,
   ...JobMutation,
+  ...InviteMutation,
 });
 
 export default schemaComposer.buildSchema();

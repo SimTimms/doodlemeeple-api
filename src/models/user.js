@@ -13,6 +13,7 @@ import {
   NotableProject,
   Testimonial,
   Gallery,
+  InviteTC,
 } from './';
 import { login, userMigrate } from '../resolvers';
 import { getUserId } from '../utils';
@@ -45,6 +46,12 @@ export const UserSchema = new Schema(
     summary: { type: String },
     location: { type: String },
     favourites: [{ type: String }],
+    invites: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Invites',
+      },
+    ],
     sections: [
       {
         type: Schema.Types.ObjectId,
@@ -81,8 +88,29 @@ UserTC.addResolver({
   },
 });
 
+UserTC.addResolver({
+  name: 'getCreatives',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    console.log('das');
+    const user = await User.find();
+
+    return user;
+  },
+});
+
 UserTC.addRelation('sections', {
   resolver: () => SectionTC.getResolver('findMany'),
+  prepareArgs: {
+    filter: (source) => ({ user: source._id }),
+  },
+  projection: { id: true },
+});
+
+UserTC.addRelation('invites', {
+  resolver: () => InviteTC.getResolver('findMany'),
   prepareArgs: {
     filter: (source) => ({ user: source._id }),
   },

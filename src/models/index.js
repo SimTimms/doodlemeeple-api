@@ -8,6 +8,7 @@ import { NotableProject, NotableProjectTC } from './notableProject';
 import { Testimonial, TestimonialTC } from './testimonial';
 import { Game, GameTC } from './game';
 import { Job, JobTC } from './job';
+import { Invite, InviteTC } from './invite';
 export {
   User,
   UserTC,
@@ -29,4 +30,6 @@ export {
   JobTC,
   Game,
   GameTC,
+  Invite,
+  InviteTC,
 };

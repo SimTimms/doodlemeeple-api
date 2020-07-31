@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC } from './';
+import { UserTC, GameTC, InviteTC } from './';
 import { getUserId } from '../utils';
 
 export const JobSchema = new Schema(
@@ -15,6 +15,12 @@ export const JobSchema = new Schema(
     showreel: { type: String },
     creativeSummary: { type: String },
     submitted: { type: String },
+    invites: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Invite',
+      },
+    ],
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -50,6 +56,16 @@ JobTC.addRelation('game', {
   },
   prepareArgs: {
     filter: (source) => ({ _id: source._id }),
+  },
+  projection: { id: true },
+});
+
+JobTC.addRelation('invites', {
+  resolver: () => {
+    return InviteTC.getResolver('findMany');
+  },
+  prepareArgs: {
+    _id: { $in: (source) => source.invites },
   },
   projection: { id: true },
 });

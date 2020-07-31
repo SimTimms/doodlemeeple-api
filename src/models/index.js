@@ -9,6 +9,7 @@ import { Testimonial, TestimonialTC } from './testimonial';
 import { Game, GameTC } from './game';
 import { Job, JobTC } from './job';
 import { Invite, InviteTC } from './invite';
+import { Favourite, FavouriteTC } from './favourite';
 export {
   User,
   UserTC,
@@ -32,4 +33,6 @@ export {
   GameTC,
   Invite,
   InviteTC,
+  Favourite,
+  FavouriteTC,
 };

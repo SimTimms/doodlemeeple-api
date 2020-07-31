@@ -31,7 +31,6 @@ const UserMutation = {
   userUpdateOne: UserTC.getResolver('updateOne').wrapResolve(
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
-      console.log(rp);
       const UpdatedUser = await User.findByIdAndUpdate(
         {
           _id: userId,

@@ -14,6 +14,7 @@ import {
   Testimonial,
   Gallery,
   InviteTC,
+  FavouriteTC,
 } from './';
 import { login, userMigrate } from '../resolvers';
 import { getUserId } from '../utils';
@@ -45,7 +46,18 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
-    favourites: [{ type: String }],
+    favourites: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Favourites',
+      },
+    ],
+    likedMe: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Favourites',
+      },
+    ],
     invites: [
       {
         type: Schema.Types.ObjectId,
@@ -94,7 +106,6 @@ UserTC.addResolver({
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    console.log('das');
     const user = await User.find();
 
     return user;
@@ -112,7 +123,23 @@ UserTC.addRelation('sections', {
 UserTC.addRelation('invites', {
   resolver: () => InviteTC.getResolver('findMany'),
   prepareArgs: {
-    filter: (source) => ({ user: source._id }),
+    receiver: (source) => source._id,
+  },
+  projection: { id: true },
+});
+
+UserTC.addRelation('favourites', {
+  resolver: () => FavouriteTC.getResolver('findByIds'),
+  prepareArgs: {
+    _ids: (source) => source.favourites,
+  },
+  projection: { id: true },
+});
+
+UserTC.addRelation('likedMe', {
+  resolver: () => FavouriteTC.getResolver('findByIds'),
+  prepareArgs: {
+    _ids: (source) => source.likedMe,
   },
   projection: { id: true },
 });

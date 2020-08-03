@@ -1,4 +1,4 @@
-import { InviteTC, User, Invite } from '../models';
+import { InviteTC, User, Invite, Job } from '../models';
 import { getUserId } from '../utils';
 
 const InviteQuery = {
@@ -21,13 +21,20 @@ const InviteMutation = {
       });
 
       if (!exists) {
-        await User.updateOne(
-          { _id: userId },
-          { $addToSet: { invites: rp.args.record.receiver } }
+        const newInvite = await next(rp);
+
+        await Job.updateOne(
+          { _id: rp.args.record.job },
+          { $addToSet: { invites: newInvite.recordId } }
         );
 
-        return next(rp);
+        return newInvite;
       } else {
+        await Job.updateOne(
+          { _id: rp.args.record.job },
+          { $pull: { invites: exists._id } }
+        );
+
         await Invite.remove({ _id: exists._id });
       }
       return exists._id;

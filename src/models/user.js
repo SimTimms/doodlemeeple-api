@@ -131,7 +131,7 @@ UserTC.addRelation('invites', {
 UserTC.addRelation('favourites', {
   resolver: () => FavouriteTC.getResolver('findByIds'),
   prepareArgs: {
-    _ids: (source) => source.favourites,
+    _ids: (parent) => parent.favourites,
   },
   projection: { id: true },
 });
@@ -139,7 +139,7 @@ UserTC.addRelation('favourites', {
 UserTC.addRelation('likedMe', {
   resolver: () => FavouriteTC.getResolver('findByIds'),
   prepareArgs: {
-    _ids: (source) => source.likedMe,
+    _ids: (parent) => parent.likedMe,
   },
   projection: { id: true },
 });

@@ -1,9 +1,10 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC, InviteTC, Notification } from './';
+import { UserTC, GameTC, InviteTC, Notification, Invite, User } from './';
 import { getUserId } from '../utils';
-const { INVITED } = require('../utils/notifications');
+import { INVITED } from '../utils/notifications';
+import { emailInvite } from '../email';
 
 export const JobSchema = new Schema(
   {
@@ -66,7 +67,7 @@ JobTC.addRelation('invites', {
     return InviteTC.getResolver('findMany');
   },
   prepareArgs: {
-    _id: { $in: (source) => source.invites },
+    filter: (parent) => ({ _id: { $in: parent.invites } }),
   },
   projection: { id: true },
 });
@@ -77,7 +78,7 @@ JobTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs = await Job.find({ user: userId });
+    const jobs = await Job.find({ user: userId, submitted: { $ne: 'closed' } });
     return jobs;
   },
 });
@@ -94,13 +95,11 @@ JobTC.addResolver({
 
     const jobId = args._id;
 
-    const jobDeets = await JobTC.getResolver('findOne').resolve(args);
-    const invitees = await UserTC.getResolver('findMany').resolve({
-      invites: { $in: jobDeets.invites },
-      projection: { email: true },
-    });
-    const emailAddresses = await invitees.map((user) => user.email);
-    await Job.updateOne({ _id: jobId }, { submitted: true });
+    const jobDeets = await Job.findOne({ _id: jobId });
+    const invites = await Invite.find({ _id: { $in: jobDeets.invites } });
+    const inviteIds = invites.map((invite) => invite.receiver);
+    const invitees = await User.find({ _id: { $in: inviteIds } });
+    await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
 
     const notifications = invitees.map(async (user) => {
       INVITED.message = `${jobDeets.name}`;
@@ -109,19 +108,19 @@ JobTC.addResolver({
     });
 
     Promise.all(notifications).then();
-    /*
-  emailAddresses  .map((email) => {
-      const request = emailInvite(email, jobDeets);
+
+    invitees.map((user) => {
+      const request = emailInvite(user, jobDeets);
 
       request
         .then((result) => {
           //  console.log(result);
         })
         .catch((err) => {
-          console.log(err.statusCode);
+          console.log(err);
         });
     });
-
+    /*
   const conversationExists = await context.prisma.$exists.conversation({
     participants_some: { id_in: [userId] },
     job: { id: jobId },

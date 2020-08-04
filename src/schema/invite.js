@@ -9,6 +9,7 @@ const InviteQuery = {
   inviteCount: InviteTC.getResolver('count'),
   inviteConnection: InviteTC.getResolver('connection'),
   invitePagination: InviteTC.getResolver('pagination'),
+  invitesByUser: InviteTC.getResolver('invitesByUser'),
 };
 
 const InviteMutation = {

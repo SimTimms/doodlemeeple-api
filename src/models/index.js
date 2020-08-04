@@ -10,9 +10,12 @@ import { Game, GameTC } from './game';
 import { Job, JobTC } from './job';
 import { Invite, InviteTC } from './invite';
 import { Favourite, FavouriteTC } from './favourite';
+import { Message, MessageTC } from './message';
 export {
   User,
   UserTC,
+  Message,
+  MessageTC,
   Section,
   SectionTC,
   Notification,

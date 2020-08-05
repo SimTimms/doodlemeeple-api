@@ -9,13 +9,14 @@ const MessageQuery = {
   messageCount: MessageTC.getResolver('count'),
   messageConnection: MessageTC.getResolver('connection'),
   messagePagination: MessageTC.getResolver('pagination'),
+  getMessages: MessageTC.getResolver('getMessages'),
 };
 
 const MessageMutation = {
   messageCreateOne: MessageTC.getResolver('createOne').wrapResolve(
     (next) => async (rp) => {
-      const userId = getUserId(rp.context.headers.authorization);
-      rp.args.record.sender = userId;
+      const senderId = getUserId(rp.context.headers.authorization);
+      rp.args.record.sender = senderId;
 
       const message = await next(rp);
       return message;

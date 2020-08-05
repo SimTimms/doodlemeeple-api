@@ -78,7 +78,7 @@ JobTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs = await Job.find({ user: userId, submitted: { $ne: 'closed' } });
+    const jobs = await Job.find({ user: userId, submitted: 'submitted' });
     return jobs;
   },
 });

@@ -1,4 +1,4 @@
-import { InviteTC, User, Invite, Job } from '../models';
+import { InviteTC, Invite, Job } from '../models';
 import { getUserId } from '../utils';
 
 const InviteQuery = {
@@ -48,6 +48,7 @@ const InviteMutation = {
   inviteRemoveById: InviteTC.getResolver('removeById'),
   inviteRemoveOne: InviteTC.getResolver('removeOne'),
   inviteRemoveMany: InviteTC.getResolver('removeMany'),
+  declineInvite: InviteTC.getResolver('declineInvite'),
 };
 
 export { InviteQuery, InviteMutation };

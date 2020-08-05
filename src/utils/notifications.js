@@ -19,6 +19,13 @@ const REGISTRATION = {
   icon: 'contact_mail',
 };
 
+const DECLINED = {
+  title: ` declined your invitation`,
+  message: 'Check your job listing',
+  linkTo: '/app/jobs/',
+  icon: 'work',
+};
+
 const INVITED = {
   title: `You've been invited`,
   message: '',
@@ -39,4 +46,5 @@ module.exports = {
   MESSAGE_SENT,
   REGISTRATION,
   CONTRACT_SUBMITTED,
+  DECLINED,
 };

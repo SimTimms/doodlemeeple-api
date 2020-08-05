@@ -15,13 +15,14 @@ const InviteQuery = {
 const InviteMutation = {
   inviteCreateOne: InviteTC.getResolver('createOne').wrapResolve(
     (next) => async (rp) => {
-      const userId = getUserId(rp.context.headers.authorization);
       const exists = await Invite.findOne({
         receiver: rp.args.record.receiver,
         job: rp.args.record.job,
       });
 
       if (!exists) {
+        const userId = getUserId(rp.context.headers.authorization);
+        rp.args.record.sender = userId;
         const newInvite = await next(rp);
 
         await Job.updateOne(

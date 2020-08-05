@@ -20,8 +20,8 @@ const REGISTRATION = {
 };
 
 const DECLINED = {
-  title: ` declined your invitation`,
-  message: 'Check your job listing',
+  title: `You've had a response`,
+  message: 'declined your invitation',
   linkTo: '/app/jobs/',
   icon: 'work',
 };

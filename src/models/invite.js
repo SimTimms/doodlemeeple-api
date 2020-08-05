@@ -1,15 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC, Notification } from './';
+import { UserTC, JobTC, Notification, User } from './';
 import { getUserId } from '../utils';
-import { DECLINE } from '../utils/notifications';
+import { DECLINED } from '../utils/notifications';
 export const InviteSchema = new Schema(
   {
     title: { type: String },
     message: { type: String },
     status: { type: String },
-    user: {
+    sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
@@ -60,10 +60,13 @@ InviteTC.addResolver({
   args: { _id: 'MongoID!' },
   resolve: async ({ source, args, context }) => {
     const userId = getUserId(context.headers.authorization);
+    const invite = await Invite.findOne({ _id: args._id });
+    const sender = await User.findOne({ _id: invite.sender._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });
     //notification
-    DECLINE.title = `${userId} ${DECLINE.title}`;
-    await Notification.create({ ...DECLINE, user: userId });
+    console.log(invite, sender);
+    DECLINED.message = `${sender.name} ${DECLINED.message}`;
+    await Notification.create({ ...DECLINED, user: sender._id });
     //email
   },
 });

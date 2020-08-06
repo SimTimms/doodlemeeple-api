@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { getUserId } from '../utils';
+import { Message } from '../models';
 
 export const CountSchema = new Schema({
   invites: { type: Number },
@@ -18,7 +19,7 @@ CountTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const invites = 2;
-    const messages = 2;
-    return { invites, messages };
+    const messages = await Message.find({ receiver: userId, status: 'unread' });
+    return { invites, messages: messages.length };
   },
 });

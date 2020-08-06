@@ -3,7 +3,7 @@ import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC, JobTC } from './';
 import timestamps from 'mongoose-timestamp';
 import { getUserId } from '../utils';
-
+const ObjectId = mongoose.Types.ObjectId;
 export const MessageSchema = new Schema(
   {
     messageStr: { type: String },
@@ -37,6 +37,7 @@ MessageTC.addResolver({
   args: {
     jobId: 'MongoID!',
     userId: 'MongoID!',
+    pageNbr: 'Int!',
   },
   type: [MessageTC],
   kind: 'query',
@@ -45,10 +46,18 @@ MessageTC.addResolver({
       $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }],
       job: rp.args.jobId,
     })
-      .skip(10)
-      .limit(2);
+      .sort({ createdAt: -1 })
+      .skip(rp.args.pageNbr * 10)
+      .limit(10);
 
-    console.log(rp.args.userId, rp.args.jobId);
+    await Message.updateMany(
+      {
+        $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }],
+        job: rp.args.jobId,
+      },
+      { status: 'read' }
+    );
+
     return messages;
   },
 });
@@ -75,4 +84,35 @@ MessageTC.addRelation('job', {
     _id: (parent) => parent.job,
   },
   projection: { id: true },
+});
+
+MessageTC.addResolver({
+  name: 'getConversations',
+  args: {},
+  type: [MessageTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const messages = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ reciever: ObjectId(userId) }, { sender: ObjectId(userId) }],
+        },
+      },
+      {
+        $group: {
+          _id: '$job',
+          messageStr: { $first: '$messageStr' },
+          receiver: { $first: '$receiver' },
+          sender: { $first: '$sender' },
+          job: { $first: '$job' },
+        },
+      },
+    ]);
+
+    console.log(messages);
+
+    return messages;
+  },
 });

@@ -10,6 +10,7 @@ const MessageQuery = {
   messageConnection: MessageTC.getResolver('connection'),
   messagePagination: MessageTC.getResolver('pagination'),
   getMessages: MessageTC.getResolver('getMessages'),
+  getConversations: MessageTC.getResolver('getConversations'),
 };
 
 const MessageMutation = {
@@ -17,6 +18,7 @@ const MessageMutation = {
     (next) => async (rp) => {
       const senderId = getUserId(rp.context.headers.authorization);
       rp.args.record.sender = senderId;
+      rp.args.record.status = 'unread';
 
       const message = await next(rp);
       return message;

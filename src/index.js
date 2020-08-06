@@ -14,24 +14,21 @@ dotenv.config();
 
 const app = express();
 
-
 const server = new ApolloServer({
   schema,
   cors: true,
   playground: process.env.NODE_ENV === 'development' ? true : false,
   introspection: true,
   tracing: true,
-  path:'/graphql',
+  path: '/graphql',
   context: ({ req }) => req,
 });
-
 
 app.use(bodyParser.json());
 app.use(cors());
 app.post('/sign_s3', (req, res) => {
   sign_s3(req, res);
 });
-
 
 server.applyMiddleware({
   app,
@@ -47,9 +44,5 @@ server.applyMiddleware({
       }
     }),
 });
-
-
-
-
 
 app.listen({ port: process.env.PORT }, () => {});

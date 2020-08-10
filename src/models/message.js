@@ -9,6 +9,7 @@ export const MessageSchema = new Schema(
     messageStr: { type: String },
     status: { type: String },
     count: { type: Number },
+    type: { type: String },
     sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',

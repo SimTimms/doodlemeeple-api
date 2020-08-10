@@ -8,6 +8,7 @@ export const MessageSchema = new Schema(
   {
     messageStr: { type: String },
     status: { type: String },
+    count: { type: Number },
     sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -97,13 +98,12 @@ MessageTC.addResolver({
     const messages = await Message.aggregate([
       {
         $match: {
-          $or: [{ reciever: ObjectId(userId) }, { sender: ObjectId(userId) }],
+          $or: [{ receiver: ObjectId(userId) }, { sender: ObjectId(userId) }],
         },
       },
       {
         $group: {
           _id: '$job',
-          messageStr: { $first: '$messageStr' },
           receiver: { $first: '$receiver' },
           sender: { $first: '$sender' },
           job: { $first: '$job' },
@@ -111,8 +111,31 @@ MessageTC.addResolver({
       },
     ]);
 
-    console.log(messages);
+    const counts = await Message.aggregate([
+      {
+        $match: {
+          receiver: ObjectId(userId),
+          status: 'unread',
+        },
+      },
+      {
+        $group: {
+          _id: '$job',
+          receiver: { $first: '$receiver' },
+          job: { $first: '$job' },
+          count: { $first: '$count' },
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    //TODO: Get a clever person to circumvent this loop with some clever aggregate shit
 
+    const messageIndex = messages.map((count) => count.job.toString());
+
+    counts.map((count) => {
+      const index = messageIndex.indexOf(count.job.toString());
+      messages[index].count = index > -1 ? count.total : 0;
+    });
     return messages;
   },
 });

@@ -15,6 +15,8 @@ import { InviteQuery, InviteMutation } from './invite';
 import { FavouriteQuery, FavouriteMutation } from './favourite';
 import { MessageQuery, MessageMutation } from './message';
 import { ContractQuery, ContractMutation } from './contract';
+import { PaymentQuery, PaymentMutation } from './payment';
+import { PaymentTermsQuery, PaymentTermsMutation } from './paymentTerms';
 import { CountQuery } from './count';
 
 schemaComposer.Query.addFields({
@@ -32,6 +34,8 @@ schemaComposer.Query.addFields({
   ...FavouriteQuery,
   ...MessageQuery,
   ...ContractQuery,
+  ...PaymentQuery,
+  ...PaymentTermsQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -48,6 +52,8 @@ schemaComposer.Mutation.addFields({
   ...FavouriteMutation,
   ...MessageMutation,
   ...ContractMutation,
+  ...PaymentMutation,
+  ...PaymentTermsMutation,
 });
 
 export default schemaComposer.buildSchema();

@@ -12,6 +12,8 @@ import { Invite, InviteTC } from './invite';
 import { Favourite, FavouriteTC } from './favourite';
 import { Message, MessageTC } from './message';
 import { Contract, ContractTC } from './contract';
+import { Payment, PaymentTC } from './payment';
+import { PaymentTerms, PaymentTermsTC } from './paymentTerms';
 export {
   User,
   UserTC,
@@ -41,4 +43,8 @@ export {
   FavouriteTC,
   Contract,
   ContractTC,
+  Payment,
+  PaymentTC,
+  PaymentTerms,
+  PaymentTermsTC,
 };

@@ -29,7 +29,7 @@ async function emailInvite(user, jobDeets) {
   return request;
 }
 
-async function emailQuote(user, quoteDeets) {
+async function emailQuote(user, quoteDeets, sender) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
       {
@@ -43,10 +43,10 @@ async function emailQuote(user, quoteDeets) {
             Name: user.name,
           },
         ],
-        Subject: `You've got an invite`,
-        TextPart: `You have been asked to provide a quote for "${quoteDeets.name}"`,
+        Subject: `${sender.name} has responded to your job on DoodleMeeple`,
+        TextPart: `${sender.name} has responded to your job on DoodleMeepl: ${quoteDeets.cost} ${quoteDeets.currency}, ${quoteDeets.deadline}. View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${quoteDeets.summary}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${quoteDeets.cost}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>${sender.name} has responded to your job on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],

@@ -11,7 +11,7 @@ import { Job, JobTC } from './job';
 import { Invite, InviteTC } from './invite';
 import { Favourite, FavouriteTC } from './favourite';
 import { Message, MessageTC } from './message';
-import { Contract, ContractTC } from './message';
+import { Contract, ContractTC } from './contract';
 export {
   User,
   UserTC,

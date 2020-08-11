@@ -34,3 +34,16 @@ ContractTC.addRelation('user', {
   },
   projection: { id: true },
 });
+
+ContractTC.addResolver({
+  name: 'contractByJob',
+  type: ContractTC,
+  args: { jobId: 'MongoID!' },
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobId = rp.args.jobId;
+    const contract = await Contract.find({ user: userId, job: jobId });
+    return contract;
+  },
+});

@@ -1,4 +1,4 @@
-import { SchemaComposer, ComposeStorage } from 'graphql-compose';
+import { SchemaComposer } from 'graphql-compose';
 
 const schemaComposer = new SchemaComposer();
 
@@ -14,6 +14,7 @@ import { JobQuery, JobMutation } from './job';
 import { InviteQuery, InviteMutation } from './invite';
 import { FavouriteQuery, FavouriteMutation } from './favourite';
 import { MessageQuery, MessageMutation } from './message';
+import { ContractQuery, ContractMutation } from './contract';
 import { CountQuery } from './count';
 
 schemaComposer.Query.addFields({
@@ -30,6 +31,7 @@ schemaComposer.Query.addFields({
   ...InviteQuery,
   ...FavouriteQuery,
   ...MessageQuery,
+  ...ContractQuery,
 });
 
 schemaComposer.Mutation.addFields({
@@ -45,6 +47,7 @@ schemaComposer.Mutation.addFields({
   ...InviteMutation,
   ...FavouriteMutation,
   ...MessageMutation,
+  ...ContractMutation,
 });
 
 export default schemaComposer.buildSchema();

@@ -1,9 +1,18 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, PaymentTC, JobTC, PaymentTermsTC, Job, User } from './';
+import {
+  UserTC,
+  PaymentTC,
+  JobTC,
+  PaymentTermsTC,
+  Job,
+  User,
+  Notification,
+} from './';
 import { getUserId } from '../utils';
 import { emailQuote } from '../email';
+import { CONTRACT_SUBMITTED } from '../utils/notifications';
 
 export const ContractSchema = new Schema(
   {
@@ -12,6 +21,11 @@ export const ContractSchema = new Schema(
     cost: { type: String },
     currency: { type: String },
     status: { type: String },
+    signedDate: { type: Date },
+    signedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
     payments: { type: Schema.Types.ObjectId, ref: 'Payment' },
     paymentTerms: { type: Schema.Types.ObjectId, ref: 'PaymentTerm' },
     job: { type: Schema.Types.ObjectId, ref: 'Job' },
@@ -36,6 +50,16 @@ ContractTC.addRelation('user', {
   prepareArgs: {
     filter: ({ user }) => {
       return { _id: user };
+    },
+  },
+  projection: { _id: true },
+});
+
+ContractTC.addRelation('signedBy', {
+  resolver: () => UserTC.getResolver('findOne'),
+  prepareArgs: {
+    filter: ({ signedBy }) => {
+      return { _id: signedBy };
     },
   },
   projection: { _id: true },
@@ -111,6 +135,10 @@ ContractTC.addResolver({
       { _id: contract.job },
       { $addToSet: { contracts: rp.args._id } }
     );
+
+    CONTRACT_SUBMITTED.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
+    CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${contract._id}`;
+    Notification.create({ ...CONTRACT_SUBMITTED, user: user._id });
 
     return contract;
   },

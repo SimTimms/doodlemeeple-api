@@ -9,7 +9,7 @@ const CONTRACT_SUBMITTED = {
   title: `You've got a Quote`,
   message: 'Check it out',
   linkTo: '/app/view-contract/',
-  icon: 'send',
+  icon: 'request_quote',
 };
 
 const REGISTRATION = {
@@ -23,7 +23,7 @@ const DECLINED = {
   title: `You've had a response`,
   message: 'declined your invitation',
   linkTo: '/app/jobs/',
-  icon: 'work',
+  icon: 'thumb_down',
 };
 
 const INVITED = {

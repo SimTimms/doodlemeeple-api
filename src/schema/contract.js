@@ -1,4 +1,4 @@
-import { ContractTC } from '../models';
+import { ContractTC, Contract, Job } from '../models';
 import { getUserId } from '../utils';
 
 const ContractQuery = {
@@ -19,11 +19,21 @@ const ContractMutation = {
       rp.args.record.user = userId;
 
       const contract = await next(rp);
+
       return contract;
     }
   ),
   contractCreateMany: ContractTC.getResolver('createMany'),
-  contractUpdateById: ContractTC.getResolver('updateById'),
+  contractUpdateById: ContractTC.getResolver('updateById').wrapResolve(
+    (next) => async (rp) => {
+      const contract = await Contract.findOne({ _id: rp.args.record._id });
+      await Job.update(
+        { _id: contract.job },
+        { $pull: { contracts: rp.args.record._id } }
+      );
+      return next(rp);
+    }
+  ),
   contractUpdateOne: ContractTC.getResolver('updateOne'),
   contractUpdateMany: ContractTC.getResolver('updateMany'),
   contractRemoveById: ContractTC.getResolver('removeById'),

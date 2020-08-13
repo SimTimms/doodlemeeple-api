@@ -34,17 +34,21 @@ export const ContractTC = composeWithMongoose(Contract);
 ContractTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    filter: ({ user }) => {
+      return { _id: user };
+    },
   },
-  projection: { id: true },
+  projection: { _id: true },
 });
 
 ContractTC.addRelation('job', {
   resolver: () => JobTC.getResolver('findOne'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    filter: ({ job }) => {
+      return { _id: job };
+    },
   },
-  projection: { id: true },
+  projection: { _id: true },
 });
 
 ContractTC.addRelation('payments', {
@@ -82,17 +86,19 @@ ContractTC.addResolver({
   name: 'submitContract',
   type: ContractTC,
   args: { _id: 'MongoID!' },
-  kind: 'query',
+  kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const jobId = rp.args.jobId;
     const contract = await Contract.findOne({ _id: rp.args._id, user: userId });
+    await Contract.updateOne(
+      { _id: rp.args._id, user: userId },
+      { status: 'submitted' }
+    );
     const job = await Job.findOne({ job: jobId }, { user: 1 });
     const user = await User.findOne({ _id: job.user }, { email: 1, name: 1 });
     const sender = await User.findOne({ _id: userId }, { email: 1, name: 1 });
-
     const request = emailQuote(user, contract, sender);
-
     request
       .then((result) => {
         //  console.log(result);
@@ -100,6 +106,11 @@ ContractTC.addResolver({
       .catch((err) => {
         console.log(err);
       });
+
+    await Job.update(
+      { _id: contract.job },
+      { $addToSet: { contracts: rp.args._id } }
+    );
 
     return contract;
   },

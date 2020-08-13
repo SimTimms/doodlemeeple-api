@@ -26,8 +26,6 @@ export async function userMigrate(args) {
     testimonials,
   } = args;
 
-  console.log(showreel);
-
   const newUser = await User.create({
     password,
     name: username,
@@ -53,9 +51,7 @@ export async function userMigrate(args) {
       }
     });
 
-    Promise.all(imageIds).then(function (results) {
-      console.log('Images');
-    });
+    Promise.all(imageIds).then(function (results) {});
 
     var notableProjectIds = notableProjects.map(async (project) => {
       for (let i = 0; i < section.notableProjects.length; i++) {

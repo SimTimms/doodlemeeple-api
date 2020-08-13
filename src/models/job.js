@@ -1,7 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC, InviteTC, Notification, Invite, User } from './';
+import {
+  UserTC,
+  GameTC,
+  InviteTC,
+  Notification,
+  Invite,
+  User,
+  ContractTC,
+} from './';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
 import { emailInvite } from '../email';
@@ -21,6 +29,12 @@ export const JobSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'Invite',
+      },
+    ],
+    contracts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Contract',
       },
     ],
     user: {
@@ -72,6 +86,16 @@ JobTC.addRelation('invites', {
   projection: { id: true },
 });
 
+JobTC.addRelation('contracts', {
+  resolver: () => {
+    return ContractTC.getResolver('findMany');
+  },
+  prepareArgs: {
+    filter: (parent) => ({ _id: { $in: parent.contracts } }),
+  },
+  projection: { id: true },
+});
+
 JobTC.addResolver({
   name: 'jobsByUser',
   type: [JobTC],
@@ -80,6 +104,27 @@ JobTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const jobs = await Job.find({ user: userId, submitted: 'submitted' });
     return jobs;
+  },
+});
+
+JobTC.addResolver({
+  name: 'closeJob',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const job = await Job.updateOne(
+      { _id: rp.args._id, user: userId },
+      { submitted: 'closed' }
+    );
+    await Invite.updateMany(
+      { job: rp.args._id, status: { $ne: 'declined' } },
+      { status: 'closed' }
+    );
+    return null;
   },
 });
 

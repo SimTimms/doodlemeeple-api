@@ -36,7 +36,6 @@ const ImageMutation = {
   imageUpdateMany: ImageTC.getResolver('updateMany'),
   imageRemoveById: ImageTC.getResolver('removeById').wrapResolve(
     (next) => async (rp) => {
-      console.log(rp.args._id);
       const userId = getUserId(rp.context.headers.authorization);
       const image = await Image.findOne({
         _id: rp.args._id,

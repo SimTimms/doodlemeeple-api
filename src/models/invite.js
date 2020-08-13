@@ -47,7 +47,7 @@ InviteTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
       receiver: userId,
-      status: { $ne: 'declined' },
+      status: { $nin: ['declined', 'closed'] },
     });
     return invites;
   },
@@ -64,7 +64,6 @@ InviteTC.addResolver({
     const sender = await User.findOne({ _id: invite.sender._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });
     //notification
-    console.log(invite, sender);
     DECLINED.message = `${sender.name} ${DECLINED.message}`;
     await Notification.create({ ...DECLINED, user: sender._id });
     //email

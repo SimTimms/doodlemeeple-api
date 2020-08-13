@@ -1,11 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { getUserId } from '../utils';
-import { Message, Invite } from '../models';
+import { Message, Invite, Contract, Job } from '../models';
 
 export const CountSchema = new Schema({
   invites: { type: Number },
   messages: { type: Number },
+  quotes: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -20,10 +21,28 @@ CountTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
       receiver: userId,
-      status: { $ne: 'declined' },
+      status: { $nin: ['declined', 'closed'] },
     });
 
     const messages = await Message.find({ receiver: userId, status: 'unread' });
-    return { invites: invites.length, messages: messages.length };
+
+    const jobs = await Job.find(
+      {
+        user: userId,
+        submitted: 'submitted',
+        contracts: { $exists: true, $ne: [] },
+      },
+      { contracts: 1 }
+    );
+    let jobTotal = 0;
+    for (let i = 0; i < jobs.length; i++) {
+      jobTotal += jobs[i].contracts.length;
+    }
+
+    return {
+      invites: invites.length,
+      messages: messages.length,
+      quotes: jobTotal,
+    };
   },
 });

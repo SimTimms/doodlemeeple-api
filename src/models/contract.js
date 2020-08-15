@@ -9,10 +9,15 @@ import {
   Job,
   User,
   Notification,
+  Invite,
 } from './';
 import { getUserId } from '../utils';
-import { emailQuote } from '../email';
-import { CONTRACT_SUBMITTED } from '../utils/notifications';
+import { emailQuote, emailDeclineQuote, emailAcceptQuote } from '../email';
+import {
+  CONTRACT_SUBMITTED,
+  CONTRACT_DECLINED,
+  CONTRACT_ACCEPTED,
+} from '../utils/notifications';
 
 export const ContractSchema = new Schema(
   {
@@ -138,7 +143,98 @@ ContractTC.addResolver({
 
     CONTRACT_SUBMITTED.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
     CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${contract._id}`;
+    console.log(contract._id);
     Notification.create({ ...CONTRACT_SUBMITTED, user: user._id });
+
+    return contract;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'declineContract',
+  type: ContractTC,
+  args: { _id: 'MongoID!' },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const clientId = getUserId(rp.context.headers.authorization);
+    const client = await User.findOne({ _id: clientId }, { email: 1, name: 1 });
+    const contract = await Contract.findOne({ _id: rp.args._id });
+    const creative = await User.findOne(
+      { _id: contract.user },
+      { email: 1, name: 1, _id: 1 }
+    );
+
+    await Contract.updateOne(
+      { _id: rp.args._id, user: creative._id },
+      { status: 'declined' }
+    );
+
+    await Job.updateOne(
+      { _id: contract.job },
+      { $pull: { contracts: rp.args._id } }
+    );
+
+    const request = emailDeclineQuote(creative, contract, client);
+    request
+      .then((result) => {
+        //  console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    CONTRACT_DECLINED.message = `${client.name} rejected your quote`;
+    CONTRACT_DECLINED.linkTo = `${CONTRACT_DECLINED.linkTo}${contract._id}`;
+    Notification.create({ ...CONTRACT_DECLINED, user: creative._id });
+
+    return contract;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'signContract',
+  type: ContractTC,
+  args: { _id: 'MongoID!' },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const clientId = getUserId(rp.context.headers.authorization);
+    const client = await User.findOne({ _id: clientId }, { email: 1, name: 1 });
+    const contract = await Contract.findOne({ _id: rp.args._id });
+
+    const creative = await User.findOne(
+      { _id: contract.user },
+      { email: 1, name: 1, _id: 1 }
+    );
+    const invite = await Invite.findOne({
+      receiver: creative._id,
+      job: contract.job,
+    });
+    await Contract.updateOne(
+      { _id: rp.args._id, user: creative._id },
+      { status: 'accepted', signedBy: client._id, signedDate: new Date() }
+    );
+    console.log(invite);
+    await Job.updateOne(
+      { _id: contract.job },
+      {
+        contracts: [],
+        $pull: { invites: { $ne: invite._id } },
+        submitted: 'accepted',
+      }
+    );
+
+    const request = emailAcceptQuote(creative, contract, client);
+    request
+      .then((result) => {
+        //  console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    CONTRACT_ACCEPTED.message = `${client.name} ACCEPTED your quote`;
+    CONTRACT_ACCEPTED.linkTo = `${CONTRACT_ACCEPTED.linkTo}${contract._id}`;
+    Notification.create({ ...CONTRACT_ACCEPTED, user: creative._id });
 
     return contract;
   },

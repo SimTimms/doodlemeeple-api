@@ -44,9 +44,59 @@ async function emailQuote(user, quoteDeets, sender) {
           },
         ],
         Subject: `${sender.name} has responded to your job on DoodleMeeple`,
-        TextPart: `${sender.name} has responded to your job on DoodleMeepl: ${quoteDeets.cost} ${quoteDeets.currency}, ${quoteDeets.deadline}. View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
+        TextPart: `${sender.name} has responded to your job on DoodleMeeple: ${quoteDeets.cost} ${quoteDeets.currency}, ${quoteDeets.deadline}. View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
         HTMLPart: `<p>Hi ${user.name},</p>
         <p>${sender.name} has responded to your job on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
+async function emailDeclineQuote(user, quoteDeets, sender) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: `${sender.name} has rejected your quote`,
+        TextPart: `${sender.name} has rejected your quote on DoodleMeeple: View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
+        HTMLPart: `<p>Hi ${user.name},</p>
+        <p>${sender.name} has rejected your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>REJECTED</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
+async function emailAcceptQuote(user, quoteDeets, sender) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: `${sender.name} has ACCEPTED your quote`,
+        TextPart: `Congratulations, ${sender.name} has ACCEPTED your quote on DoodleMeeple: View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
+        HTMLPart: `<p>Hi ${user.name},</p>
+        <p>Congratulations, ${sender.name} has ACCEPTED your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>ACCEPTED</p><p>We'll let you know as soon as the Client has deposited the payment.</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -157,4 +207,6 @@ module.exports = {
   emailInvite,
   emailNewMessage,
   emailQuote,
+  emailDeclineQuote,
+  emailAcceptQuote,
 };

@@ -12,6 +12,19 @@ const CONTRACT_SUBMITTED = {
   icon: 'request_quote',
 };
 
+const CONTRACT_DECLINED = {
+  title: `Your quote has been declined`,
+  message: 'Your quote has been declined',
+  linkTo: '/app/view-contract/',
+  icon: 'thumb_down',
+};
+
+const CONTRACT_ACCEPTED = {
+  title: `Your quote has been accepted`,
+  message: 'Your quote has been accepted',
+  linkTo: '/app/view-contract/',
+  icon: 'thumb_down',
+};
 const REGISTRATION = {
   title: `Thanks for joining us`,
   message: 'Why not get started with an amazing profile',
@@ -47,4 +60,6 @@ module.exports = {
   REGISTRATION,
   CONTRACT_SUBMITTED,
   DECLINED,
+  CONTRACT_DECLINED,
+  CONTRACT_ACCEPTED,
 };

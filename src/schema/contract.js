@@ -40,6 +40,8 @@ const ContractMutation = {
   contractRemoveOne: ContractTC.getResolver('removeOne'),
   contractRemoveMany: ContractTC.getResolver('removeMany'),
   submitContract: ContractTC.getResolver('submitContract'),
+  declineContract: ContractTC.getResolver('declineContract'),
+  signContract: ContractTC.getResolver('signContract'),
 };
 
 export { ContractQuery, ContractMutation };

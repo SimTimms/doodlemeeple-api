@@ -99,10 +99,12 @@ JobTC.addRelation('contracts', {
 JobTC.addResolver({
   name: 'jobsByUser',
   type: [JobTC],
+  args: { status: 'String' },
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs = await Job.find({ user: userId, submitted: 'submitted' });
+    const jobs = await Job.find({ user: userId, submitted: rp.args.status });
+    console.log(rp.args);
     return jobs;
   },
 });

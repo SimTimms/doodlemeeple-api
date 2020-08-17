@@ -217,9 +217,12 @@ ContractTC.addResolver({
     await Job.updateOne(
       { _id: contract.job },
       {
-        contracts: [],
-        $pull: { invites: { $ne: invite._id } },
+        $pull: {
+          invites: { $ne: invite._id },
+          contracts: { $ne: contract._id },
+        },
         submitted: 'accepted',
+        assignedCreative: creative._id,
       }
     );
 

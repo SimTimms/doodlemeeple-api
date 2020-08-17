@@ -1,7 +1,11 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, ContractTC } from './';
+import { UserTC, ContractTC, Contract } from './';
 import timestamps from 'mongoose-timestamp';
+import { getUserId } from '../utils';
+const stripe = require('stripe')(process.env.STRIPE_KEY, {
+  apiVersion: '2020-03-02',
+});
 
 const ObjectId = mongoose.Types.ObjectId;
 export const PaymentSchema = new Schema(
@@ -44,4 +48,36 @@ PaymentTC.addRelation('contract', {
     _id: (parent) => parent.contract,
   },
   projection: { id: true },
+});
+
+PaymentTC.addResolver({
+  name: 'makePayment',
+  type: 'String',
+  args: {
+    contractId: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    console.log(rp);
+    const { contractId } = rp.args;
+
+    const contract = await Contract.findOne({ _id: contractId });
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: contract.cost * 100,
+      currency: contract.currency.toLowerCase() || 'gbp',
+      metadata: { integration_check: 'accept_a_payment' },
+    });
+
+    const payment = await Payment.create({
+      amount: contract.cost * 100,
+      currency: contract.currency,
+      status: 'Incomplete',
+      paidBy: userId,
+      contract: contractId,
+      paymentId: paymentIntent.id,
+    });
+    console.log(paymentIntent, contract, payment);
+    return paymentIntent.client_secret;
+  },
 });

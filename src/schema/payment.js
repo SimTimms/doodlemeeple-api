@@ -19,6 +19,7 @@ const PaymentMutation = {
   paymentRemoveById: PaymentTC.getResolver('removeById'),
   paymentRemoveOne: PaymentTC.getResolver('removeOne'),
   paymentRemoveMany: PaymentTC.getResolver('removeMany'),
+  makePayment: PaymentTC.getResolver('makePayment'),
 };
 
 export { PaymentQuery, PaymentMutation };

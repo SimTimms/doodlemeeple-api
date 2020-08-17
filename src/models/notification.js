@@ -42,9 +42,11 @@ NotificationTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const newNotifications = await Notification.find({ user: userId }).sort({
-      createdAt: -1,
-    });
+    const newNotifications = await Notification.find({ user: userId })
+      .sort({
+        createdAt: -1,
+      })
+      .limit(10);
     return newNotifications;
   },
 });

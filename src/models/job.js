@@ -31,12 +31,18 @@ export const JobSchema = new Schema(
         ref: 'Invite',
       },
     ],
+    assignedCreative: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+
     contracts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Contract',
       },
     ],
+
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -62,6 +68,16 @@ JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ id: source._id }),
+  },
+  projection: { id: true },
+});
+
+JobTC.addRelation('assignedCreative', {
+  resolver: () => {
+    return UserTC.getResolver('findOne');
+  },
+  prepareArgs: {
+    filter: (parent) => ({ _id: { $in: parent.assignedCreative } }),
   },
   projection: { id: true },
 });

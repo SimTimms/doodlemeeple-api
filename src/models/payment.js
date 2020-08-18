@@ -59,7 +59,6 @@ PaymentTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    console.log(rp);
     const { contractId } = rp.args;
 
     const contract = await Contract.findOne({ _id: contractId });
@@ -77,7 +76,6 @@ PaymentTC.addResolver({
       contract: contractId,
       paymentId: paymentIntent.id,
     });
-    console.log(paymentIntent, contract, payment);
     return paymentIntent.client_secret;
   },
 });

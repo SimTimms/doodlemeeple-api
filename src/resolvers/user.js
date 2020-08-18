@@ -84,7 +84,6 @@ export async function userMigrate(args) {
     var testimonialIds = testimonials.map(async (testimonial) => {
       for (let i = 0; i < section.testimonials.length; i++) {
         if (section.testimonials[i] === testimonial._id) {
-          console.log(section.testimonials[i], testimonial._id);
           return await Testimonial.create({
             name: testimonial.name,
             summary: testimonial.summary,

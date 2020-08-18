@@ -143,7 +143,6 @@ ContractTC.addResolver({
 
     CONTRACT_SUBMITTED.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
     CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${contract._id}`;
-    console.log(contract._id);
     Notification.create({ ...CONTRACT_SUBMITTED, user: user._id });
 
     return contract;

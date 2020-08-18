@@ -103,7 +103,6 @@ async function makePayment(parent, args, context) {
     currency: currency.toLowerCase() || 'gbp',
     metadata: { integration_check: 'accept_a_payment' },
   });
-  console.log(paymentIntent);
   await context.prisma.createPayment({
     amount: amount * 100,
     currency: currency,

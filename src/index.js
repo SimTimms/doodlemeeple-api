@@ -1,14 +1,17 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-const bodyParser = require('body-parser');
-const { sign_s3 } = require('./aws-upload');
+import bodyParser from 'body-parser';
+import { sign_s3 } from './aws-upload';
 import mongoose from 'mongoose';
 import './utils/db';
 import schema from './schema';
-var cors = require('cors');
+import cors from 'cors';
+import { Payment, Contract, Job } from './models';
 
-const router = express.Router();
+const stripe = require('stripe')(process.env.STRIPE_KEY, {
+  apiVersion: '2020-03-02',
+});
 
 dotenv.config();
 
@@ -24,11 +27,63 @@ const server = new ApolloServer({
   context: ({ req }) => req,
 });
 
-app.use(bodyParser.json());
 app.use(cors());
+
+app.post(
+  '/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  async (request, response) => {
+    const sig = request.headers['stripe-signature'];
+    try {
+      let event;
+      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+      switch (event.type) {
+        case 'payment_intent.succeeded':
+          console.log('PaymentIntent was successful!');
+          break;
+
+        case 'charge.succeeded':
+          console.log('Charge was successful!');
+          await Payment.updateOne(
+            { paymentId: event.data.object.payment_intent },
+            { status: 'charge_succeeded' }
+          );
+
+          const payment = await Payment.findOne({
+            paymentId: event.data.object.payment_intent,
+          });
+
+          const contract = await Contract.findOne({ _id: payment.contract });
+          await Contract.updateOne({ _id: contract._id }, { status: 'paid' });
+          await Job.updateOne({ _id: contract.job._id }, { submitted: 'paid' });
+
+          break;
+
+        case 'payment_intent.created':
+          console.log('PaymentIntent Created!');
+          break;
+
+        default:
+          // Unexpected event type
+          return response.status(400).end();
+      }
+
+      // Return a response to acknowledge receipt of the event
+      response.json({ received: true });
+    } catch (err) {
+      console.log(err.message);
+      response.status(400).send(`Webhook Error: ${err.message}`);
+    }
+  }
+);
+
+//BodyParser must be after Stripe post so Stripe can use raw body.
+app.use(bodyParser.json());
 app.post('/sign_s3', (req, res) => {
   sign_s3(req, res);
 });
+
+const endpointSecret = process.env.STRIPE_SIGNATURE;
 
 server.applyMiddleware({
   app,

@@ -12,6 +12,13 @@ const CONTRACT_SUBMITTED = {
   icon: 'request_quote',
 };
 
+const CONTRACT_PAID = {
+  title: `Your deposit has been paid`,
+  message: '',
+  linkTo: '/app/view-contract/',
+  icon: 'payment',
+};
+
 const CONTRACT_DECLINED = {
   title: `Your quote has been declined`,
   message: 'Your quote has been declined',
@@ -25,11 +32,19 @@ const CONTRACT_ACCEPTED = {
   linkTo: '/app/view-contract/',
   icon: 'thumb_down',
 };
+
 const REGISTRATION = {
   title: `Thanks for joining us`,
-  message: 'Why not get started with an amazing profile',
+  message: 'Start by creating an amazing profile',
   linkTo: '/app/edit-profile/',
   icon: 'contact_mail',
+};
+
+const CREATE_JOB = {
+  title: `Are you looking for Creatives?`,
+  message: 'Create a project & invite creatives to quote for the work',
+  linkTo: '/app/jobs/',
+  icon: 'work',
 };
 
 const DECLINED = {
@@ -62,4 +77,6 @@ module.exports = {
   DECLINED,
   CONTRACT_DECLINED,
   CONTRACT_ACCEPTED,
+  CONTRACT_PAID,
+  CREATE_JOB,
 };

@@ -1,6 +1,6 @@
 import { UserTC, Notification, User } from '../models';
 import { userRegistration } from '../resolvers';
-import { REGISTRATION } from '../utils/notifications';
+import { REGISTRATION, CREATE_JOB } from '../utils/notifications';
 import { getUserId } from '../utils';
 
 const UserQuery = {
@@ -20,7 +20,8 @@ const UserMutation = {
     (next) => async (rp) => {
       const updatedUser = await userRegistration(rp);
       const newUser = await next(updatedUser);
-      Notification.create({ ...REGISTRATION, user: newUser.recordId });
+      await Notification.create({ ...CREATE_JOB, user: newUser.recordId });
+      await Notification.create({ ...REGISTRATION, user: newUser.recordId });
 
       return newUser;
     }

@@ -7,7 +7,8 @@ import mongoose from 'mongoose';
 import './utils/db';
 import schema from './schema';
 import cors from 'cors';
-import { Payment, Contract, Job } from './models';
+import { Payment, Contract, Job, Notification, User } from './models';
+import { CONTRACT_PAID } from './utils/notifications';
 
 const stripe = require('stripe')(process.env.STRIPE_KEY, {
   apiVersion: '2020-03-02',
@@ -56,7 +57,15 @@ app.post(
           const contract = await Contract.findOne({ _id: payment.contract });
           await Contract.updateOne({ _id: contract._id }, { status: 'paid' });
           await Job.updateOne({ _id: contract.job._id }, { submitted: 'paid' });
-
+          const client = await User.findOne({ _id: contract.signedBy });
+          CONTRACT_PAID.message = `${client.name} has deposited ${
+            payment.amount / 100
+          } ${payment.currency} into our holding account`;
+          CONTRACT_PAID.linkTo = `${CONTRACT_PAID.linkTo}${contract._id}`;
+          await Notification.create({
+            ...CONTRACT_PAID,
+            user: contract.user._id,
+          });
           break;
 
         case 'payment_intent.created':

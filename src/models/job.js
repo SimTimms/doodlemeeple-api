@@ -119,7 +119,10 @@ JobTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs = await Job.find({ user: userId, submitted: rp.args.status });
+    const jobs =
+      rp.args.status != ''
+        ? await Job.find({ user: userId, submitted: rp.args.status })
+        : await Job.find({ user: userId });
     console.log(rp.args);
     return jobs;
   },

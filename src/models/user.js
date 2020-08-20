@@ -16,7 +16,7 @@ import {
   InviteTC,
   FavouriteTC,
 } from './';
-import { login, userMigrate } from '../resolvers';
+import { login, userMigrate } from '../resolversNew';
 import { getUserId } from '../utils';
 import aws from 'aws-sdk';
 

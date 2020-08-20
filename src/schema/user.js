@@ -1,5 +1,5 @@
 import { UserTC, Notification, User } from '../models';
-import { userRegistration } from '../resolvers';
+import { userRegistration } from '../resolversNew';
 import { REGISTRATION, CREATE_JOB } from '../utils/notifications';
 import { getUserId } from '../utils';
 

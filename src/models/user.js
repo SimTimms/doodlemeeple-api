@@ -106,7 +106,8 @@ UserTC.addResolver({
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    const user = await User.find();
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.find({ _id: { $ne: userId } });
 
     return user;
   },

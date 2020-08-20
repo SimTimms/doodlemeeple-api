@@ -121,8 +121,10 @@ JobTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const jobs =
       rp.args.status != ''
-        ? await Job.find({ user: userId, submitted: rp.args.status })
-        : await Job.find({ user: userId });
+        ? await Job.find({ user: userId, submitted: rp.args.status }).sort({
+            updatedAt: -1,
+          })
+        : await Job.find({ user: userId }).sort({ updatedAt: -1 });
     console.log(rp.args);
     return jobs;
   },

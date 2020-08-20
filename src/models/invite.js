@@ -46,9 +46,10 @@ InviteTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
-      receiver: userId,
+      $and: [{ receiver: userId }, { sender: { $ne: userId } }],
       status: { $nin: ['declined', 'closed'] },
     });
+
     return invites;
   },
 });

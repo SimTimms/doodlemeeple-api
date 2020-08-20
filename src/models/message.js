@@ -44,8 +44,13 @@ MessageTC.addResolver({
   type: [MessageTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
     const messages = await Message.find({
-      $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }],
+      $and: [
+        { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
+        { $or: [{ receiver: userId }, { sender: userId }] },
+      ],
       job: rp.args.jobId,
     })
       .sort({ createdAt: -1 })
@@ -54,13 +59,16 @@ MessageTC.addResolver({
 
     await Message.updateMany(
       {
-        $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }],
+        $and: [
+          { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
+          { $or: [{ receiver: userId }, { sender: userId }] },
+        ],
         job: rp.args.jobId,
       },
       { status: 'read' }
     );
 
-    return messages;
+    return userId === rp.args.userId ? null : messages;
   },
 });
 

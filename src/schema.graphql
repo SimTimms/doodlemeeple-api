@@ -53,7 +53,6 @@ type Mutation {
   removeNotableProject(id: String!): Boolean
   removeNotification(id: String!): [Notification]
   removeTestimonial(id: String!): Boolean
-  removeProject(id: String!): Boolean
   createMessage(id: String!, message: MessageInput!): String
   updateMessage(id: String!, message: MessageInput!): String
   removeMessage(id: String!): Boolean

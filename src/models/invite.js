@@ -64,7 +64,6 @@ InviteTC.addResolver({
     const invite = await Invite.findOne({ _id: args._id });
     const sender = await User.findOne({ _id: invite.sender._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });
-    //notification
     DECLINED.message = `${sender.name} ${DECLINED.message}`;
     await Notification.create({ ...DECLINED, user: sender._id });
     //email

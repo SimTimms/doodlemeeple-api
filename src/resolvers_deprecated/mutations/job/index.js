@@ -26,11 +26,13 @@ async function submitBrief(parent, args, context, info) {
     },
   });
 
-  INVITED.message = `${jobDeets.name}`;
-  INVITED.linkTo = `${INVITED.linkTo}`;
+  const notificationMessage = { ...INVITED };
+
+  notificationMessage.message = `${jobDeets.name}`;
+  notificationMessage.linkTo = `${notificationMessage.linkTo}`;
 
   const results = emailAddresses.map(async (user) => {
-    await createNotification(INVITED, user.id, context);
+    await createNotification(notificationMessage, user.id, context);
   });
 
   Promise.all(results).then();

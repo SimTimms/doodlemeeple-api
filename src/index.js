@@ -58,12 +58,13 @@ app.post(
           await Contract.updateOne({ _id: contract._id }, { status: 'paid' });
           await Job.updateOne({ _id: contract.job._id }, { submitted: 'paid' });
           const client = await User.findOne({ _id: contract.signedBy });
-          CONTRACT_PAID.message = `${client.name} has deposited ${
+          const notificationMessage = { ...CONTRACT_PAID };
+          notificationMessage.message = `${client.name} has deposited ${
             payment.amount / 100
           } ${payment.currency} into our holding account`;
-          CONTRACT_PAID.linkTo = `${CONTRACT_PAID.linkTo}${contract._id}`;
+          notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
           await Notification.create({
-            ...CONTRACT_PAID,
+            ...notificationMessage,
             user: contract.user._id,
           });
           break;

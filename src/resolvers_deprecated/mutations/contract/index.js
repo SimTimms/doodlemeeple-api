@@ -50,9 +50,10 @@ async function submitContract(parent, args, context, info) {
       user: { id: userId },
     },
   });
-  CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${id}`;
+  const notificationMessage = { ...CONTRACT_SUBMITTED };
+  notificationMessage.linkTo = `${notificationMessage.linkTo}${id}`;
 
-  createNotification(CONTRACT_SUBMITTED, user.id, context);
+  createNotification(notificationMessage, user.id, context);
   const request = emailQuote(user, contract);
   request
     .then((result) => {})

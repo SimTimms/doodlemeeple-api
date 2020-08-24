@@ -31,10 +31,10 @@ InviteSchema.index({ createdAt: 1, updatedAt: 1 });
 export const Invite = mongoose.model('Invite', InviteSchema);
 export const InviteTC = composeWithMongoose(Invite);
 
-InviteTC.addRelation('user', {
+InviteTC.addRelation('sender', {
   resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
-    _id: (parent) => parent.user,
+    _id: (parent) => parent.sender,
   },
   projection: { id: true },
 });

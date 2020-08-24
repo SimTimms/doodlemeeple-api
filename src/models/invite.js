@@ -34,7 +34,7 @@ export const InviteTC = composeWithMongoose(Invite);
 InviteTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    filter: (parent) => ({ id: parent.user }),
   },
   projection: { id: true },
 });

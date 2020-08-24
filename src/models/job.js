@@ -170,9 +170,11 @@ JobTC.addResolver({
     await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
 
     const notifications = invitees.map(async (user) => {
-      INVITED.message = `${jobDeets.name}`;
-      INVITED.linkTo = `${INVITED.linkTo}`;
-      await Notification.create({ ...INVITED, user: user._id });
+      const notificationMessage = { ...INVITED };
+
+      notificationMessage.message = `${jobDeets.name}`;
+      notificationMessage.linkTo = `${notificationMessage.linkTo}`;
+      await Notification.create({ ...notificationMessage, user: user._id });
     });
 
     Promise.all(notifications).then();

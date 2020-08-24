@@ -60,13 +60,13 @@ InviteTC.addResolver({
   kind: 'mutation',
   args: { _id: 'MongoID!' },
   resolve: async ({ source, args, context }) => {
-    const userId = getUserId(context.headers.authorization);
     const invite = await Invite.findOne({ _id: args._id });
     const sender = await User.findOne({ _id: invite.sender._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });
-    //notification
-    DECLINED.message = `${sender.name} ${DECLINED.message}`;
-    await Notification.create({ ...DECLINED, user: sender._id });
+
+    const notificationMessage = { ...DECLINED };
+    notificationMessage.message = `${sender.name} ${notificationMessage.message}`;
+    await Notification.create({ ...notificationMessage, user: sender._id });
     //email
   },
 });

@@ -23,6 +23,7 @@ export const ContractSchema = new Schema(
   {
     notes: { type: String },
     deadline: { type: String },
+    startDate: { type: String },
     cost: { type: String },
     currency: { type: String },
     status: { type: String },
@@ -140,10 +141,10 @@ ContractTC.addResolver({
       { _id: contract.job },
       { $addToSet: { contracts: rp.args._id } }
     );
-
-    CONTRACT_SUBMITTED.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
-    CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${contract._id}`;
-    Notification.create({ ...CONTRACT_SUBMITTED, user: user._id });
+    const notificationMessage = { ...CONTRACT_SUBMITTED };
+    notificationMessage.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    Notification.create({ ...notificationMessage, user: user._id });
 
     return contract;
   },
@@ -182,9 +183,11 @@ ContractTC.addResolver({
         console.log(err);
       });
 
-    CONTRACT_DECLINED.message = `${client.name} rejected your quote`;
-    CONTRACT_DECLINED.linkTo = `${CONTRACT_DECLINED.linkTo}${contract._id}`;
-    Notification.create({ ...CONTRACT_DECLINED, user: creative._id });
+    const notificationMessage = { ...CONTRACT_DECLINED };
+
+    notificationMessage.message = `${client.name} rejected your quote`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;
   },
@@ -234,9 +237,11 @@ ContractTC.addResolver({
         console.log(err);
       });
 
-    CONTRACT_ACCEPTED.message = `${client.name} ACCEPTED your quote`;
-    CONTRACT_ACCEPTED.linkTo = `${CONTRACT_ACCEPTED.linkTo}${contract._id}`;
-    Notification.create({ ...CONTRACT_ACCEPTED, user: creative._id });
+    const notificationMessage = { ...CONTRACT_ACCEPTED };
+
+    notificationMessage.message = `${client.name} ACCEPTED your quote`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;
   },

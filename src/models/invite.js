@@ -32,9 +32,9 @@ export const Invite = mongoose.model('Invite', InviteSchema);
 export const InviteTC = composeWithMongoose(Invite);
 
 InviteTC.addRelation('user', {
-  resolver: () => UserTC.getResolver('findOne'),
+  resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
-    filter: (parent) => ({ id: parent.user }),
+    _id: (parent) => parent.user,
   },
   projection: { id: true },
 });

@@ -23,6 +23,7 @@ export const ContractSchema = new Schema(
   {
     notes: { type: String },
     deadline: { type: String },
+    startDate: { type: String },
     cost: { type: String },
     currency: { type: String },
     status: { type: String },

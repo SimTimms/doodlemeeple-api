@@ -65,9 +65,9 @@ export const Job = mongoose.model('Job', JobSchema);
 export const JobTC = composeWithMongoose(Job);
 
 JobTC.addRelation('user', {
-  resolver: () => UserTC.getResolver('findOne'),
+  resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    _id: (parent) => parent.user,
   },
   projection: { id: true },
 });

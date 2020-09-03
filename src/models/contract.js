@@ -93,7 +93,7 @@ ContractTC.addRelation('paymentTerms', {
   resolver: () => PaymentTermsTC.getResolver('findMany'),
   prepareArgs: {
     filter: (parent) => {
-      contract: parent._id;
+      return { contract: parent._id };
     },
   },
   projection: { id: true },

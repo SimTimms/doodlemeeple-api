@@ -110,7 +110,10 @@ UserTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.find({ _id: { $ne: userId } });
+    const user = await User.find({ _id: { $ne: userId } }).sort({
+      profileBG: -1,
+    });
+    console.log(user);
 
     return user;
   },

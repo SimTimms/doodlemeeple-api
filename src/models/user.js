@@ -112,6 +112,7 @@ UserTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.find({ _id: { $ne: userId } }).sort({
       profileBG: -1,
+      summary: -1,
       profileImg: -1,
     });
 

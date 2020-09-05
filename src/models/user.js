@@ -16,9 +16,12 @@ import {
   InviteTC,
   FavouriteTC,
 } from './';
+const { emailReset, emailForgot } = require('../email');
 import { login, userMigrate } from '../resolversNew';
-import { getUserId } from '../utils';
+import { getUserId, signupChecks } from '../utils';
 import aws from 'aws-sdk';
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 aws.config.update({
   region: 'eu-west-2',
@@ -275,5 +278,95 @@ UserTC.addResolver({
     const user = await User.updateOne({ _id: userId }, { ...rp.args });
 
     return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'passwordForgot',
+  args: {
+    email: 'String',
+  },
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const user = await User.findOne({
+      email: rp.args.email,
+    });
+
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
+
+    await User.updateOne(
+      { _id: user._id },
+      {
+        resetToken: token,
+      }
+    );
+
+    const actionLink = `${process.env.EMAIL_URL}/password-reset/${token}`;
+    const request = emailForgot(user, actionLink);
+
+    request
+      .then((result) => {})
+      .catch((err) => {
+        console.log(err.statusCode);
+      });
+
+    return true;
+  },
+});
+
+UserTC.addResolver({
+  name: 'passwordReset',
+  args: {
+    token: 'String',
+    password: 'String',
+  },
+  type: 'Boolean',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const user = await User.findOne({
+      resetToken: rp.args.token,
+    });
+
+    console.log(user, rp.args.token);
+
+    const validSubmission = signupChecks({
+      password: rp.args.password,
+      name: user.name,
+      email: user.email,
+    });
+
+    if (validSubmission === false) {
+      throw new Error('Submission Failed');
+    }
+
+    const password = await bcrypt.hash(rp.args.password, 10);
+
+    await User.updateOne(
+      {
+        _id: user._id,
+      },
+      {
+        resetToken: null,
+        password: password,
+      }
+    );
+
+    if (user) {
+      const actionLink = `${process.env.EMAIL_URL}`;
+      const request = emailReset(user, actionLink);
+
+      request
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((err) => {
+          console.log(err.statusCode);
+        });
+
+      return true;
+    } else {
+      return false;
+    }
   },
 });

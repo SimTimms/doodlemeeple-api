@@ -35,11 +35,20 @@ exports.sign_s3 = async (req, res) => {
   const fileType = req.body.fileType;
   const fileSize = req.body.fileSize;
 
-  const approvedFileTypes = ['png', 'jpg', 'jpeg'];
+  const approvedFileTypes = [
+    'png',
+    'jpg',
+    'jpeg',
+    'JPG',
+    'JPEG',
+    'PNG',
+    'gif',
+    'GIF',
+  ];
   const approvedFileSize = 1000000;
 
   if (approvedFileTypes.indexOf(fileType.toLowerCase()) === -1) {
-    res.json({ success: false, error: 'PNG or JPG only' });
+    res.json({ success: false, error: 'PNG, GIF or JPG only' });
 
     return;
   }

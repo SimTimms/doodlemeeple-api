@@ -64,8 +64,10 @@ async function submitContract(parent, args, context, info) {
       }
     }
   });
-  CONTRACT_SUBMITTED.linkTo = `${CONTRACT_SUBMITTED.linkTo}${id}`;
-  createNotification(CONTRACT_SUBMITTED, user.id, context);
+  const notificationMessage = { ...CONTRACT_SUBMITTED
+  };
+  notificationMessage.linkTo = `${notificationMessage.linkTo}${id}`;
+  createNotification(notificationMessage, user.id, context);
   const request = emailQuote(user, contract);
   request.then(result => {}).catch(err => {
     console.log(err.statusCode);

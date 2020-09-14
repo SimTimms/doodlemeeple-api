@@ -3,22 +3,19 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _mongoose = require("mongoose");
+var _mongoose = _interopRequireDefault(require("mongoose"));
 
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _dotenv = require("dotenv");
-
-var _dotenv2 = _interopRequireDefault(_dotenv);
+var _dotenv = _interopRequireDefault(require("dotenv"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_dotenv2.default.config();
+_dotenv.default.config();
 
-_mongoose2.default.Promise = global.Promise;
+_mongoose.default.Promise = global.Promise;
 
-const connection = _mongoose2.default.connect(process.env.MONGODB_URI, {
+const connection = _mongoose.default.connect(process.env.MONGODB_URI, {
   autoIndex: true,
   reconnectTries: Number.MAX_VALUE,
   reconnectInterval: 500,
@@ -28,9 +25,10 @@ const connection = _mongoose2.default.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true
 });
 
-_mongoose2.default.set('useCreateIndex', true);
+_mongoose.default.set('useCreateIndex', true);
 
 connection.then(db => db).catch(err => {
   console.log(err);
 });
-exports.default = connection;
+var _default = connection;
+exports.default = _default;

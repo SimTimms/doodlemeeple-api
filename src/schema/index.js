@@ -13,7 +13,7 @@ import { GameQuery, GameMutation } from './game';
 import { JobQuery, JobMutation } from './job';
 import { InviteQuery, InviteMutation } from './invite';
 import { FavouriteQuery, FavouriteMutation } from './favourite';
-import { MessageQuery, MessageMutation } from './message';
+import { MessageQuery, MessageMutation, MessageSubscription } from './message';
 import { ContractQuery, ContractMutation } from './contract';
 import { PaymentQuery, PaymentMutation } from './payment';
 import { PaymentTermsQuery, PaymentTermsMutation } from './paymentTerms';
@@ -54,6 +54,10 @@ schemaComposer.Mutation.addFields({
   ...ContractMutation,
   ...PaymentMutation,
   ...PaymentTermsMutation,
+});
+
+schemaComposer.Subscription.addFields({
+  ...MessageSubscription,
 });
 
 export default schemaComposer.buildSchema();

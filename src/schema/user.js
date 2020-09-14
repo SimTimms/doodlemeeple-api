@@ -50,6 +50,8 @@ const UserMutation = {
   userLogin: UserTC.getResolver('login'),
   userMigrate: UserTC.getResolver('userMigrate'),
   updateProfile: UserTC.getResolver('updateProfile'),
+  passwordForgot: UserTC.getResolver('passwordForgot'),
+  passwordReset: UserTC.getResolver('passwordReset'),
 };
 
 export { UserQuery, UserMutation };

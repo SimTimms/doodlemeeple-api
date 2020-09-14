@@ -3,57 +3,26 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createNotification = createNotification;
 exports.getUserId = getUserId;
 exports.getUserIdWithoutContext = getUserIdWithoutContext;
 exports.signupChecks = signupChecks;
 exports.profileCheck = profileCheck;
 
-var _jsonwebtoken = require("jsonwebtoken");
+var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
-var _jsonwebtoken2 = _interopRequireDefault(_jsonwebtoken);
+var _passwordValidator = _interopRequireDefault(require("password-validator"));
 
-var _passwordValidator = require("password-validator");
-
-var _passwordValidator2 = _interopRequireDefault(_passwordValidator);
-
-var _emailValidator = require("email-validator");
-
-var _emailValidator2 = _interopRequireDefault(_emailValidator);
-
-var _models = require("./models");
+var _emailValidator = _interopRequireDefault(require("email-validator"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const APP_SECRET = 'GraphQL-is-aw3some';
-
-async function createNotification(message, userId) {
-  /*
-  const exists = await context.prisma.$exists.notification({
-    user: { id: userId },
-    title: message.title,
-  });
-   !exists &&
-    (await context.prisma.createNotification({
-      user: { connect: { id: userId } },
-      title: message.title,
-      message: message.message,
-      linkTo: message.linkTo,
-      icon: message.icon,
-    }));
-  */
-  return true;
-}
-
-function getUserId(context) {
-  const Authorization = context.request.get('Authorization');
-
-  if (Authorization) {
-    const token = Authorization.replace('Bearer ', ''); // @ts-ignore
+function getUserId(auth) {
+  if (auth) {
+    const token = auth.replace('Bearer ', '');
 
     const {
       userId
-    } = _jsonwebtoken2.default.verify(token, APP_SECRET);
+    } = _jsonwebtoken.default.verify(token, process.env.APP_SECRET);
 
     return userId;
   }
@@ -69,7 +38,7 @@ function getUserIdWithoutContext(headers) {
 
     const {
       userId
-    } = _jsonwebtoken2.default.verify(token, APP_SECRET);
+    } = _jsonwebtoken.default.verify(token, process.env.APP_SECRET);
 
     return userId;
   }
@@ -78,7 +47,7 @@ function getUserIdWithoutContext(headers) {
 }
 
 function signupChecks(input) {
-  let passwordSchema = new _passwordValidator2.default();
+  let passwordSchema = new _passwordValidator.default();
   passwordSchema.is().min(6) // Minimum length 8
   .is().max(22) // Maximum length 100
   .has().uppercase() // Must have uppercase letters
@@ -95,7 +64,7 @@ function signupChecks(input) {
     return false;
   }
 
-  if (_emailValidator2.default.validate(input.name.email)) {
+  if (_emailValidator.default.validate(input.name.email)) {
     return false;
   }
 

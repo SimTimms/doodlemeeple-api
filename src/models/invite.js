@@ -31,10 +31,10 @@ InviteSchema.index({ createdAt: 1, updatedAt: 1 });
 export const Invite = mongoose.model('Invite', InviteSchema);
 export const InviteTC = composeWithMongoose(Invite);
 
-InviteTC.addRelation('user', {
-  resolver: () => UserTC.getResolver('findOne'),
+InviteTC.addRelation('sender', {
+  resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    _id: (parent) => parent.sender,
   },
   projection: { id: true },
 });
@@ -46,7 +46,7 @@ InviteTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
-      $and: [{ receiver: userId }, { sender: { $ne: userId } }],
+      $and: [{ receiver: userId }, { sender: { $ne: userId, $ne: null } }],
       status: { $nin: ['declined', 'closed'] },
     });
 

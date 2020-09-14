@@ -3,15 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SectionTC = exports.Section = exports.SectionSchema = undefined;
+exports.SectionTC = exports.Section = exports.SectionSchema = void 0;
 
-var _mongoose = require("mongoose");
+var _mongoose = _interopRequireWildcard(require("mongoose"));
 
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _mongooseTimestamp = require("mongoose-timestamp");
-
-var _mongooseTimestamp2 = _interopRequireDefault(_mongooseTimestamp);
+var _mongooseTimestamp = _interopRequireDefault(require("mongoose-timestamp"));
 
 var _graphqlComposeMongoose = require("graphql-compose-mongoose");
 
@@ -19,11 +15,11 @@ var _ = require("./");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const SectionSchema = exports.SectionSchema = new _mongoose.Schema({
-  title: {
-    type: String,
-    required: true
-  },
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+const SectionSchema = new _mongoose.Schema({
   summary: {
     type: String
   },
@@ -36,24 +32,77 @@ const SectionSchema = exports.SectionSchema = new _mongoose.Schema({
   user: {
     type: _mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  gallery: {
+    type: _mongoose.Schema.Types.ObjectId,
+    ref: 'Gallery'
+  },
+  notableProjects: [{
+    type: _mongoose.Schema.Types.ObjectId,
+    ref: 'NotableProject'
+  }],
+  testimonials: [{
+    type: _mongoose.Schema.Types.ObjectId,
+    ref: 'Testimonial'
+  }]
 }, {
   collection: 'sections'
 });
-SectionSchema.plugin(_mongooseTimestamp2.default);
+exports.SectionSchema = SectionSchema;
+SectionSchema.plugin(_mongooseTimestamp.default);
 SectionSchema.index({
   createdAt: 1,
   updatedAt: 1
 });
 
-const Section = exports.Section = _mongoose2.default.model('Section', SectionSchema);
+const Section = _mongoose.default.model('Section', SectionSchema);
 
-const SectionTC = exports.SectionTC = (0, _graphqlComposeMongoose.composeWithMongoose)(Section);
+exports.Section = Section;
+const SectionTC = (0, _graphqlComposeMongoose.composeWithMongoose)(Section);
+exports.SectionTC = SectionTC;
 SectionTC.addRelation('user', {
   resolver: () => _.UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: source => ({
       id: source._id
+    })
+  },
+  projection: {
+    id: true
+  }
+});
+SectionTC.addRelation('gallery', {
+  resolver: () => _.GalleryTC.getResolver('findOne'),
+  prepareArgs: {
+    filter: ({
+      gallery
+    }) => {
+      return {
+        _id: gallery
+      };
+    }
+  },
+  projection: {
+    gallery: true,
+    _id: true
+  }
+});
+SectionTC.addRelation('notableProjects', {
+  resolver: () => _.NotableProjectTC.getResolver('findMany'),
+  prepareArgs: {
+    filter: source => ({
+      section: source._id
+    })
+  },
+  projection: {
+    id: true
+  }
+});
+SectionTC.addRelation('testimonials', {
+  resolver: () => _.TestimonialTC.getResolver('findMany'),
+  prepareArgs: {
+    filter: source => ({
+      section: source._id
     })
   },
   projection: {

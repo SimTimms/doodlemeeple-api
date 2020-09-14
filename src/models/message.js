@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC } from './';
+import { UserTC, JobTC, Invite } from './';
 import timestamps from 'mongoose-timestamp';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
@@ -104,10 +104,18 @@ MessageTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
+    const invites = await Invite.find({
+      $or: [{ receiver: ObjectId(userId) }, { sender: ObjectId(userId) }],
+      status: { $ne: 'declined' },
+    });
+
+    const jobArr = invites.map((invite) => invite.job);
+
     const messages = await Message.aggregate([
       {
         $match: {
           $or: [{ receiver: ObjectId(userId) }, { sender: ObjectId(userId) }],
+          job: { $in: jobArr },
         },
       },
       {
@@ -118,8 +126,8 @@ MessageTC.addResolver({
           job: { $first: '$job' },
         },
       },
-    ]);
-
+    ]).sort({ updatedAt: -1 });
+    console.log(messages, jobArr);
     const counts = await Message.aggregate([
       {
         $match: {
@@ -137,6 +145,7 @@ MessageTC.addResolver({
         },
       },
     ]);
+
     //TODO: Get a clever person to circumvent this loop with some clever aggregate shit
 
     const messageIndex = messages.map((count) => count.job.toString());

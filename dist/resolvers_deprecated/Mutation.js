@@ -139,7 +139,6 @@ async function makePayment(parent, args, context) {
       integration_check: 'accept_a_payment'
     }
   });
-  console.log(paymentIntent);
   await context.prisma.createPayment({
     amount: amount * 100,
     currency: currency,
@@ -395,7 +394,7 @@ function createNotification(parent, args, context) {
   });
 }
 
-async function login(parent, args, context, info) {
+async function login_dep(parent, args, context, info) {
   // 1
   const user = await context.prisma.user({
     email: args.email
@@ -465,6 +464,6 @@ module.exports = {
   removeNotableProject,
   removeTestimonial,
   deleteAccount,
-  login,
+  login_dep,
   makePayment
 };

@@ -106,7 +106,7 @@ UserTC.addResolver({
 
 UserTC.addResolver({
   name: 'getCreatives',
-  args: { type: 'String' },
+  args: { type: ['String'] },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
@@ -114,7 +114,7 @@ UserTC.addResolver({
 
     const sections = await Section.aggregate([
       {
-        $match: { type: rp.args.type },
+        $match: { type: { $in: rp.args.type } },
       },
       { $group: { _id: '$user' } },
       { $limit: 1000 },

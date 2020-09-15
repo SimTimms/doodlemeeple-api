@@ -124,7 +124,9 @@ JobTC.addResolver({
         ? await Job.find({ user: userId, submitted: rp.args.status }).sort({
             updatedAt: -1,
           })
-        : await Job.find({ user: userId }).sort({ updatedAt: -1 });
+        : await Job.find({ user: userId, submitted: { $ne: 'closed' } }).sort({
+            updatedAt: -1,
+          });
     console.log(rp.args);
     return jobs;
   },

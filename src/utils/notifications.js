@@ -30,7 +30,7 @@ const CONTRACT_ACCEPTED = {
   title: `Your quote has been accepted`,
   message: 'Your quote has been accepted',
   linkTo: '/app/view-contract/',
-  icon: 'thumb_down',
+  icon: 'thumb_up',
 };
 
 const REGISTRATION = {

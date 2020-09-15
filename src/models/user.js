@@ -16,6 +16,7 @@ import {
   InviteTC,
   FavouriteTC,
 } from './';
+const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
 import { login, userMigrate } from '../resolversNew';
 import { getUserId, signupChecks } from '../utils';
@@ -105,18 +106,30 @@ UserTC.addResolver({
 
 UserTC.addResolver({
   name: 'getCreatives',
-  args: {},
+  args: { type: 'String' },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.find({ _id: { $ne: userId } }).sort({
-      profileBG: -1,
-      summary: -1,
-      profileImg: -1,
-    });
 
-    return user;
+    const sections = await Section.aggregate([
+      {
+        $match: { type: rp.args.type },
+      },
+      { $group: { _id: '$user' } },
+      { $limit: 1000 },
+    ]);
+    const sectionUserIds = sections.map((section) => ObjectId(section._id));
+    const users = await User.find({
+      $and: [{ _id: { $ne: userId } }, { _id: { $in: sectionUserIds } }],
+    })
+      .sort({
+        profileBG: -1,
+        summary: -1,
+        profileImg: -1,
+      })
+      .limit(25);
+    return users;
   },
 });
 

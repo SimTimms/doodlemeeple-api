@@ -18,6 +18,7 @@ import {
   CONTRACT_DECLINED,
   CONTRACT_ACCEPTED,
 } from '../utils/notifications';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const ContractSchema = new Schema(
   {
@@ -119,14 +120,19 @@ ContractTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobId = rp.args.jobId;
-    const contract = await Contract.findOne({ _id: rp.args._id, user: userId });
+    const contractId = rp.args._id;
+    const contract = await Contract.findOne({ _id: contractId, user: userId });
     await Contract.updateOne(
       { _id: rp.args._id, user: userId },
       { status: 'submitted' }
     );
-    const job = await Job.findOne({ job: jobId }, { user: 1 });
-    const user = await User.findOne({ _id: job.user }, { email: 1, name: 1 });
+    const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+    console.log(job, contractId, userId);
+    const user = await User.findOne(
+      { _id: ObjectId(job.user) },
+      { email: 1, name: 1 }
+    );
+
     const sender = await User.findOne({ _id: userId }, { email: 1, name: 1 });
     const request = emailQuote(user, contract, sender);
     request
@@ -215,7 +221,6 @@ ContractTC.addResolver({
       { _id: rp.args._id, user: creative._id },
       { status: 'accepted', signedBy: client._id, signedDate: new Date() }
     );
-    console.log(invite);
     await Job.updateOne(
       { _id: contract.job },
       {

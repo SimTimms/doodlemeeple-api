@@ -63,13 +63,13 @@ PaymentTC.addResolver({
 
     const contract = await Contract.findOne({ _id: contractId });
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: contract.cost * 100,
+      amount: contract.cost * 110,
       currency: contract.currency.toLowerCase() || 'gbp',
       metadata: { integration_check: 'accept_a_payment' },
     });
 
     const payment = await Payment.create({
-      amount: contract.cost * 100,
+      amount: contract.cost * 110,
       currency: contract.currency,
       status: 'Incomplete',
       paidBy: userId,

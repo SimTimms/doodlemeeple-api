@@ -126,7 +126,7 @@ UserTC.addResolver({
         summary: -1,
         profileImg: -1,
       })
-      .limit(25);
+      .limit(75);
     return users;
   },
 });

@@ -21,7 +21,7 @@ async function emailInvite(user, jobDeets) {
         Subject: `You've got an invite`,
         TextPart: `You have been asked to provide a quote for "${jobDeets.name}"`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],

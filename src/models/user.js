@@ -110,8 +110,6 @@ UserTC.addResolver({
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-
     const sections = await Section.aggregate([
       {
         $match: { type: { $in: rp.args.type } },
@@ -121,7 +119,7 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
     const users = await User.find({
-      $and: [{ _id: { $ne: userId } }, { _id: { $in: sectionUserIds } }],
+      $and: [{ _id: { $in: sectionUserIds } }],
     })
       .sort({
         profileBG: -1,

@@ -43,6 +43,8 @@ export const UserSchema = new Schema(
       unique: true,
       required: true,
     },
+    creatorTrue: { type: Boolean, default: false },
+    creativeTrue: { type: Boolean, default: false },
     password: { type: String, required: true },
     keywords: [{ type: String }],
     profileImg: { type: String },

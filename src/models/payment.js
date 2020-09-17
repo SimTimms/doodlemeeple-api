@@ -68,7 +68,7 @@ PaymentTC.addResolver({
       metadata: { integration_check: 'accept_a_payment' },
     });
 
-    const payment = await Payment.create({
+    await Payment.create({
       amount: contract.cost * 110,
       currency: contract.currency,
       status: 'Incomplete',

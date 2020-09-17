@@ -35,13 +35,16 @@ export const JobSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-
     contracts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Contract',
       },
     ],
+    activeContract: {
+      type: Schema.Types.ObjectId,
+      ref: 'Contract',
+    },
 
     user: {
       type: Schema.Types.ObjectId,
@@ -108,6 +111,14 @@ JobTC.addRelation('contracts', {
   },
   prepareArgs: {
     filter: (parent) => ({ _id: { $in: parent.contracts } }),
+  },
+  projection: { id: true },
+});
+
+JobTC.addRelation('activeContract', {
+  resolver: () => ContractTC.getResolver('findById'),
+  prepareArgs: {
+    _id: (parent) => parent.activeContract,
   },
   projection: { id: true },
 });

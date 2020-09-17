@@ -50,6 +50,7 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
+    onboarding: { type: String },
     favourites: [
       {
         type: Schema.Types.ObjectId,
@@ -101,6 +102,22 @@ UserTC.addResolver({
     const user = await User.findOne({ _id: userId });
 
     return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'skipOnboarding',
+  args: {},
+  type: 'Boolean',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.updateOne(
+      { _id: userId },
+      { onboarding: 'complete' }
+    );
+
+    return true;
   },
 });
 

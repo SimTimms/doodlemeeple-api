@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, ContractTC } from './';
+import { ContractTC } from './';
 import timestamps from 'mongoose-timestamp';
 
 const ObjectId = mongoose.Types.ObjectId;

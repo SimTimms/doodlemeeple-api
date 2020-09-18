@@ -25,6 +25,8 @@ export const JobSchema = new Schema(
     showreel: { type: String },
     creativeSummary: { type: String },
     submitted: { type: String },
+    format: [{ type: String }],
+    imageRes: { type: String },
     invites: [
       {
         type: Schema.Types.ObjectId,

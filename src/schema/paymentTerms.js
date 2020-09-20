@@ -7,6 +7,7 @@ const PaymentTermsQuery = {
   paymentTermsMany: PaymentTermsTC.getResolver('findMany'),
   paymentTermsCount: PaymentTermsTC.getResolver('count'),
   paymentTermsConnection: PaymentTermsTC.getResolver('connection'),
+  getPaymentTerms: PaymentTermsTC.getResolver('getPaymentTerms'),
   paymentTermsPagination: PaymentTermsTC.getResolver('pagination'),
 };
 
@@ -19,6 +20,8 @@ const PaymentTermsMutation = {
   paymentTermsRemoveById: PaymentTermsTC.getResolver('removeById'),
   paymentTermsRemoveOne: PaymentTermsTC.getResolver('removeOne'),
   paymentTermsRemoveMany: PaymentTermsTC.getResolver('removeMany'),
+  requestWithdraw: PaymentTermsTC.getResolver('requestWithdraw'),
+  approveWithdraw: PaymentTermsTC.getResolver('approveWithdraw'),
 };
 
 export { PaymentTermsQuery, PaymentTermsMutation };

@@ -4,6 +4,32 @@ const mailjet = require('node-mailjet').connect(
 );
 const { emailAddress } = require('../utils/emailAddress');
 
+async function withdrawPayment(paymentDetails) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: 'jamie@doodlemeeple.com',
+            Name: 'Jamie',
+          },
+        ],
+        Subject: `PAYMENT REQUEST`,
+        TextPart: `You have been asked to send a payment for "${paymentDetails.name}"`,
+        HTMLPart: `<p>Hi Tim and/or Jamie,</p>
+        <p>This payment has been approved for release by both the Creative and Client: ${paymentDetails.amount}  ${paymentDetails.currency} </p>
+        <p>Pay To: ${paymentDetails.email}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
 async function emailInvite(user, jobDeets) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -209,4 +235,5 @@ module.exports = {
   emailQuote,
   emailDeclineQuote,
   emailAcceptQuote,
+  withdrawPayment,
 };

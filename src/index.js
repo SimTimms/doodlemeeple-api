@@ -45,7 +45,7 @@ app.post(
 
         case 'charge.succeeded':
           console.log('Charge was successful!');
-          await Payment.updateOne(
+          await Payment.updateMany(
             { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }
           );

@@ -7,13 +7,13 @@ const stripe = require('stripe')(process.env.STRIPE_KEY, {
   apiVersion: '2020-03-02',
 });
 
-const ObjectId = mongoose.Types.ObjectId;
 export const PaymentSchema = new Schema(
   {
     amount: { type: String },
     currency: { type: String },
     status: { type: String },
     paymentId: { type: String },
+    account: { type: String },
     paidBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -69,9 +69,59 @@ PaymentTC.addResolver({
     });
 
     await Payment.create({
-      amount: contract.cost * 110,
+      amount: contract.cost,
       currency: contract.currency,
       status: 'Incomplete',
+      account: 'holding',
+      paidBy: userId,
+      contract: contractId,
+      paymentId: paymentIntent.id,
+    });
+    await Payment.create({
+      amount: contract.cost * 0.1,
+      currency: contract.currency,
+      status: 'Incomplete',
+      account: 'commission',
+      paidBy: userId,
+      contract: contractId,
+      paymentId: paymentIntent.id,
+    });
+    return paymentIntent.client_secret;
+  },
+});
+
+PaymentTC.addResolver({
+  name: 'requestWithdraw',
+  type: 'String',
+  args: {
+    paymentId: 'String!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const { contractId } = rp.args;
+
+    const contract = await Contract.findOne({ _id: contractId });
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: contract.cost * 110,
+      currency: contract.currency.toLowerCase() || 'gbp',
+      metadata: { integration_check: 'accept_a_payment' },
+    });
+
+    await Payment.create({
+      amount: contract.cost,
+      currency: contract.currency,
+      status: 'Incomplete',
+      account: 'holding',
+      paidBy: userId,
+      contract: contractId,
+      paymentId: paymentIntent.id,
+    });
+    await Payment.create({
+      amount: contract.cost * 0.1,
+      currency: contract.currency,
+      status: 'Incomplete',
+      account: 'commission',
       paidBy: userId,
       contract: contractId,
       paymentId: paymentIntent.id,

@@ -14,7 +14,7 @@ async function withdrawPayment(paymentDetails) {
         },
         To: [
           {
-            Email: 'jamie@doodlemeeple.com',
+            Email: 'tim@doodlemeeple.com',
             Name: 'Jamie',
           },
         ],

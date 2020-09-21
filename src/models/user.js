@@ -52,7 +52,9 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
+    stripeId: { type: String },
     onboarding: { type: String },
+    stripeID: { type: String },
     favourites: [
       {
         type: Schema.Types.ObjectId,

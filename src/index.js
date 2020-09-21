@@ -87,6 +87,31 @@ app.post(
   }
 );
 
+async function generateAccountLink(accountID, origin) {
+  return stripe.accountLinks
+    .create({
+      type: 'account_onboarding',
+      account: accountID,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${origin}/success.html`,
+    })
+    .then((link) => link.url);
+}
+
+app.post('/stripe-onboarding', async (req, res) => {
+  try {
+    const account = await stripe.accounts.create({ type: 'standard' });
+
+    const origin = `${req.headers.origin}`;
+    const accountLinkURL = await generateAccountLink(account.id, origin);
+    res.send({ url: accountLinkURL });
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
+
 //BodyParser must be after Stripe post so Stripe can use raw body.
 app.use(bodyParser.json());
 app.post('/sign_s3', (req, res) => {

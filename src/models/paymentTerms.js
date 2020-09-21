@@ -120,7 +120,6 @@ PaymentTermsTC.addResolver({
     const creative = await User.findOne({
       _id: contract.user,
     });
-    console.log(creative);
     await Notification.create({
       ...WITHDRAW_APPROVED,
       user: contract.user._id,

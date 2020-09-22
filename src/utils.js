@@ -13,9 +13,7 @@ export function getUserId(auth) {
   throw new Error('Not authenticated');
 }
 
-export function getUserIdWithoutContext(headers) {
-  const Authorization = headers.Authorization;
-
+export function getUserIdWithoutContext(Authorization) {
   if (Authorization) {
     const token = Authorization.replace('Bearer ', '');
 

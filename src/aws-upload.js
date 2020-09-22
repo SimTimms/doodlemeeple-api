@@ -8,7 +8,7 @@ exports.sign_s3 = async (req, res) => {
     return res.send('No File Submitted');
   }
 
-  const userId = getUserIdWithoutContext(req.body.headers);
+  const userId = getUserIdWithoutContext(req.body.headers.Authorization);
 
   if (
     !process.env.BUCKET ||

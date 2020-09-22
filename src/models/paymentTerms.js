@@ -14,6 +14,7 @@ export const PaymentTermsSchema = new Schema(
     withdrawRequest: { type: Boolean },
     withdrawApproved: { type: Boolean },
     withdrawPaid: { type: String },
+    paid: { type: String },
     contract: {
       type: Schema.Types.ObjectId,
       ref: 'Contract',
@@ -100,7 +101,13 @@ PaymentTermsTC.addResolver({
 
     const paymentTerm = await PaymentTerms.findOne({
       _id: rp.args._id,
+      paid: { $ne: 'success' },
     });
+
+    if (!paymentTerm) {
+      throw new Error('Already paid or does not exist');
+      return false;
+    }
 
     await PaymentTerms.updateOne(
       {
@@ -120,25 +127,53 @@ PaymentTermsTC.addResolver({
     const creative = await User.findOne({
       _id: contract.user,
     });
-    await Notification.create({
-      ...WITHDRAW_APPROVED,
-      user: contract.user._id,
-      linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
+
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
     });
 
-    const request = withdrawPayment({
-      name: creative.name,
-      email: creative.email,
-      amount: paymentTerm.percent,
-      currency: contract.currency,
+    await stripe.balance.retrieve(async function (err, balance) {
+      err && console.log(err);
+      const balanceAmount = balance.available[0].amount;
+
+      if (balanceAmount > 0) {
+        const transfer = await stripe.transfers.create({
+          amount: paymentTerm.percent * 100,
+          currency: contract.currency.toLowerCase(),
+          destination: creative.stripeID,
+          transfer_group: 'ORDER_95',
+        });
+        console.log(transfer);
+        await Notification.create({
+          ...WITHDRAW_APPROVED,
+          user: contract.user._id,
+          linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
+        });
+
+        const request = withdrawPayment({
+          name: creative.name,
+          email: creative.email,
+          amount: paymentTerm.percent,
+          currency: contract.currency,
+        });
+
+        request
+          .then(async (result) => {
+            const success = result.response.body.Messages[0].Status;
+            success &&
+              (await PaymentTerms.updateOne(
+                {
+                  _id: rp.args._id,
+                },
+                { paid: success }
+              ));
+          })
+          .catch((err) => {
+            console.log(err.statusCode);
+          });
+        return true;
+      }
+      return false;
     });
-
-    request
-      .then((result) => {})
-      .catch((err) => {
-        console.log(err.statusCode);
-      });
-
-    return true;
   },
 });

@@ -113,7 +113,7 @@ PaymentTermsTC.addResolver({
       {
         _id: rp.args._id,
       },
-      { approveWithdraw: true }
+      { approveWithdraw: true, status: 'success' }
     );
 
     const contract = await Contract.findOne({
@@ -168,8 +168,13 @@ PaymentTermsTC.addResolver({
                 { paid: success }
               ));
           })
-          .catch((err) => {
-            console.log(err.statusCode);
+          .catch(async (err) => {
+            await PaymentTerms.updateOne(
+              {
+                _id: rp.args._id,
+              },
+              { paid: 'failed' }
+            );
           });
         return true;
       }

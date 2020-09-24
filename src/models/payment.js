@@ -99,7 +99,6 @@ PaymentTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const payment = await Contract.findOne({ _id: contractId });
     const paymentIntent = await stripe.paymentIntents.create({
       amount: contract.cost * 110,
       currency: contract.currency.toLowerCase() || 'gbp',
@@ -115,6 +114,7 @@ PaymentTC.addResolver({
       contract: contractId,
       paymentId: paymentIntent.id,
     });
+
     await Payment.create({
       amount: contract.cost * 0.1,
       currency: contract.currency,

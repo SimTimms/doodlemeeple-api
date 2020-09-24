@@ -32,11 +32,19 @@ const WITHDRAW_REQUEST = {
   linkTo: '/app/view-job/',
   icon: 'payment',
 };
+
 const WITHDRAW_APPROVED = {
   title: `Withdraw Approve`,
   message: 'Your request has been approved',
   linkTo: '/app/view-job/',
   icon: 'payment',
+};
+
+const WITHDRAW_FAILED = {
+  title: `Withdraw FAILED`,
+  message: 'Your attempted withdrawal failed, CLICK HERE to resolve',
+  linkTo: '/app/failed-payment/',
+  icon: 'warning',
 };
 
 const CONTRACT_ACCEPTED = {
@@ -94,4 +102,5 @@ module.exports = {
   CREATE_JOB,
   WITHDRAW_REQUEST,
   WITHDRAW_APPROVED,
+  WITHDRAW_FAILED,
 };

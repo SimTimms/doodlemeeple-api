@@ -216,33 +216,30 @@ ContractTC.addResolver({
       { _id: contract.user },
       { email: 1, name: 1, _id: 1 }
     );
-    console.log(contract);
-    {
-      /*
+
     const invite = await Invite.findOne({
       receiver: creative._id,
       job: contract.job,
     });
+    console.log(contract._id);
+
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },
       { status: 'accepted', signedBy: client._id, signedDate: new Date() }
     );
 
-   
-    
-     
     await Job.updateOne(
       { _id: contract.job },
       {
         $pull: {
-          invites: { $ne: invite._id },
-          contracts: { $ne: contract._id },
+          invites: { $ne: ObjectId(invite._id) },
+          contracts: { $ne: ObjectId(contract._id) },
         },
         submitted: 'accepted',
         assignedCreative: creative._id,
       }
     );
-  
+
     const request = emailAcceptQuote(creative, contract, client);
     request
       .then((result) => {
@@ -257,8 +254,7 @@ ContractTC.addResolver({
     notificationMessage.message = `${client.name} ACCEPTED your quote`;
     notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
     Notification.create({ ...notificationMessage, user: creative._id });
-  */
-    }
+
     return contract;
   },
 });

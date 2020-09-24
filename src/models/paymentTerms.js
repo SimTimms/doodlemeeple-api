@@ -3,8 +3,12 @@ import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { ContractTC, Notification, Contract, Job, User } from './';
 import timestamps from 'mongoose-timestamp';
 import { getUserId } from '../utils';
-import { WITHDRAW_REQUEST, WITHDRAW_APPROVED } from '../utils/notifications';
-const { withdrawPayment } = require('../email');
+import {
+  WITHDRAW_REQUEST,
+  WITHDRAW_APPROVED,
+  WITHDRAW_FAILED,
+} from '../utils/notifications';
+import { withdrawPaymentEmail, withdrawFailedEmail } from '../email';
 
 const ObjectId = mongoose.Types.ObjectId;
 export const PaymentTermsSchema = new Schema(
@@ -15,6 +19,7 @@ export const PaymentTermsSchema = new Schema(
     withdrawApproved: { type: Boolean },
     withdrawPaid: { type: String },
     paid: { type: String },
+    status: { type: String },
     contract: {
       type: Schema.Types.ObjectId,
       ref: 'Contract',
@@ -94,11 +99,9 @@ PaymentTermsTC.addResolver({
 PaymentTermsTC.addResolver({
   name: 'approveWithdraw',
   args: { _id: 'MongoID!' },
-  type: 'Boolean',
+  type: 'String',
   kind: 'mutation',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-
     const paymentTerm = await PaymentTerms.findOne({
       _id: rp.args._id,
       paid: { $ne: 'success' },
@@ -106,7 +109,6 @@ PaymentTermsTC.addResolver({
 
     if (!paymentTerm) {
       throw new Error('Already paid or does not exist');
-      return false;
     }
 
     await PaymentTerms.updateOne(
@@ -120,12 +122,16 @@ PaymentTermsTC.addResolver({
       _id: paymentTerm.contract,
     });
 
-    const job = await Job.findOne({
-      _id: contract.job,
-    });
-
     const creative = await User.findOne({
       _id: contract.user,
+    });
+
+    if (!creative.stripeID) {
+      return 'STRIPE SETUP';
+    }
+
+    const job = await Job.findOne({
+      _id: contract.job,
     });
 
     const stripe = require('stripe')(process.env.STRIPE_KEY, {
@@ -133,52 +139,73 @@ PaymentTermsTC.addResolver({
     });
 
     await stripe.balance.retrieve(async function (err, balance) {
-      err && console.log(err);
       const balanceAmount = balance.available[0].amount;
 
       if (balanceAmount > 0) {
-        const transfer = await stripe.transfers.create({
-          amount: paymentTerm.percent * 100,
-          currency: contract.currency.toLowerCase(),
-          destination: creative.stripeID,
-          transfer_group: 'ORDER_95',
-        });
-        console.log(transfer);
-        await Notification.create({
-          ...WITHDRAW_APPROVED,
-          user: contract.user._id,
-          linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
-        });
+        try {
+          const transfer = await stripe.transfers.create({
+            amount: paymentTerm.percent * 100,
+            currency: contract.currency.toLowerCase(),
+            destination: creative.stripeID,
+          });
 
-        const request = withdrawPayment({
-          name: creative.name,
-          email: creative.email,
-          amount: paymentTerm.percent,
-          currency: contract.currency,
-        });
-
-        request
-          .then(async (result) => {
-            const success = result.response.body.Messages[0].Status;
-            success &&
-              (await PaymentTerms.updateOne(
-                {
-                  _id: rp.args._id,
-                },
-                { paid: success }
-              ));
-          })
-          .catch(async (err) => {
-            await PaymentTerms.updateOne(
+          const success = transfer.response.body.Messages[0].Status;
+          success &&
+            (await PaymentTerms.updateOne(
               {
                 _id: rp.args._id,
               },
-              { paid: 'failed' }
-            );
+              { paid: success }
+            ));
+
+          await Notification.create({
+            ...WITHDRAW_APPROVED,
+            user: contract.user._id,
+            linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
           });
-        return true;
+
+          await withdrawPaymentEmail({
+            name: creative.name,
+            email: creative.email,
+            amount: paymentTerm.percent,
+            currency: contract.currency,
+          });
+        } catch (err) {
+          withdrawFailed(contract, creative, paymentTerm, job);
+          await withdrawFailedEmail({
+            name: creative.name,
+            email: creative.email,
+            amount: paymentTerm.percent,
+            currency: contract.currency,
+          });
+          return 'fail';
+        }
+
+        return 'ok';
       }
-      return false;
+      return 'fail';
     });
   },
 });
+
+async function withdrawFailed(contract, creative, paymentTerm, job) {
+  await PaymentTerms.updateOne(
+    {
+      _id: paymentTerm._id,
+    },
+    { withdrawRequest: false, status: 'fail', paid: 'fail' }
+  );
+
+  await Notification.create({
+    ...WITHDRAW_FAILED,
+    user: contract.user._id,
+    linkTo: `${WITHDRAW_FAILED.linkTo}${job._id}`,
+  });
+
+  await withdrawFailedEmail({
+    name: creative.name,
+    email: creative.email,
+    amount: paymentTerm.percent,
+    currency: contract.currency,
+  });
+}

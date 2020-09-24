@@ -50,7 +50,7 @@ async function submitContract(parent, args, context, info) {
       user: { id: userId },
     },
   });
-  const notificationMessage = { ...CONTRACT_SUBMITTED };
+  const notificationMessage = { ...CONTRACT_SUBMITTED, sender: userId };
   notificationMessage.linkTo = `${notificationMessage.linkTo}${id}`;
 
   createNotification(notificationMessage, user.id, context);

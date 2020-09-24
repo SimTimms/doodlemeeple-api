@@ -11,6 +11,7 @@ export const NotificationSchema = new Schema(
     linkTo: { type: String },
     icon: { type: String },
     discarded: { type: Boolean },
+    sender: { type: Schema.Types.ObjectId, ref: 'User' },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -28,9 +29,17 @@ export const Notification = mongoose.model('Notification', NotificationSchema);
 export const NotificationTC = composeWithMongoose(Notification);
 
 NotificationTC.addRelation('user', {
-  resolver: () => UserTC.getResolver('findOne'),
+  resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    _id: (parent) => parent.user,
+  },
+  projection: { id: true },
+});
+
+NotificationTC.addRelation('sender', {
+  resolver: () => UserTC.getResolver('findById'),
+  prepareArgs: {
+    _id: (parent) => parent.sender,
   },
   projection: { id: true },
 });
@@ -41,12 +50,6 @@ NotificationTC.addResolver({
   type: [NotificationTC],
   kind: 'query',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const newNotifications = await Notification.find({ user: userId })
-      .sort({
-        createdAt: -1,
-      })
-      .limit(10);
-    return newNotifications;
+    return rp;
   },
 });

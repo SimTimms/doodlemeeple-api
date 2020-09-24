@@ -149,7 +149,11 @@ ContractTC.addResolver({
     const notificationMessage = { ...CONTRACT_SUBMITTED };
     notificationMessage.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
     notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
-    Notification.create({ ...notificationMessage, user: user._id });
+    Notification.create({
+      ...notificationMessage,
+      user: user._id,
+      sender: sender._id,
+    });
 
     return contract;
   },
@@ -212,6 +216,9 @@ ContractTC.addResolver({
       { _id: contract.user },
       { email: 1, name: 1, _id: 1 }
     );
+    console.log(contract);
+    {
+      /*
     const invite = await Invite.findOne({
       receiver: creative._id,
       job: contract.job,
@@ -220,6 +227,10 @@ ContractTC.addResolver({
       { _id: rp.args._id, user: creative._id },
       { status: 'accepted', signedBy: client._id, signedDate: new Date() }
     );
+
+   
+    
+     
     await Job.updateOne(
       { _id: contract.job },
       {
@@ -231,7 +242,7 @@ ContractTC.addResolver({
         assignedCreative: creative._id,
       }
     );
-
+  
     const request = emailAcceptQuote(creative, contract, client);
     request
       .then((result) => {
@@ -246,7 +257,8 @@ ContractTC.addResolver({
     notificationMessage.message = `${client.name} ACCEPTED your quote`;
     notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
     Notification.create({ ...notificationMessage, user: creative._id });
-
+  */
+    }
     return contract;
   },
 });

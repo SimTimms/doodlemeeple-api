@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC, Notification, User } from './';
+import { UserTC, JobTC, Notification, User, ContractTC } from './';
 import { getUserId } from '../utils';
 import { DECLINED } from '../utils/notifications';
 export const InviteSchema = new Schema(
@@ -47,7 +47,7 @@ InviteTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
       $and: [{ receiver: userId }, { sender: { $ne: userId, $ne: null } }],
-      status: { $nin: ['declined', 'closed'] },
+      status: { $nin: ['closed', 'accepted'] },
     });
 
     return invites;

@@ -173,12 +173,13 @@ JobTC.addResolver({
   },
   kind: 'mutation',
   resolve: async ({ source, args, context, info }) => {
-    const userId = getUserId(context.headers.authorization);
-
     const jobId = args._id;
-
     const jobDeets = await Job.findOne({ _id: jobId });
     const invites = await Invite.find({ _id: { $in: jobDeets.invites } });
+    await Invite.updateMany(
+      { _id: { $in: jobDeets.invites } },
+      { status: 'unopened' }
+    );
     const inviteIds = invites.map((invite) => invite.receiver);
     const invitees = await User.find({ _id: { $in: inviteIds } });
     await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
@@ -204,35 +205,5 @@ JobTC.addResolver({
           console.log(err);
         });
     });
-    /*
-  const conversationExists = await context.prisma.$exists.conversation({
-    participants_some: { id_in: [userId] },
-    job: { id: jobId },
-  });
-
-  if (!conversationExists) {
-    const results2 = emailAddresses.map(async (user) => {
-      await context.prisma.createConversation({
-        participants: {
-          connect: [{ id: user.id }, { id: userId }],
-        },
-        job: { connect: { id: jobId } },
-      });
-    });
-
-    Promise.all(results2).then();
-  }
-
-  await context.prisma.updateManyInvites({
-    data: {
-      status: 'submitted',
-    },
-    where: {
-      job: { id: jobId },
-    },
-  });
-
-  return true;
-*/
   },
 });

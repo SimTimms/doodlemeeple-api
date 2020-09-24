@@ -127,6 +127,13 @@ ContractTC.addResolver({
       { status: 'submitted' }
     );
     const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+    await Invite.updateOne(
+      {
+        job: ObjectId(contract.job),
+        receiver: ObjectId(userId),
+      },
+      { status: 'quote_sent' }
+    );
     const user = await User.findOne(
       { _id: ObjectId(job.user) },
       { email: 1, name: 1 }
@@ -177,12 +184,15 @@ ContractTC.addResolver({
       { _id: rp.args._id, user: creative._id },
       { status: 'declined' }
     );
-    /*
-    await Job.updateOne(
-      { _id: contract.job },
-      { $pull: { contracts: rp.args._id } }
+
+    await Invite.updateOne(
+      {
+        job: ObjectId(contract.job),
+        receiver: ObjectId(contract.user),
+      },
+      { status: 'declined' }
     );
-*/
+
     const request = emailDeclineQuote(creative, contract, client);
     request
       .then((result) => {

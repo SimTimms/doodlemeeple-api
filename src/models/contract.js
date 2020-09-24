@@ -221,7 +221,6 @@ ContractTC.addResolver({
       receiver: creative._id,
       job: contract.job,
     });
-    console.log(contract._id);
 
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },

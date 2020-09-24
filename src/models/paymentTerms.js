@@ -149,14 +149,14 @@ PaymentTermsTC.addResolver({
             destination: creative.stripeID,
           });
 
-          const success = transfer.response.body.Messages[0].Status;
-          success &&
-            (await PaymentTerms.updateOne(
-              {
-                _id: rp.args._id,
-              },
-              { paid: success }
-            ));
+          console.log(transfer);
+
+          await PaymentTerms.updateOne(
+            {
+              _id: rp.args._id,
+            },
+            { paid: 'success' }
+          );
 
           await Notification.create({
             ...WITHDRAW_APPROVED,
@@ -171,6 +171,7 @@ PaymentTermsTC.addResolver({
             currency: contract.currency,
           });
         } catch (err) {
+          console.log(err);
           withdrawFailed(contract, creative, paymentTerm, job);
           await withdrawFailedEmail({
             name: creative.name,

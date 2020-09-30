@@ -52,6 +52,7 @@ const UserMutation = {
   updateProfile: UserTC.getResolver('updateProfile'),
   passwordForgot: UserTC.getResolver('passwordForgot'),
   passwordReset: UserTC.getResolver('passwordReset'),
+  skipOnboarding: UserTC.getResolver('skipOnboarding'),
 };
 
 export { UserQuery, UserMutation };

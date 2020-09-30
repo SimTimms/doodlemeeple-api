@@ -18,6 +18,7 @@ import {
   CONTRACT_DECLINED,
   CONTRACT_ACCEPTED,
 } from '../utils/notifications';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const ContractSchema = new Schema(
   {
@@ -119,14 +120,25 @@ ContractTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobId = rp.args.jobId;
-    const contract = await Contract.findOne({ _id: rp.args._id, user: userId });
+    const contractId = rp.args._id;
+    const contract = await Contract.findOne({ _id: contractId, user: userId });
     await Contract.updateOne(
       { _id: rp.args._id, user: userId },
       { status: 'submitted' }
     );
-    const job = await Job.findOne({ job: jobId }, { user: 1 });
-    const user = await User.findOne({ _id: job.user }, { email: 1, name: 1 });
+    const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+    await Invite.updateOne(
+      {
+        job: ObjectId(contract.job),
+        receiver: ObjectId(userId),
+      },
+      { status: 'quote_sent' }
+    );
+    const user = await User.findOne(
+      { _id: ObjectId(job.user) },
+      { email: 1, name: 1 }
+    );
+
     const sender = await User.findOne({ _id: userId }, { email: 1, name: 1 });
     const request = emailQuote(user, contract, sender);
     request
@@ -144,7 +156,11 @@ ContractTC.addResolver({
     const notificationMessage = { ...CONTRACT_SUBMITTED };
     notificationMessage.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
     notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
-    Notification.create({ ...notificationMessage, user: user._id });
+    Notification.create({
+      ...notificationMessage,
+      user: user._id,
+      sender: sender._id,
+    });
 
     return contract;
   },
@@ -169,9 +185,12 @@ ContractTC.addResolver({
       { status: 'declined' }
     );
 
-    await Job.updateOne(
-      { _id: contract.job },
-      { $pull: { contracts: rp.args._id } }
+    await Invite.updateOne(
+      {
+        job: ObjectId(contract.job),
+        receiver: ObjectId(contract.user),
+      },
+      { status: 'declined' }
     );
 
     const request = emailDeclineQuote(creative, contract, client);
@@ -207,21 +226,23 @@ ContractTC.addResolver({
       { _id: contract.user },
       { email: 1, name: 1, _id: 1 }
     );
+
     const invite = await Invite.findOne({
       receiver: creative._id,
       job: contract.job,
     });
+
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },
       { status: 'accepted', signedBy: client._id, signedDate: new Date() }
     );
-    console.log(invite);
+
     await Job.updateOne(
       { _id: contract.job },
       {
         $pull: {
-          invites: { $ne: invite._id },
-          contracts: { $ne: contract._id },
+          invites: { $ne: ObjectId(invite._id) },
+          contracts: { $ne: ObjectId(contract._id) },
         },
         submitted: 'accepted',
         assignedCreative: creative._id,

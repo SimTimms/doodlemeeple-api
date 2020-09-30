@@ -25,6 +25,8 @@ export const JobSchema = new Schema(
     showreel: { type: String },
     creativeSummary: { type: String },
     submitted: { type: String },
+    format: [{ type: String }],
+    imageRes: { type: String },
     invites: [
       {
         type: Schema.Types.ObjectId,
@@ -35,13 +37,16 @@ export const JobSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-
     contracts: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Contract',
       },
     ],
+    activeContract: {
+      type: Schema.Types.ObjectId,
+      ref: 'Contract',
+    },
 
     user: {
       type: Schema.Types.ObjectId,
@@ -112,6 +117,14 @@ JobTC.addRelation('contracts', {
   projection: { id: true },
 });
 
+JobTC.addRelation('activeContract', {
+  resolver: () => ContractTC.getResolver('findById'),
+  prepareArgs: {
+    _id: (parent) => parent.activeContract,
+  },
+  projection: { id: true },
+});
+
 JobTC.addResolver({
   name: 'jobsByUser',
   type: [JobTC],
@@ -124,8 +137,9 @@ JobTC.addResolver({
         ? await Job.find({ user: userId, submitted: rp.args.status }).sort({
             updatedAt: -1,
           })
-        : await Job.find({ user: userId }).sort({ updatedAt: -1 });
-    console.log(rp.args);
+        : await Job.find({ user: userId, submitted: { $ne: 'closed' } }).sort({
+            updatedAt: -1,
+          });
     return jobs;
   },
 });
@@ -159,12 +173,13 @@ JobTC.addResolver({
   },
   kind: 'mutation',
   resolve: async ({ source, args, context, info }) => {
-    const userId = getUserId(context.headers.authorization);
-
     const jobId = args._id;
-
     const jobDeets = await Job.findOne({ _id: jobId });
     const invites = await Invite.find({ _id: { $in: jobDeets.invites } });
+    await Invite.updateMany(
+      { _id: { $in: jobDeets.invites } },
+      { status: 'unopened' }
+    );
     const inviteIds = invites.map((invite) => invite.receiver);
     const invitees = await User.find({ _id: { $in: inviteIds } });
     await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
@@ -190,35 +205,5 @@ JobTC.addResolver({
           console.log(err);
         });
     });
-    /*
-  const conversationExists = await context.prisma.$exists.conversation({
-    participants_some: { id_in: [userId] },
-    job: { id: jobId },
-  });
-
-  if (!conversationExists) {
-    const results2 = emailAddresses.map(async (user) => {
-      await context.prisma.createConversation({
-        participants: {
-          connect: [{ id: user.id }, { id: userId }],
-        },
-        job: { connect: { id: jobId } },
-      });
-    });
-
-    Promise.all(results2).then();
-  }
-
-  await context.prisma.updateManyInvites({
-    data: {
-      status: 'submitted',
-    },
-    where: {
-      job: { id: jobId },
-    },
-  });
-
-  return true;
-*/
   },
 });

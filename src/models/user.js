@@ -16,6 +16,7 @@ import {
   InviteTC,
   FavouriteTC,
 } from './';
+const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
 import { login, userMigrate } from '../resolversNew';
 import { getUserId, signupChecks } from '../utils';
@@ -42,6 +43,8 @@ export const UserSchema = new Schema(
       unique: true,
       required: true,
     },
+    creatorTrue: { type: Boolean, default: false },
+    creativeTrue: { type: Boolean, default: false },
     password: { type: String, required: true },
     keywords: [{ type: String }],
     profileImg: { type: String },
@@ -49,6 +52,9 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
+    stripeId: { type: String },
+    onboarding: { type: String },
+    stripeID: { type: String },
     favourites: [
       {
         type: Schema.Types.ObjectId,
@@ -104,19 +110,45 @@ UserTC.addResolver({
 });
 
 UserTC.addResolver({
-  name: 'getCreatives',
+  name: 'skipOnboarding',
   args: {},
+  type: 'Boolean',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.updateOne(
+      { _id: userId },
+      { onboarding: 'complete' }
+    );
+
+    return true;
+  },
+});
+
+UserTC.addResolver({
+  name: 'getCreatives',
+  args: { type: ['String'] },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.find({ _id: { $ne: userId } }).sort({
-      profileBG: -1,
-      summary: -1,
-      profileImg: -1,
-    });
-
-    return user;
+    const sections = await Section.aggregate([
+      {
+        $match: { type: { $in: rp.args.type } },
+      },
+      { $group: { _id: '$user' } },
+      { $limit: 1000 },
+    ]);
+    const sectionUserIds = sections.map((section) => ObjectId(section._id));
+    const users = await User.find({
+      $and: [{ _id: { $in: sectionUserIds } }],
+    })
+      .sort({
+        profileBG: -1,
+        summary: -1,
+        profileImg: -1,
+      })
+      .limit(75);
+    return users;
   },
 });
 

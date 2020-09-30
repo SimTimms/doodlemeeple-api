@@ -9,7 +9,7 @@ import schema from './schema';
 import cors from 'cors';
 import { Payment, Contract, Job, Notification, User } from './models';
 import { CONTRACT_PAID } from './utils/notifications';
-
+import { getUserIdWithoutContext } from './utils';
 const stripe = require('stripe')(process.env.STRIPE_KEY, {
   apiVersion: '2020-03-02',
 });
@@ -45,7 +45,7 @@ app.post(
 
         case 'charge.succeeded':
           console.log('Charge was successful!');
-          await Payment.updateOne(
+          await Payment.updateMany(
             { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }
           );
@@ -86,6 +86,51 @@ app.post(
     }
   }
 );
+
+async function generateAccountLink(accountID, origin, userId) {
+  await User.updateOne({ _id: userId }, { stripeID: accountID });
+  return stripe.accountLinks
+    .create({
+      type: 'account_onboarding',
+      account: accountID,
+      refresh_url: `${origin}/onboard-user/refresh`,
+      return_url: `${origin}/stripe-success`,
+    })
+    .then((link) => link.url);
+}
+
+app.post('/stripe-onboarding', async (req, res) => {
+  const userId = getUserIdWithoutContext(req.headers.authorization);
+
+  try {
+    const account = await stripe.accounts.create({ type: 'express' });
+    const origin = `${req.headers.origin}`;
+    const accountLinkURL = await generateAccountLink(
+      account.id,
+      origin,
+      userId
+    );
+    res.send({ url: accountLinkURL });
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
+
+app.get('/stripe-onboarding/refresh', async (req, res) => {
+  try {
+    const { accountID } = req.session;
+    const origin = `${req.secure ? 'https://' : 'https://'}${req.headers.host}`;
+
+    const accountLinkURL = await generateAccountLink(accountID, origin);
+    res.redirect(accountLinkURL);
+  } catch (err) {
+    res.status(500).send({
+      error: err.message,
+    });
+  }
+});
 
 //BodyParser must be after Stripe post so Stripe can use raw body.
 app.use(bodyParser.json());

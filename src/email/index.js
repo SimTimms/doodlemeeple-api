@@ -4,6 +4,53 @@ const mailjet = require('node-mailjet').connect(
 );
 const { emailAddress } = require('../utils/emailAddress');
 
+async function withdrawPaymentEmail(paymentDetails) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: paymentDetails.email,
+            Name: paymentDetails.name,
+          },
+        ],
+        Subject: `You've been paid!`,
+        TextPart: `Your Client has paid: ${paymentDetails.amount} ${paymentDetails.currency}. Log into DoodleMeeple for more details`,
+        HTMLPart: `<p>Hi ${paymentDetails.name},</p>
+        <p>Your Client has paid ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${paymentDetails.amount} ${paymentDetails.currency} </p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p> `,
+      },
+    ],
+  });
+  return request;
+}
+async function withdrawFailedEmail(paymentDetails) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: paymentDetails.email,
+            Name: paymentDetails.name,
+          },
+        ],
+        Subject: `Payment Attempt Failed`,
+        TextPart: `Your Client attempted to pay: ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but something went wrong. Log into DoodleMeeple for more details.`,
+        HTMLPart: `<p>Hi ${paymentDetails.name},</p>
+        <p>Your Client attempted to pay ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but the transfer failed."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${paymentDetails.amount} ${paymentDetails.currency} (FAILED)</p><p>Please visit <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a> and ensure your STRIPE account is properly set up.</p><p>${emailAddress.signoffHTML}</p> `,
+      },
+    ],
+  });
+  return request;
+}
+
 async function emailInvite(user, jobDeets) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -21,7 +68,7 @@ async function emailInvite(user, jobDeets) {
         Subject: `You've got an invite`,
         TextPart: `You have been asked to provide a quote for "${jobDeets.name}"`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -209,4 +256,6 @@ module.exports = {
   emailQuote,
   emailDeclineQuote,
   emailAcceptQuote,
+  withdrawPaymentEmail,
+  withdrawFailedEmail,
 };

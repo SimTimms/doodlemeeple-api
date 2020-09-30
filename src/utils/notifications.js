@@ -26,11 +26,32 @@ const CONTRACT_DECLINED = {
   icon: 'thumb_down',
 };
 
+const WITHDRAW_REQUEST = {
+  title: `Withdraw Request`,
+  message: 'Your Creative has requested a withdraw',
+  linkTo: '/app/view-job/',
+  icon: 'payment',
+};
+
+const WITHDRAW_APPROVED = {
+  title: `Withdraw Approve`,
+  message: 'Your request has been approved',
+  linkTo: '/app/view-job/',
+  icon: 'payment',
+};
+
+const WITHDRAW_FAILED = {
+  title: `Withdraw FAILED`,
+  message: 'Your attempted withdrawal failed, CLICK HERE to resolve',
+  linkTo: '/app/failed-payment/',
+  icon: 'warning',
+};
+
 const CONTRACT_ACCEPTED = {
   title: `Your quote has been accepted`,
   message: 'Your quote has been accepted',
   linkTo: '/app/view-contract/',
-  icon: 'thumb_down',
+  icon: 'thumb_up',
 };
 
 const REGISTRATION = {
@@ -79,4 +100,7 @@ module.exports = {
   CONTRACT_ACCEPTED,
   CONTRACT_PAID,
   CREATE_JOB,
+  WITHDRAW_REQUEST,
+  WITHDRAW_APPROVED,
+  WITHDRAW_FAILED,
 };

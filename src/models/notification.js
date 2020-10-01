@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, JobTC } from './';
 import { getUserId } from '../utils';
 
 export const NotificationSchema = new Schema(
@@ -12,6 +12,7 @@ export const NotificationSchema = new Schema(
     icon: { type: String },
     discarded: { type: Boolean },
     sender: { type: Schema.Types.ObjectId, ref: 'User' },
+    job: { type: Schema.Types.ObjectId, ref: 'Job' },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -32,6 +33,14 @@ NotificationTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
     _id: (parent) => parent.user,
+  },
+  projection: { id: true },
+});
+
+NotificationTC.addRelation('job', {
+  resolver: () => JobTC.getResolver('findById'),
+  prepareArgs: {
+    _id: (parent) => parent.job,
   },
   projection: { id: true },
 });

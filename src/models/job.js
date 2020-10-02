@@ -9,7 +9,10 @@ import {
   Invite,
   User,
   ContractTC,
+  Contract,
 } from './';
+import { ContractSchema } from './contract';
+import { UserSchema } from './user';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
 import { emailInvite } from '../email';
@@ -206,5 +209,45 @@ JobTC.addResolver({
           console.log(err);
         });
     });
+  },
+});
+
+export const ChecklistSchema = new Schema({
+  contract: {
+    type: ContractSchema,
+  },
+  creator: {
+    type: UserSchema,
+  },
+  job: {
+    type: JobSchema,
+  },
+});
+
+export const Checklist = mongoose.model('Checklist', ChecklistSchema);
+export const ChecklistTC = composeWithMongoose(Checklist);
+
+JobTC.addResolver({
+  name: 'jobChecklist',
+  type: ChecklistTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobId = rp.args._id;
+
+    const job = await Job.findOne({ _id: jobId });
+    const creator = await User.findOne({ _id: job.user });
+    const contract = await Contract.findOne({ job: job._id, user: userId });
+    console.log(contract);
+
+    const newObj = {
+      contract: contract,
+      creator: creator,
+      job: job,
+    };
+    return newObj;
   },
 });

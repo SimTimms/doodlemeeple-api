@@ -10,6 +10,7 @@ const JobQuery = {
   jobCount: JobTC.getResolver('count'),
   jobConnection: JobTC.getResolver('connection'),
   jobPagination: JobTC.getResolver('pagination'),
+  jobChecklist: JobTC.getResolver('jobChecklist'),
 };
 
 const JobMutation = {

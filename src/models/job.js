@@ -241,7 +241,6 @@ JobTC.addResolver({
     const job = await Job.findOne({ _id: jobId });
     const creator = await User.findOne({ _id: job.user });
     const contract = await Contract.findOne({ job: job._id, user: userId });
-    console.log(contract);
 
     const newObj = {
       contract: contract,

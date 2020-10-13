@@ -13,6 +13,7 @@ import {
 } from './';
 import { ContractSchema } from './contract';
 import { UserSchema } from './user';
+import { InviteSchema } from './invite';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
 import { emailInvite } from '../email';
@@ -222,6 +223,7 @@ export const ChecklistSchema = new Schema({
   job: {
     type: JobSchema,
   },
+  invite: { type: InviteSchema },
 });
 
 export const Checklist = mongoose.model('Checklist', ChecklistSchema);
@@ -240,12 +242,15 @@ JobTC.addResolver({
 
     const job = await Job.findOne({ _id: jobId });
     const creator = await User.findOne({ _id: job.user });
-    const contract = await Contract.findOne({ job: job._id, user: userId });
+    const contract = await Contract.findOne({ job: jobId, user: userId });
+    const invite = await Invite.findOne({ job: jobId, receiver: userId });
+    console.log(invite);
 
     const newObj = {
       contract: contract,
       creator: creator,
       job: job,
+      invite: invite,
     };
     return newObj;
   },

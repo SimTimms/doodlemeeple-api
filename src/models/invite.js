@@ -42,13 +42,19 @@ InviteTC.addRelation('sender', {
 InviteTC.addResolver({
   name: 'invitesByUser',
   type: [InviteTC],
+  args: { status: 'String' },
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
-      $and: [{ receiver: userId }, { sender: { $ne: userId, $ne: null } }],
-      status: { $nin: ['closed', 'accepted'] },
+      $and: [
+        { receiver: userId },
+        { sender: { $ne: userId } },
+        { sender: { $ne: null } },
+        { status: rp.args.status },
+      ],
     });
+    console.log(rp.args.status);
 
     return invites;
   },

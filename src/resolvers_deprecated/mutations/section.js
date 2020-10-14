@@ -102,7 +102,7 @@ async function updateSection(parent, args, context, info) {
     title: 'Profile Updated!',
     message: "It's good that you did that",
     linkTo: '/app/edit-profile',
-    icon: 'contact_mail',
+    icon: 'face',
   });
 
   const sectionExists = await context.prisma.$exists.section({

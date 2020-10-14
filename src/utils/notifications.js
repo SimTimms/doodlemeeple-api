@@ -58,7 +58,7 @@ const REGISTRATION = {
   title: `Thanks for joining us`,
   message: 'Start by creating an amazing profile',
   linkTo: '/app/edit-profile/',
-  icon: 'contact_mail',
+  icon: 'face',
 };
 
 const CREATE_JOB = {

@@ -8,7 +8,7 @@ const NotificationQuery = {
   notificationMany: NotificationTC.getResolver('findMany').wrapResolve(
     (next) => (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
-      rp.args.filter = { user: userId };
+      rp.args.filter = { ...rp.args.filter, user: userId };
       rp.args.sort = { createdAt: -1 };
       return next(rp);
     }

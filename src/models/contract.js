@@ -227,10 +227,22 @@ ContractTC.addResolver({
       { email: 1, name: 1, _id: 1 }
     );
 
-    const invite = await Invite.findOne({
-      receiver: creative._id,
-      job: contract.job,
-    });
+    //Reject all other invites
+    await Invite.updateMany(
+      {
+        receiver: { $ne: creative._id },
+        job: contract.job,
+      },
+      { status: 'rejected' }
+    );
+    //Accept the chosen invite
+    await Invite.updateOne(
+      {
+        receiver: creative._id,
+        job: contract.job,
+      },
+      { status: 'accepted' }
+    );
 
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },

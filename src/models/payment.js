@@ -62,6 +62,8 @@ PaymentTC.addResolver({
     const { contractId } = rp.args;
 
     const contract = await Contract.findOne({ _id: contractId });
+    await Contract.updateOne({ _id: contractId }, { status: 'pending' });
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: contract.cost * 110,
       currency: contract.currency.toLowerCase() || 'gbp',
@@ -77,6 +79,7 @@ PaymentTC.addResolver({
       contract: contractId,
       paymentId: paymentIntent.id,
     });
+
     await Payment.create({
       amount: contract.cost * 0.1,
       currency: contract.currency,

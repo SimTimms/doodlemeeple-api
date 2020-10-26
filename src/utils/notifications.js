@@ -27,21 +27,21 @@ const CONTRACT_DECLINED = {
 };
 
 const WITHDRAW_REQUEST = {
-  title: `Withdraw Request`,
+  title: `Withdrawal Request`,
   message: 'Your Creative has requested a withdraw',
   linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const WITHDRAW_APPROVED = {
-  title: `Withdraw Approve`,
+  title: `Withdrawal Approved`,
   message: 'Your request has been approved',
   linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const WITHDRAW_FAILED = {
-  title: `Withdraw FAILED`,
+  title: `Withdrawal FAILED`,
   message: 'Your attempted withdrawal failed, CLICK HERE to resolve',
   linkTo: '/app/failed-payment/',
   icon: 'warning',

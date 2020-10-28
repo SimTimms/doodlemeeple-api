@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC, Notification, User, ContractTC } from './';
+import { UserTC, JobTC, Notification, User, Message } from './';
 import { getUserId } from '../utils';
 import { DECLINED } from '../utils/notifications';
 export const InviteSchema = new Schema(
@@ -9,6 +9,7 @@ export const InviteSchema = new Schema(
     title: { type: String },
     message: { type: String },
     status: { type: String },
+    messages: { type: Number },
     sender: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -57,6 +58,25 @@ InviteTC.addResolver({
     console.log(rp.args.status);
 
     return invites;
+  },
+});
+
+InviteTC.addFields({
+  messages: {
+    type: 'Int', // String, Int, Float, Boolean, ID, Json
+    description: 'message count',
+    resolve: async (source, args, context, info) => {
+      const userId = getUserId(context.headers.authorization);
+
+      const messages = await Message.find({
+        job: source.job,
+        receiver: userId,
+        status: 'unread',
+        sender: source.receiver,
+      });
+      console.log(source.job, userId, messages);
+      return messages ? messages.length : 0;
+    },
   },
 });
 

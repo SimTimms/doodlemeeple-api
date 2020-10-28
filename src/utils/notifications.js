@@ -26,6 +26,13 @@ const CONTRACT_DECLINED = {
   icon: 'thumb_down',
 };
 
+const CONTRACT_ACCEPTED = {
+  title: `Your quote has been accepted`,
+  message: 'Your quote has been accepted',
+  linkTo: '/app/view-contract/',
+  icon: 'thumb_up',
+};
+
 const WITHDRAW_REQUEST = {
   title: `Withdrawal Request`,
   message: 'Your Creative has requested a withdraw',
@@ -45,13 +52,6 @@ const WITHDRAW_FAILED = {
   message: 'Your attempted withdrawal failed, CLICK HERE to resolve',
   linkTo: '/app/failed-payment/',
   icon: 'warning',
-};
-
-const CONTRACT_ACCEPTED = {
-  title: `Your quote has been accepted`,
-  message: 'Your quote has been accepted',
-  linkTo: '/app/view-contract/',
-  icon: 'thumb_up',
 };
 
 const REGISTRATION = {

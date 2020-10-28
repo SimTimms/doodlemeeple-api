@@ -8,28 +8,28 @@ const UPDATED_PROFILE = {
 const CONTRACT_SUBMITTED = {
   title: `You've got a Quote`,
   message: 'Check it out',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'request_quote',
 };
 
 const CONTRACT_PAID = {
   title: `Your deposit has been paid`,
   message: '',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const CONTRACT_DECLINED = {
   title: `Your quote has been declined`,
   message: 'Your quote has been declined',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'thumb_down',
 };
 
 const CONTRACT_ACCEPTED = {
   title: `Your quote has been accepted`,
   message: 'Your quote has been accepted',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'thumb_up',
 };
 

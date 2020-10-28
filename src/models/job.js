@@ -133,18 +133,17 @@ JobTC.addRelation('activeContract', {
 JobTC.addResolver({
   name: 'jobsByUser',
   type: [JobTC],
-  args: { status: 'String' },
+  args: { status: ['String'] },
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs =
-      rp.args.status != ''
-        ? await Job.find({ user: userId, submitted: rp.args.status }).sort({
-            updatedAt: -1,
-          })
-        : await Job.find({ user: userId, submitted: { $ne: 'closed' } }).sort({
-            updatedAt: -1,
-          });
+    const jobs = await Job.find({
+      user: userId,
+      submitted: { $in: rp.args.status },
+    }).sort({
+      updatedAt: -1,
+    });
+
     return jobs;
   },
 });
@@ -158,13 +157,30 @@ JobTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const job = await Job.updateOne(
+    await Job.updateOne(
       { _id: rp.args._id, user: userId },
       { submitted: 'closed' }
     );
     await Invite.updateMany(
       { job: rp.args._id, status: { $ne: 'declined' } },
       { status: 'closed' }
+    );
+    return null;
+  },
+});
+
+JobTC.addResolver({
+  name: 'completeJob',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await Job.updateOne(
+      { _id: rp.args._id, user: userId },
+      { submitted: 'complete' }
     );
     return null;
   },

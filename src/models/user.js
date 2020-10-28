@@ -54,6 +54,7 @@ export const UserSchema = new Schema(
     location: { type: String },
     stripeId: { type: String },
     onboarding: { type: String },
+    rating: { type: Number },
     stripeID: { type: String },
     favourites: [
       {

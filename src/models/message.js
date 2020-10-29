@@ -127,7 +127,6 @@ MessageTC.addResolver({
         },
       },
     ]).sort({ updatedAt: -1 });
-    console.log(messages, jobArr);
     const counts = await Message.aggregate([
       {
         $match: {

@@ -8,7 +8,11 @@ import {
   WITHDRAW_APPROVED,
   WITHDRAW_FAILED,
 } from '../utils/notifications';
-import { withdrawPaymentEmail, withdrawFailedEmail } from '../email';
+import {
+  withdrawPaymentEmail,
+  withdrawFailedEmail,
+  withdrawFailedEmailAdmin,
+} from '../email';
 
 const ObjectId = mongoose.Types.ObjectId;
 export const PaymentTermsSchema = new Schema(
@@ -106,7 +110,6 @@ PaymentTermsTC.addResolver({
       _id: rp.args._id,
       paid: { $ne: 'success' },
     });
-
     if (!paymentTerm) {
       throw new Error('Already paid or does not exist');
     }
@@ -138,54 +141,82 @@ PaymentTermsTC.addResolver({
       apiVersion: '2020-03-02',
     });
 
-    await stripe.balance.retrieve(async function (err, balance) {
-      const balanceAmount = balance.available[0].amount;
+    const balanceAmount = await stripe.balance.retrieve();
+    console.log(balanceAmount);
+    if (balanceAmount.available[0].amount > 0) {
+      try {
+        const transfer = await stripe.transfers.create({
+          amount: paymentTerm.percent * 100,
+          currency: contract.currency.toLowerCase(),
+          destination: creative.stripeID,
+        });
 
-      if (balanceAmount > 0) {
-        try {
-          const transfer = await stripe.transfers.create({
-            amount: paymentTerm.percent * 100,
-            currency: contract.currency.toLowerCase(),
-            destination: creative.stripeID,
+        await PaymentTerms.updateOne(
+          {
+            _id: rp.args._id,
+          },
+          { paid: 'success' }
+        );
+
+        await Notification.create({
+          ...WITHDRAW_APPROVED,
+          user: contract.user._id,
+          linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
+        });
+
+        const request = withdrawPaymentEmail({
+          name: creative.name,
+          email: creative.email,
+          amount: paymentTerm.percent,
+          currency: contract.currency,
+        });
+        request
+          .then((result) => {})
+          .catch((err) => {
+            console.log(err);
           });
+      } catch (err) {
+        withdrawFailed(contract, creative, paymentTerm, job);
 
-          console.log(transfer);
+        const zeroCost = err.raw.message.indexOf('must be greater than') > -1;
+        const stripeSetup = err.raw.message.indexOf('No such destination') > -1;
 
-          await PaymentTerms.updateOne(
-            {
-              _id: rp.args._id,
-            },
-            { paid: 'success' }
-          );
+        const stripeSetupEmail = withdrawFailedEmail({
+          name: creative.name,
+          email: creative.email,
+          amount: paymentTerm.percent,
+          currency: contract.currency,
+        });
 
-          await Notification.create({
-            ...WITHDRAW_APPROVED,
-            user: contract.user._id,
-            linkTo: `${WITHDRAW_REQUEST.linkTo}${job._id}`,
-          });
+        stripeSetup &&
+          stripeSetupEmail
+            .then((result) => {})
+            .catch((err) => {
+              console.log(err);
+            });
 
-          await withdrawPaymentEmail({
-            name: creative.name,
-            email: creative.email,
-            amount: paymentTerm.percent,
-            currency: contract.currency,
-          });
-        } catch (err) {
-          console.log(err);
-          withdrawFailed(contract, creative, paymentTerm, job);
-          await withdrawFailedEmail({
-            name: creative.name,
-            email: creative.email,
-            amount: paymentTerm.percent,
-            currency: contract.currency,
-          });
-          return 'fail';
-        }
-
-        return 'ok';
+        return stripeSetup
+          ? 'STRIPE SETUP'
+          : zeroCost
+          ? 'GREATER_ZERO'
+          : `Fail: ${err}`;
       }
-      return 'fail';
-    });
+
+      return 'ok';
+    } else {
+      const request = withdrawFailedEmailAdmin({
+        name: creative.name,
+        email: creative.email,
+        amount: paymentTerm.percent,
+        currency: contract.currency,
+      });
+      request
+        .then((result) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+      return 'zero_account';
+    }
   },
 });
 

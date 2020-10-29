@@ -55,7 +55,6 @@ InviteTC.addResolver({
         { status: { $in: rp.args.status } },
       ],
     });
-    console.log(rp.args.status);
 
     return invites;
   },
@@ -74,7 +73,6 @@ InviteTC.addFields({
         status: 'unread',
         sender: source.receiver,
       });
-      console.log(source.job, userId, messages);
       return messages ? messages.length : 0;
     },
   },

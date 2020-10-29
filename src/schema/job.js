@@ -18,7 +18,7 @@ const JobMutation = {
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
       rp.args.record.user = userId;
-      rp.args.record.submitted = 'draft';
+      rp.args.record.submitted = 'draf';
 
       const job = await next(rp);
       return job;
@@ -34,6 +34,7 @@ const JobMutation = {
   jobRemoveOne: JobTC.getResolver('removeOne'),
   jobRemoveMany: JobTC.getResolver('removeMany'),
   submitBrief: JobTC.getResolver('submitBrief'),
+  closeEarly: JobTC.getResolver('closeEarly'),
 };
 
 export { JobQuery, JobMutation };

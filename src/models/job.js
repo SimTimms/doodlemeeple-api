@@ -16,7 +16,7 @@ import { UserSchema } from './user';
 import { InviteSchema } from './invite';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
-import { emailInvite } from '../email';
+import { emailInvite, earlyClosure } from '../email';
 
 export const JobSchema = new Schema(
   {
@@ -260,7 +260,6 @@ JobTC.addResolver({
     const creator = await User.findOne({ _id: job.user });
     const contract = await Contract.findOne({ job: jobId, user: userId });
     const invite = await Invite.findOne({ job: jobId, receiver: userId });
-    console.log(invite);
 
     const newObj = {
       contract: contract,
@@ -269,5 +268,31 @@ JobTC.addResolver({
       invite: invite,
     };
     return newObj;
+  },
+});
+
+JobTC.addResolver({
+  name: 'closeEarly',
+  type: 'String',
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobId = rp.args._id;
+    const job = await Job.findOne({ _id: jobId, user: userId });
+    const creator = await User.findOne({ _id: userId });
+
+    const request = earlyClosure(creator, job);
+
+    request
+      .then((result) => {
+        //  console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return 'OK';
   },
 });

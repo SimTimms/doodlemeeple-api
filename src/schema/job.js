@@ -18,7 +18,7 @@ const JobMutation = {
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
       rp.args.record.user = userId;
-      rp.args.record.submitted = 'draf';
+      rp.args.record.submitted = 'draft';
 
       const job = await next(rp);
       return job;

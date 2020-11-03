@@ -103,7 +103,7 @@ app.post('/stripe-onboarding', async (req, res) => {
   const userId = getUserIdWithoutContext(req.headers.authorization);
 
   try {
-    const account = await stripe.accounts.create({ type: 'express' });
+    const account = await stripe.accounts.create({ type: 'standard' });
     const origin = `${req.headers.origin}`;
     const accountLinkURL = await generateAccountLink(
       account.id,

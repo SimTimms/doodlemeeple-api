@@ -151,8 +151,6 @@ PaymentTermsTC.addResolver({
           destination: creative.stripeID,
         });
 
-        console.log(transfer);
-
         await PaymentTerms.updateOne(
           {
             _id: rp.args._id,

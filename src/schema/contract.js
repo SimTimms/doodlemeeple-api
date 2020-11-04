@@ -52,15 +52,12 @@ const ContractMutation = {
       const paymentTerms = await PaymentTerms.find({
         contract: ObjectId(contract._id),
       });
-      console.log(paymentTerms, contract._id);
       let totalCost = 0;
       if (paymentTerms) {
         for (let i = 0; i < paymentTerms.length; i++) {
-          console.log(paymentTerms[i].percent);
           totalCost = totalCost + paymentTerms[i].percent;
         }
       }
-      console.log(totalCost);
 
       if (contract.cost - totalCost > 0) {
         await PaymentTerms.create({

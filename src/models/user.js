@@ -365,8 +365,6 @@ UserTC.addResolver({
       resetToken: rp.args.token,
     });
 
-    console.log(user, rp.args.token);
-
     const validSubmission = signupChecks({
       password: rp.args.password,
       name: user.name,
@@ -394,9 +392,7 @@ UserTC.addResolver({
       const request = emailReset(user, actionLink);
 
       request
-        .then((result) => {
-          console.log(result);
-        })
+        .then((result) => {})
         .catch((err) => {
           console.log(err.statusCode);
         });

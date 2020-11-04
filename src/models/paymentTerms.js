@@ -142,7 +142,6 @@ PaymentTermsTC.addResolver({
     });
 
     const balanceAmount = await stripe.balance.retrieve();
-    console.log(balanceAmount);
     if (balanceAmount.available[0].amount > 0) {
       try {
         const transfer = await stripe.transfers.create({

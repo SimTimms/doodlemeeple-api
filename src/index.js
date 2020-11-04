@@ -120,11 +120,10 @@ app.post('/stripe-onboarding', async (req, res) => {
 
 app.get('/stripe-onboarding/refresh', async (req, res) => {
   try {
-    const { accountID } = req.session;
-    const origin = `${req.secure ? 'https://' : 'https://'}${req.headers.host}`;
-
-    const accountLinkURL = await generateAccountLink(accountID, origin);
-    res.redirect(accountLinkURL);
+    // const { accountID } = req.session;
+    //  const origin = `${req.secure ? 'https://' : 'https://'}${req.headers.host}`;
+    // const accountLinkURL = await generateAccountLink(accountID, origin);
+    // res.redirect(accountLinkURL);
   } catch (err) {
     res.status(500).send({
       error: err.message,

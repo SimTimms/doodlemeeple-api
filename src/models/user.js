@@ -52,7 +52,6 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
-    stripeId: { type: String },
     onboarding: { type: String },
     rating: { type: Number },
     stripeID: { type: String },
@@ -96,6 +95,15 @@ UserSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const User = mongoose.model('User', UserSchema);
 export const UserTC = composeWithMongoose(User);
+
+export const StripeSchema = new Schema({
+  object: { type: String },
+  details_submitted: { type: Boolean },
+  payouts_enabled: { type: Boolean },
+});
+
+const Stripe = mongoose.model('Stripe', StripeSchema);
+const StripeTC = composeWithMongoose(Stripe);
 
 UserTC.addResolver({
   name: 'profile',
@@ -200,6 +208,13 @@ UserTC.addResolver({
   resolve: async ({ source, args }) => {
     return login(args);
   },
+});
+
+UserTC.addResolver({
+  name: 'getStripe',
+  type: StripeTC,
+  kind: 'query',
+  resolve: async () => {},
 });
 
 UserTC.addResolver({

@@ -106,9 +106,6 @@ app.post('/stripe-onboarding', async (req, res) => {
     const account = await stripe.accounts.create({
       type: 'standard',
       country: 'GB',
-      company: {
-        name: 'DOODLEMEEPLE CREATIVE',
-      },
       default_currency: 'gbp',
     });
     const origin = `${req.headers.origin}`;

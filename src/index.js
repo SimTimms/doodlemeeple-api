@@ -106,10 +106,6 @@ app.post('/stripe-onboarding', async (req, res) => {
     const account = await stripe.accounts.create({
       type: 'standard',
       country: 'GB',
-      business_profile: {
-        product_description:
-          'Online job market for board game designers and artists',
-      },
       company: {
         name: 'DOODLEMEEPLE CREATIVE',
       },

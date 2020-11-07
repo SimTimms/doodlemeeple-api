@@ -145,7 +145,7 @@ PaymentTermsTC.addResolver({
     if (balanceAmount.available[0].amount > 0) {
       try {
         const transfer = await stripe.transfers.create({
-          amount: paymentTerm.percent * 100,
+          amount: paymentTerm.percent * 90,
           currency: contract.currency.toLowerCase(),
           destination: creative.stripeID,
         });

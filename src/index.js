@@ -53,8 +53,9 @@ app.post(
           const payment = await Payment.findOne({
             paymentId: event.data.object.payment_intent,
           });
-          console.log(contract);
+
           const contract = await Contract.findOne({ _id: payment.contract });
+          console.log(payment);
           await Contract.updateOne({ _id: contract._id }, { status: 'paid' });
           await Job.updateOne({ _id: contract.job }, { submitted: 'paid' });
           const client = await User.findOne({ _id: contract.signedBy });

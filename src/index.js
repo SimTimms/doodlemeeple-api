@@ -10,7 +10,6 @@ import cors from 'cors';
 import { Payment, Contract, Job, Notification, User } from './models';
 import { CONTRACT_PAID } from './utils/notifications';
 import { getUserIdWithoutContext } from './utils';
-const ObjectId = mongoose.Types.ObjectId;
 
 const stripe = require('stripe')(process.env.STRIPE_KEY, {
   apiVersion: '2020-03-02',
@@ -50,17 +49,17 @@ app.post(
           console.log(event.data.object.payment_intent);
 
           const paymentDebug = await Payment.findOne({
-            paymentId: ObjectId(event.data.object.payment_intent),
+            paymentId: event.data.object.payment_intent,
           });
 
-          console.log(paymentDebug, 'debug');
+          console.log(paymentDebug);
           await Payment.updateMany(
-            { paymentId: ObjectId(event.data.object.payment_intent) },
+            { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }
           );
 
           const payment = await Payment.findOne({
-            paymentId: ObjectId(event.data.object.payment_intent),
+            paymentId: event.data.object.payment_intent,
           });
 
           const contract = await Contract.findOne({ _id: payment.contract });

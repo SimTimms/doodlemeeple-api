@@ -45,7 +45,13 @@ app.post(
 
         case 'charge.succeeded':
           console.log('Charge was successful!');
-          console.log(event.data);
+          console.log(event.data.object.payment_intent);
+
+          const paymentDebug = await Payment.findOne({
+            paymentId: event.data.object.payment_intent,
+          });
+
+          console.log(paymentDebug);
           await Payment.updateMany(
             { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }

@@ -32,14 +32,6 @@ const ContractMutation = {
       const userId = getUserId(rp.context.headers.authorization);
       const contract = await Contract.findOne({ _id: rp.args.record._id });
 
-      await Invite.updateOne(
-        {
-          job: ObjectId(contract.job),
-          receiver: ObjectId(userId),
-        },
-        { status: 'unopened' }
-      );
-
       //REFACTOR: I should've commented this before now I'm not sure why the $pull is in there, it may be to stop a creative posting multiple contracts. Find out why it's here and remove if unnecessary.
       await Job.update(
         { _id: contract.job },
@@ -60,15 +52,12 @@ const ContractMutation = {
       const paymentTerms = await PaymentTerms.find({
         contract: ObjectId(contract._id),
       });
-      console.log(paymentTerms, contract._id);
       let totalCost = 0;
       if (paymentTerms) {
         for (let i = 0; i < paymentTerms.length; i++) {
-          console.log(paymentTerms[i].percent);
           totalCost = totalCost + paymentTerms[i].percent;
         }
       }
-      console.log(totalCost);
 
       if (contract.cost - totalCost > 0) {
         await PaymentTerms.create({

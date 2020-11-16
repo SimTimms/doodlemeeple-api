@@ -13,9 +13,10 @@ import {
 } from './';
 import { ContractSchema } from './contract';
 import { UserSchema } from './user';
+import { InviteSchema } from './invite';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
-import { emailInvite } from '../email';
+import { emailInvite, earlyClosure } from '../email';
 
 export const JobSchema = new Schema(
   {
@@ -132,18 +133,17 @@ JobTC.addRelation('activeContract', {
 JobTC.addResolver({
   name: 'jobsByUser',
   type: [JobTC],
-  args: { status: 'String' },
+  args: { status: ['String'] },
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const jobs =
-      rp.args.status != ''
-        ? await Job.find({ user: userId, submitted: rp.args.status }).sort({
-            updatedAt: -1,
-          })
-        : await Job.find({ user: userId, submitted: { $ne: 'closed' } }).sort({
-            updatedAt: -1,
-          });
+    const jobs = await Job.find({
+      user: userId,
+      submitted: { $in: rp.args.status },
+    }).sort({
+      updatedAt: -1,
+    });
+
     return jobs;
   },
 });
@@ -157,13 +157,30 @@ JobTC.addResolver({
   kind: 'mutation',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const job = await Job.updateOne(
+    await Job.updateOne(
       { _id: rp.args._id, user: userId },
       { submitted: 'closed' }
     );
     await Invite.updateMany(
       { job: rp.args._id, status: { $ne: 'declined' } },
       { status: 'closed' }
+    );
+    return null;
+  },
+});
+
+JobTC.addResolver({
+  name: 'completeJob',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await Job.updateOne(
+      { _id: rp.args._id, user: userId },
+      { submitted: 'complete' }
     );
     return null;
   },
@@ -222,6 +239,7 @@ export const ChecklistSchema = new Schema({
   job: {
     type: JobSchema,
   },
+  invite: { type: InviteSchema },
 });
 
 export const Checklist = mongoose.model('Checklist', ChecklistSchema);
@@ -240,13 +258,41 @@ JobTC.addResolver({
 
     const job = await Job.findOne({ _id: jobId });
     const creator = await User.findOne({ _id: job.user });
-    const contract = await Contract.findOne({ job: job._id, user: userId });
+    const contract = await Contract.findOne({ job: jobId, user: userId });
+    const invite = await Invite.findOne({ job: jobId, receiver: userId });
 
     const newObj = {
       contract: contract,
       creator: creator,
       job: job,
+      invite: invite,
     };
     return newObj;
+  },
+});
+
+JobTC.addResolver({
+  name: 'closeEarly',
+  type: 'String',
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobId = rp.args._id;
+    const job = await Job.findOne({ _id: jobId, user: userId });
+    const creator = await User.findOne({ _id: userId });
+
+    const request = earlyClosure(creator, job);
+
+    request
+      .then((result) => {
+        //  console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    return 'OK';
   },
 });

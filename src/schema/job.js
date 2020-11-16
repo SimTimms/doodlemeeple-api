@@ -18,6 +18,7 @@ const JobMutation = {
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
       rp.args.record.user = userId;
+      rp.args.record.submitted = 'draft';
 
       const job = await next(rp);
       return job;
@@ -26,12 +27,14 @@ const JobMutation = {
   jobCreateMany: JobTC.getResolver('createMany'),
   jobUpdateById: JobTC.getResolver('updateById'),
   closeJob: JobTC.getResolver('closeJob'),
+  completeJob: JobTC.getResolver('completeJob'),
   jobUpdateOne: JobTC.getResolver('updateOne'),
   jobUpdateMany: JobTC.getResolver('updateMany'),
   jobRemoveById: JobTC.getResolver('removeById'),
   jobRemoveOne: JobTC.getResolver('removeOne'),
   jobRemoveMany: JobTC.getResolver('removeMany'),
   submitBrief: JobTC.getResolver('submitBrief'),
+  closeEarly: JobTC.getResolver('closeEarly'),
 };
 
 export { JobQuery, JobMutation };

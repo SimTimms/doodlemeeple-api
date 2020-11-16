@@ -119,14 +119,23 @@ ContractTC.addResolver({
   args: { _id: 'MongoID!' },
   kind: 'mutation',
   resolve: async (rp) => {
+    //Get required data to continue
     const userId = getUserId(rp.context.headers.authorization);
     const contractId = rp.args._id;
     const contract = await Contract.findOne({ _id: contractId, user: userId });
+    const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+    const creator = await User.findOne(
+      { _id: ObjectId(job.user) },
+      { email: 1, name: 1 }
+    );
+    const creative = await User.findOne({ _id: userId }, { email: 1, name: 1 });
+
+    //Update Data
     await Contract.updateOne(
       { _id: rp.args._id, user: userId },
       { status: 'submitted' }
     );
-    const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+
     await Invite.updateOne(
       {
         job: ObjectId(contract.job),
@@ -134,13 +143,14 @@ ContractTC.addResolver({
       },
       { status: 'quote_sent' }
     );
-    const user = await User.findOne(
-      { _id: ObjectId(job.user) },
-      { email: 1, name: 1 }
+
+    await Job.update(
+      { _id: contract.job },
+      { $addToSet: { contracts: rp.args._id } }
     );
 
-    const sender = await User.findOne({ _id: userId }, { email: 1, name: 1 });
-    const request = emailQuote(user, contract, sender);
+    //Notifications
+    const request = emailQuote(creator, contract, creative);
     request
       .then((result) => {
         //  console.log(result);
@@ -149,17 +159,13 @@ ContractTC.addResolver({
         console.log(err);
       });
 
-    await Job.update(
-      { _id: contract.job },
-      { $addToSet: { contracts: rp.args._id } }
-    );
     const notificationMessage = { ...CONTRACT_SUBMITTED };
-    notificationMessage.message = `${sender.name} has quoted ${contract.cost}${contract.currency}`;
-    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    notificationMessage.message = `${creative.name} has quoted ${contract.cost}${contract.currency}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${job._id}`;
     Notification.create({
       ...notificationMessage,
-      user: user._id,
-      sender: sender._id,
+      user: creator._id,
+      sender: creative._id,
     });
 
     return contract;
@@ -205,7 +211,7 @@ ContractTC.addResolver({
     const notificationMessage = { ...CONTRACT_DECLINED };
 
     notificationMessage.message = `${client.name} rejected your quote`;
-    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract.job}`;
     Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;
@@ -227,10 +233,22 @@ ContractTC.addResolver({
       { email: 1, name: 1, _id: 1 }
     );
 
-    const invite = await Invite.findOne({
-      receiver: creative._id,
-      job: contract.job,
-    });
+    //Reject all other invites
+    await Invite.updateMany(
+      {
+        receiver: { $ne: creative._id },
+        job: contract.job,
+      },
+      { status: 'rejected' }
+    );
+    //Accept the chosen invite
+    await Invite.updateOne(
+      {
+        receiver: creative._id,
+        job: contract.job,
+      },
+      { status: 'accepted' }
+    );
 
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },
@@ -240,12 +258,9 @@ ContractTC.addResolver({
     await Job.updateOne(
       { _id: contract.job },
       {
-        $pull: {
-          invites: { $ne: ObjectId(invite._id) },
-          contracts: { $ne: ObjectId(contract._id) },
-        },
         submitted: 'accepted',
         assignedCreative: creative._id,
+        activeContract: ObjectId(contract._id),
       }
     );
 
@@ -261,7 +276,7 @@ ContractTC.addResolver({
     const notificationMessage = { ...CONTRACT_ACCEPTED };
 
     notificationMessage.message = `${client.name} ACCEPTED your quote`;
-    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}${contract.job}`;
     Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;

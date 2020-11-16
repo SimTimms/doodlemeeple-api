@@ -21,12 +21,13 @@ async function withdrawPaymentEmail(paymentDetails) {
         Subject: `You've been paid!`,
         TextPart: `Your Client has paid: ${paymentDetails.amount} ${paymentDetails.currency}. Log into DoodleMeeple for more details`,
         HTMLPart: `<p>Hi ${paymentDetails.name},</p>
-        <p>Your Client has paid ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${paymentDetails.amount} ${paymentDetails.currency} </p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p> `,
+        <p>Your Client has paid ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>${paymentDetails.amount} ${paymentDetails.currency} </p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p> `,
       },
     ],
   });
   return request;
 }
+
 async function withdrawFailedEmail(paymentDetails) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -42,9 +43,57 @@ async function withdrawFailedEmail(paymentDetails) {
           },
         ],
         Subject: `Payment Attempt Failed`,
-        TextPart: `Your Client attempted to pay: ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but something went wrong. Log into DoodleMeeple for more details.`,
+        TextPart: `Your Client attempted to pay: ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but something went wrong. Please log into DoodleMeeple, go to ACCOUNT and re-connect your STRIPE account.`,
         HTMLPart: `<p>Hi ${paymentDetails.name},</p>
-        <p>Your Client attempted to pay ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but the transfer failed."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${paymentDetails.amount} ${paymentDetails.currency} (FAILED)</p><p>Please visit <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a> and ensure your STRIPE account is properly set up.</p><p>${emailAddress.signoffHTML}</p> `,
+        <p>Your Client attempted to pay: ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but something went wrong.</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>Please Re-connect your STRIPE account</p><p>Visit <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a> go to ACCOUNT and re-connect your STRIPE account.</p><p>${emailAddress.signoffHTML}</p> `,
+      },
+    ],
+  });
+  return request;
+}
+
+async function withdrawFailedEmailAdmin(paymentDetails) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: 'tim@doodlemeeple.com',
+            Name: 'FAILED PAYMENT',
+          },
+        ],
+        Subject: `Payment Attempt Failed`,
+        TextPart: `Your Client attempted to pay: ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account but something went wrong. Log into DoodleMeeple for more details.`,
+        HTMLPart: `<p>Hi Payment Admin Person,</p>
+        <p>Someone attempted to pay ${paymentDetails.amount} ${paymentDetails.currency} to ${paymentDetails.email}, but......THERE'S NO MONEY IN THE STRIPE ACCOUNT!!!! this is obviously bad. Fix it</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>NO MONEY IN STRIPE ACCOUNT</p><p>${emailAddress.signoffHTML}</p> `,
+      },
+    ],
+  });
+  return request;
+}
+
+async function earlyClosure(creator, job) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: 'tim@doodlemeeple.com',
+            Name: 'EARLY CLOSURE',
+          },
+        ],
+        Subject: `Early Closure Request`,
+        TextPart: `${creator.email} has request an early closure of: ${job.name} `,
+        HTMLPart: `<p>Hi Payment Admin Person,</p>
+        <p>${creator.email} has request an early closure of: ${job.name}</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center; '>EARLY CLOSURE</p><p>${emailAddress.signoffHTML}</p> `,
       },
     ],
   });
@@ -68,7 +117,7 @@ async function emailInvite(user, jobDeets) {
         Subject: `You've got an invite`,
         TextPart: `You have been asked to provide a quote for "${jobDeets.name}"`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>You have been asked to provide a quote for "${jobDeets.name}"</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>${jobDeets.summary}</p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -93,7 +142,7 @@ async function emailQuote(user, quoteDeets, sender) {
         Subject: `${sender.name} has responded to your job on DoodleMeeple`,
         TextPart: `${sender.name} has responded to your job on DoodleMeeple: ${quoteDeets.cost} ${quoteDeets.currency}, ${quoteDeets.deadline}. View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>${sender.name} has responded to your job on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>${sender.name} has responded to your job on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -118,7 +167,7 @@ async function emailDeclineQuote(user, quoteDeets, sender) {
         Subject: `${sender.name} has rejected your quote`,
         TextPart: `${sender.name} has rejected your quote on DoodleMeeple: View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>${sender.name} has rejected your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>REJECTED</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>${sender.name} has rejected your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>REJECTED</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -143,7 +192,7 @@ async function emailAcceptQuote(user, quoteDeets, sender) {
         Subject: `${sender.name} has ACCEPTED your quote`,
         TextPart: `Congratulations, ${sender.name} has ACCEPTED your quote on DoodleMeeple: View the full quote at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
         HTMLPart: `<p>Hi ${user.name},</p>
-        <p>Congratulations, ${sender.name} has ACCEPTED your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff;padding-bottom:30px; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>ACCEPTED</p><p>We'll let you know as soon as the Client has deposited the payment.</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        <p>Congratulations, ${sender.name} has ACCEPTED your quote on DoodleMeeple</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center; text-align:center'>${quoteDeets.cost} ${quoteDeets.currency}<br/>${quoteDeets.deadline}<br/>ACCEPTED</p><p>We'll let you know as soon as the Client has deposited the payment.</p><p>View the full quote at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
     ],
@@ -169,7 +218,7 @@ async function emailNewMessage(user, subject) {
         TextPart: `There's a message waiting for you on Doodle Meeple"`,
         HTMLPart: `<p>Hi ${user.name},</p>
         <p>There's a message waiting for you on Doodle Meeple!
-        </p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>1 New Message
+        </p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center; text-align:center;'>1 New Message
         </p><p>Login at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${emailAddress.messagesURL}'>${emailAddress.messagesURL}</a></p><p>${emailAddress.signoffHTML}</p>
         `,
       },
@@ -258,4 +307,6 @@ module.exports = {
   emailAcceptQuote,
   withdrawPaymentEmail,
   withdrawFailedEmail,
+  withdrawFailedEmailAdmin,
+  earlyClosure,
 };

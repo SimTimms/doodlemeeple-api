@@ -10,6 +10,7 @@ import cors from 'cors';
 import { Payment, Contract, Job, Notification, User } from './models';
 import { CONTRACT_PAID } from './utils/notifications';
 import { getUserIdWithoutContext } from './utils';
+
 const stripe = require('stripe')(process.env.STRIPE_KEY, {
   apiVersion: '2020-03-02',
 });
@@ -45,6 +46,13 @@ app.post(
 
         case 'charge.succeeded':
           console.log('Charge was successful!');
+          console.log(event.data.object.payment_intent);
+
+          const paymentDebug = await Payment.findOne({
+            paymentId: event.data.object.payment_intent,
+          });
+
+          console.log(paymentDebug);
           await Payment.updateMany(
             { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }
@@ -55,14 +63,13 @@ app.post(
           });
 
           const contract = await Contract.findOne({ _id: payment.contract });
+
           await Contract.updateOne({ _id: contract._id }, { status: 'paid' });
-          await Job.updateOne({ _id: contract.job._id }, { submitted: 'paid' });
+          await Job.updateOne({ _id: contract.job }, { submitted: 'paid' });
           const client = await User.findOne({ _id: contract.signedBy });
           const notificationMessage = { ...CONTRACT_PAID };
-          notificationMessage.message = `${client.name} has deposited ${
-            payment.amount / 100
-          } ${payment.currency} into our holding account`;
-          notificationMessage.linkTo = `${notificationMessage.linkTo}${contract._id}`;
+          notificationMessage.message = `${client.name} has deposited ${payment.amount} ${payment.currency} into our holding account`;
+          notificationMessage.linkTo = `${notificationMessage.linkTo}${contract.job}`;
           await Notification.create({
             ...notificationMessage,
             user: contract.user._id,
@@ -103,7 +110,11 @@ app.post('/stripe-onboarding', async (req, res) => {
   const userId = getUserIdWithoutContext(req.headers.authorization);
 
   try {
-    const account = await stripe.accounts.create({ type: 'express' });
+    const account = await stripe.accounts.create({
+      type: 'standard',
+      country: 'GB',
+      default_currency: 'gbp',
+    });
     const origin = `${req.headers.origin}`;
     const accountLinkURL = await generateAccountLink(
       account.id,
@@ -120,11 +131,10 @@ app.post('/stripe-onboarding', async (req, res) => {
 
 app.get('/stripe-onboarding/refresh', async (req, res) => {
   try {
-    const { accountID } = req.session;
-    const origin = `${req.secure ? 'https://' : 'https://'}${req.headers.host}`;
-
-    const accountLinkURL = await generateAccountLink(accountID, origin);
-    res.redirect(accountLinkURL);
+    // const { accountID } = req.session;
+    //  const origin = `${req.secure ? 'https://' : 'https://'}${req.headers.host}`;
+    // const accountLinkURL = await generateAccountLink(accountID, origin);
+    // res.redirect(accountLinkURL);
   } catch (err) {
     res.status(500).send({
       error: err.message,

@@ -21,7 +21,7 @@ CountTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const invites = await Invite.find({
       $and: [{ receiver: userId }, { sender: { $ne: userId } }],
-      status: { $nin: ['declined', 'closed'] },
+      status: 'unopened',
     });
 
     const messages = await Message.find({ receiver: userId, status: 'unread' });

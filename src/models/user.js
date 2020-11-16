@@ -52,8 +52,8 @@ export const UserSchema = new Schema(
     autosave: { type: String },
     summary: { type: String },
     location: { type: String },
-    stripeId: { type: String },
     onboarding: { type: String },
+    rating: { type: Number },
     stripeID: { type: String },
     favourites: [
       {
@@ -95,6 +95,15 @@ UserSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const User = mongoose.model('User', UserSchema);
 export const UserTC = composeWithMongoose(User);
+
+export const StripeSchema = new Schema({
+  object: { type: String },
+  details_submitted: { type: Boolean },
+  payouts_enabled: { type: Boolean },
+});
+
+const Stripe = mongoose.model('Stripe', StripeSchema);
+const StripeTC = composeWithMongoose(Stripe);
 
 UserTC.addResolver({
   name: 'profile',
@@ -140,7 +149,7 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
     const users = await User.find({
-      $and: [{ _id: { $in: sectionUserIds } }],
+      $and: [{ _id: { $in: sectionUserIds } }, { stripeID: { $ne: null } }],
     })
       .sort({
         profileBG: -1,
@@ -199,6 +208,13 @@ UserTC.addResolver({
   resolve: async ({ source, args }) => {
     return login(args);
   },
+});
+
+UserTC.addResolver({
+  name: 'getStripe',
+  type: StripeTC,
+  kind: 'query',
+  resolve: async () => {},
 });
 
 UserTC.addResolver({
@@ -364,8 +380,6 @@ UserTC.addResolver({
       resetToken: rp.args.token,
     });
 
-    console.log(user, rp.args.token);
-
     const validSubmission = signupChecks({
       password: rp.args.password,
       name: user.name,
@@ -393,9 +407,7 @@ UserTC.addResolver({
       const request = emailReset(user, actionLink);
 
       request
-        .then((result) => {
-          console.log(result);
-        })
+        .then((result) => {})
         .catch((err) => {
           console.log(err.statusCode);
         });

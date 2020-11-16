@@ -2,6 +2,9 @@ import { UserTC, Notification, User } from '../models';
 import { userRegistration } from '../resolversNew';
 import { REGISTRATION, CREATE_JOB } from '../utils/notifications';
 import { getUserId } from '../utils';
+const stripe = require('stripe')(process.env.STRIPE_KEY, {
+  apiVersion: '2020-03-02',
+});
 
 const UserQuery = {
   userById: UserTC.getResolver('findById'),
@@ -13,6 +16,19 @@ const UserQuery = {
   userPagination: UserTC.getResolver('pagination'),
   profile: UserTC.getResolver('profile'),
   getCreatives: UserTC.getResolver('getCreatives'),
+  getStripe: UserTC.getResolver('getStripe').wrapResolve(
+    (next) => async (rp) => {
+      const userId = getUserId(rp.context.headers.authorization);
+      const user = await User.findOne({
+        _id: userId,
+      });
+
+      const account = await stripe.accounts.retrieve(user.stripeID);
+      console.log(account);
+
+      return account;
+    }
+  ),
 };
 
 const UserMutation = {

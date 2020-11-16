@@ -8,57 +8,57 @@ const UPDATED_PROFILE = {
 const CONTRACT_SUBMITTED = {
   title: `You've got a Quote`,
   message: 'Check it out',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'request_quote',
 };
 
 const CONTRACT_PAID = {
   title: `Your deposit has been paid`,
   message: '',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const CONTRACT_DECLINED = {
   title: `Your quote has been declined`,
   message: 'Your quote has been declined',
-  linkTo: '/app/view-contract/',
+  linkTo: '/app/view-job/',
   icon: 'thumb_down',
 };
 
+const CONTRACT_ACCEPTED = {
+  title: `Your quote has been accepted`,
+  message: 'Your quote has been accepted',
+  linkTo: '/app/view-job/',
+  icon: 'thumb_up',
+};
+
 const WITHDRAW_REQUEST = {
-  title: `Withdraw Request`,
+  title: `Withdrawal Request`,
   message: 'Your Creative has requested a withdraw',
   linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const WITHDRAW_APPROVED = {
-  title: `Withdraw Approve`,
+  title: `Withdrawal Approved`,
   message: 'Your request has been approved',
   linkTo: '/app/view-job/',
   icon: 'payment',
 };
 
 const WITHDRAW_FAILED = {
-  title: `Withdraw FAILED`,
+  title: `Withdrawal FAILED`,
   message: 'Your attempted withdrawal failed, CLICK HERE to resolve',
   linkTo: '/app/failed-payment/',
   icon: 'warning',
-};
-
-const CONTRACT_ACCEPTED = {
-  title: `Your quote has been accepted`,
-  message: 'Your quote has been accepted',
-  linkTo: '/app/view-contract/',
-  icon: 'thumb_up',
 };
 
 const REGISTRATION = {
   title: `Thanks for joining us`,
   message: 'Start by creating an amazing profile',
   linkTo: '/app/edit-profile/',
-  icon: 'contact_mail',
+  icon: 'face',
 };
 
 const CREATE_JOB = {

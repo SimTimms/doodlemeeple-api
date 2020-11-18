@@ -52,7 +52,6 @@ app.post(
             paymentId: event.data.object.payment_intent,
           });
 
-          console.log(paymentDebug);
           await Payment.updateMany(
             { paymentId: event.data.object.payment_intent },
             { status: 'charge_succeeded' }

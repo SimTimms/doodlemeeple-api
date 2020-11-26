@@ -55,6 +55,7 @@ export const UserSchema = new Schema(
     onboarding: { type: String },
     rating: { type: Number },
     stripeID: { type: String },
+    campaignId: { type: String },
     favourites: [
       {
         type: Schema.Types.ObjectId,

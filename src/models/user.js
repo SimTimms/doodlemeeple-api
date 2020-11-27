@@ -55,6 +55,7 @@ export const UserSchema = new Schema(
     onboarding: { type: String },
     rating: { type: Number },
     stripeID: { type: String },
+    stripeStatus: { type: String },
     campaignId: { type: String },
     favourites: [
       {
@@ -112,9 +113,14 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'query',
   resolve: async (rp) => {
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
+    });
+
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-
+    const account = await stripe.accounts.retrieve(user.stripeID);
+    user.stripeStatus = account.payouts_enabled;
     return user;
   },
 });

@@ -24,7 +24,6 @@ const UserQuery = {
       });
 
       const account = await stripe.accounts.retrieve(user.stripeID);
-      console.log(account);
 
       return account;
     }

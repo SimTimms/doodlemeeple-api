@@ -119,9 +119,28 @@ UserTC.addResolver({
 
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    const account = await stripe.accounts.retrieve(user.stripeID);
+    const account = await stripe.accounts.retrieve(`${user.stripeID}`);
     user.stripeStatus = account.payouts_enabled;
     return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'deleteStripe',
+  args: {},
+  type: 'String',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
+    });
+
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.findOne({ _id: userId });
+    console.log(user);
+    const deleted = await stripe.accounts.del(`${user.stripeID}`);
+
+    return 'deleted';
   },
 });
 

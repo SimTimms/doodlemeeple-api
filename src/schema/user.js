@@ -23,8 +23,10 @@ const UserQuery = {
         _id: userId,
       });
 
-      const account = await stripe.accounts.retrieve(user.stripeID);
-
+      const account = user.stripeID
+        ? await stripe.accounts.retrieve(`${user.stripeID}`)
+        : false;
+      console.log(user, account);
       return account;
     }
   ),
@@ -67,6 +69,7 @@ const UserMutation = {
   updateProfile: UserTC.getResolver('updateProfile'),
   passwordForgot: UserTC.getResolver('passwordForgot'),
   passwordReset: UserTC.getResolver('passwordReset'),
+  deleteStripe: UserTC.getResolver('deleteStripe'),
   skipOnboarding: UserTC.getResolver('skipOnboarding'),
 };
 

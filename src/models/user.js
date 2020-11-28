@@ -139,11 +139,7 @@ UserTC.addResolver({
     });
 
     const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.findOne({ _id: userId });
-
-    const deleted = user.stripeID
-      ? await stripe.accounts.del(`${user.stripeID}`)
-      : false;
+    const user = await User.updateOne({ _id: userId }, { stripeID: null });
 
     return 'deleted';
   },

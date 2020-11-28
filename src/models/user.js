@@ -120,7 +120,7 @@ UserTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
 
-    const account = user.stripeId
+    const account = user.stripeID
       ? await stripe.accounts.retrieve(`${user.stripeID}`)
       : null;
     user.stripeStatus = account ? account.payouts_enabled : 'false';

@@ -26,7 +26,7 @@ const UserQuery = {
       const account = user.stripeID
         ? await stripe.accounts.retrieve(`${user.stripeID}`)
         : false;
-      console.log(user, account);
+
       return account;
     }
   ),

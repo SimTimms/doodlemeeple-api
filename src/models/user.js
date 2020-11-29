@@ -56,6 +56,7 @@ export const UserSchema = new Schema(
     rating: { type: Number },
     stripeID: { type: String },
     stripeStatus: { type: String },
+    stripeEmail: { type: String },
     campaignId: { type: String },
     favourites: [
       {
@@ -124,6 +125,7 @@ UserTC.addResolver({
       ? await stripe.accounts.retrieve(`${user.stripeID}`)
       : null;
     user.stripeStatus = account ? account.payouts_enabled : 'false';
+    console.log(account);
     return user;
   },
 });

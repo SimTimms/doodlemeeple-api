@@ -24,9 +24,10 @@ const UserQuery = {
       });
 
       const account = user.stripeID
-        ? await stripe.accounts.retrieve(`${user.stripeID}`)
+        ? await stripe.accounts.retrieve(`${user.stripeClientId}`)
         : false;
 
+      console.log(account);
       return account;
     }
   ),
@@ -70,6 +71,8 @@ const UserMutation = {
   passwordForgot: UserTC.getResolver('passwordForgot'),
   passwordReset: UserTC.getResolver('passwordReset'),
   deleteStripe: UserTC.getResolver('deleteStripe'),
+  connectStripe: UserTC.getResolver('connectStripe'),
+  disconnectStripe: UserTC.getResolver('disconnectStripe'),
   skipOnboarding: UserTC.getResolver('skipOnboarding'),
 };
 

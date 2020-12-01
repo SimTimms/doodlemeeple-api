@@ -126,9 +126,12 @@ UserTC.addResolver({
     const user = await User.findOne({ _id: userId });
 
     try {
-      const account = await stripe.accounts.retrieve(`${user.stripeID}`);
+      const account = user.stripeID
+        ? await stripe.accounts.retrieve(`${user.stripeID}`)
+        : null;
       user.stripeStatus = account ? account.payouts_enabled : 'false';
     } catch (error) {
+      console.log(error);
       user.stripeStatus = 'error';
     }
 

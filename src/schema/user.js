@@ -24,10 +24,9 @@ const UserQuery = {
       });
 
       const account = user.stripeID
-        ? await stripe.accounts.retrieve(`${user.stripeClientId}`)
+        ? await stripe.accounts.retrieve(`${user.stripeID}`)
         : false;
 
-      console.log(account);
       return account;
     }
   ),

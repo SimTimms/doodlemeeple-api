@@ -245,7 +245,12 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
     const users = await User.find({
-      $and: [{ _id: { $in: sectionUserIds } }, { stripeID: { $ne: null } }],
+      $and: [
+        { _id: { $in: sectionUserIds } },
+        {
+          $or: [{ stripeID: { $ne: null } }, { stripeClientId: { $ne: null } }],
+        },
+      ],
     })
       .sort({
         profileBG: -1,

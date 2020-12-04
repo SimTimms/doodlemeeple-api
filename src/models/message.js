@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC, Invite } from './';
+import { UserTC, JobTC, Invite, User } from './';
 import timestamps from 'mongoose-timestamp';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
@@ -109,50 +109,46 @@ MessageTC.addResolver({
       status: { $ne: 'declined' },
     });
 
-    const jobArr = invites.map((invite) => invite.job);
-
-    const messages = await Message.aggregate([
-      {
-        $match: {
-          $or: [{ receiver: ObjectId(userId) }, { sender: ObjectId(userId) }],
-          job: { $in: jobArr },
-        },
-      },
-      {
-        $group: {
-          _id: '$job',
-          receiver: { $first: '$receiver' },
-          sender: { $first: '$sender' },
-          job: { $first: '$job' },
-        },
-      },
-    ]).sort({ updatedAt: -1 });
-    const counts = await Message.aggregate([
-      {
-        $match: {
-          receiver: ObjectId(userId),
-          status: 'unread',
-        },
-      },
-      {
-        $group: {
-          _id: '$job',
-          receiver: { $first: '$receiver' },
-          job: { $first: '$job' },
-          count: { $first: '$count' },
-          total: { $sum: 1 },
-        },
-      },
-    ]);
-
     //TODO: Get a clever person to circumvent this loop with some clever aggregate shit
 
-    const messageIndex = messages.map((count) => count.job.toString());
+    let conversationArray = [];
+    for (let i = 0; i < invites.length; i++) {
+      const invite = invites[i];
+      const receiver = await User.findOne({
+        _id: ObjectId(invite.receiver),
+      });
 
-    counts.map((count) => {
-      const index = messageIndex.indexOf(count.job.toString());
-      messages[index].count = index > -1 ? count.total : 0;
-    });
-    return messages;
+      const sender = await User.findOne({
+        _id: ObjectId(invite.sender),
+      });
+
+      const counts = await Message.find({
+        receiver: ObjectId(userId),
+        job: ObjectId(invite.job._id),
+        status: 'unread',
+      });
+
+      receiver &&
+        sender &&
+        conversationArray.push({
+          count: counts.length,
+          job: {
+            _id: invite.job,
+            name: '',
+          },
+          receiver: {
+            name: receiver.name,
+            _id: receiver._id,
+            profileImg: receiver.profileImg,
+          },
+          sender: {
+            name: sender.name,
+            _id: sender._id,
+            profileImg: sender.profileImg,
+          },
+        });
+    }
+
+    return conversationArray;
   },
 });

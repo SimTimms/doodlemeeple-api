@@ -55,6 +55,13 @@ export const UserSchema = new Schema(
     onboarding: { type: String },
     rating: { type: Number },
     stripeID: { type: String },
+    stripeStatus: { type: String },
+    stripeEmail: { type: String },
+    stripeRefresh: { type: String },
+    stripeAccess: { type: String },
+    stripeClientId: { type: String },
+    paymentMethod: { type: String },
+    campaignId: { type: String },
     favourites: [
       {
         type: Schema.Types.ObjectId,
@@ -111,10 +118,99 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'query',
   resolve: async (rp) => {
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
+    });
+
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
 
+    try {
+      const account = user.stripeID
+        ? await stripe.accounts.retrieve(`${user.stripeID}`)
+        : null;
+      user.stripeStatus = account ? account.payouts_enabled : 'false';
+    } catch (error) {
+      console.log(error);
+      user.stripeStatus = 'error';
+    }
+
     return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'disconnectStripe',
+  args: {},
+  type: 'String',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
+    });
+
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.findOne({ _id: userId });
+    console.log(user);
+    const response = await stripe.oauth.deauthorize({
+      client_id: process.env.STRIPE_CLIENT_ID,
+      stripe_user_id: user.stripeClientId,
+    });
+
+    await User.updateOne(
+      { _id: userId },
+      { stripeID: null, stripeClientId: null }
+    );
+
+    return 'deleted';
+  },
+});
+
+UserTC.addResolver({
+  name: 'deleteStripe',
+  args: {},
+  type: 'String',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const stripe = require('stripe')(process.env.STRIPE_KEY, {
+      apiVersion: '2020-03-02',
+    });
+
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.updateOne({ _id: userId }, { stripeID: null });
+
+    return 'deleted';
+  },
+});
+
+UserTC.addResolver({
+  name: 'connectStripe',
+  args: { token: 'String!' },
+  type: 'String',
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.updateOne(
+      { _id: userId },
+      { stripeRefresh: rp.args.token }
+    );
+
+    const stripe = require('stripe')(`${process.env.STRIPE_KEY}`);
+
+    const response = await stripe.oauth.token({
+      grant_type: 'authorization_code',
+      code: rp.args.token,
+    });
+
+    const access = await User.updateOne(
+      { _id: userId },
+      {
+        stripeAccess: response.access_token,
+        stripeRefresh: response.refresh_token,
+        stripeClientId: response.stripe_user_id,
+      }
+    );
+    return 'connected';
   },
 });
 
@@ -149,7 +245,7 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
     const users = await User.find({
-      $and: [{ _id: { $in: sectionUserIds } }, { stripeID: { $ne: null } }],
+      $and: [{ _id: { $in: sectionUserIds } }],
     })
       .sort({
         profileBG: -1,

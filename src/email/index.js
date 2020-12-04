@@ -21,7 +21,7 @@ async function withdrawPaymentEmail(paymentDetails) {
         Subject: `You've been paid!`,
         TextPart: `Your Client has paid: ${paymentDetails.amount} ${paymentDetails.currency}. Log into DoodleMeeple for more details`,
         HTMLPart: `<p>Hi ${paymentDetails.name},</p>
-        <p>Your Client has paid ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account."</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>${paymentDetails.amount} ${paymentDetails.currency} </p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p> `,
+        <p>Your Client has paid ${paymentDetails.amount} ${paymentDetails.currency} into your STRIPE account.</p><p style='background:#57499e; padding:20px; border-radius:5px; font-size:20px; color:#fff; text-align:center;'>${paymentDetails.amount} ${paymentDetails.currency} </p><p>Check in at <a style="background:#ddd; border-radius:5px; text-decoration:none; padding:10px; color:#444; margin-top:10px; margin-bottom:10px;" href='${process.env.EMAIL_URL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p> `,
       },
     ],
   });

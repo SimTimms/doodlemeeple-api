@@ -129,7 +129,7 @@ PaymentTermsTC.addResolver({
       _id: contract.user,
     });
 
-    if (!creative.stripeID) {
+    if (!creative.stripeClientId) {
       return 'STRIPE SETUP';
     }
 
@@ -144,11 +144,17 @@ PaymentTermsTC.addResolver({
     const balanceAmount = await stripe.balance.retrieve();
     if (balanceAmount.available[0].amount > 0) {
       try {
-        const transfer = await stripe.transfers.create({
-          amount: paymentTerm.percent * 90,
-          currency: contract.currency.toLowerCase(),
-          destination: creative.stripeID,
-        });
+        const transfer = !creative.stripeClientId
+          ? await stripe.transfers.create({
+              amount: paymentTerm.percent * 90,
+              currency: contract.currency.toLowerCase(),
+              destination: `${creative.stripeID}`,
+            })
+          : await stripe.transfers.create({
+              amount: paymentTerm.percent * 90,
+              currency: contract.currency.toLowerCase(),
+              destination: `${creative.stripeClientId}`,
+            });
 
         await PaymentTerms.updateOne(
           {

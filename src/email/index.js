@@ -76,6 +76,30 @@ async function withdrawFailedEmailAdmin(paymentDetails) {
   return request;
 }
 
+async function noStripeEmailAdmin({ name, email }) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple Payments',
+        },
+        To: [
+          {
+            Email: email,
+            Name: 'FAILED PAYMENT',
+          },
+        ],
+        Subject: `Payment Attempt Failed`,
+        TextPart: `Hi ${name}, Your Client is unable to transfer a payment into your STRIPE account because it's not correctly setup. Please login to your stripe account and complete the verification process or email support@doodlemeeple.com for help.`,
+        HTMLPart: `<p>Hi ${name}</p>
+        <p>Your Client is unable to transfer a payment into your STRIPE account because it's not correctly setup. Please login to your stripe account and complete the verification process or email support@doodlemeeple.com for help.</p><p>${emailAddress.signoffHTML}</p> `,
+      },
+    ],
+  });
+  return request;
+}
+
 async function earlyClosure(creator, job) {
   const request = mailjet.post('send', { version: 'v3.1' }).request({
     Messages: [
@@ -309,4 +333,5 @@ module.exports = {
   withdrawFailedEmail,
   withdrawFailedEmailAdmin,
   earlyClosure,
+  noStripeEmailAdmin,
 };

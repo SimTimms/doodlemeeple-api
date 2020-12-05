@@ -31,7 +31,7 @@ exports.sign_s3 = async (req, res) => {
     return res.send('No File Submitted');
   }
   let fileName = filenamify(req.body.fileName, { maxLength: 10 });
-  fileName = `${fileName}-${userId}-${new Date().getTime()}`;
+  fileName = `${userId}/${fileName}-${userId}-${new Date().getTime()}`;
   const fileType = req.body.fileType;
   const fileSize = req.body.fileSize;
 
@@ -52,7 +52,6 @@ exports.sign_s3 = async (req, res) => {
 
     return;
   }
-
   if (fileSize > approvedFileSize) {
     res.json({
       success: false,

@@ -12,6 +12,7 @@ import {
   withdrawPaymentEmail,
   withdrawFailedEmail,
   withdrawFailedEmailAdmin,
+  noStripeEmailAdmin,
 } from '../email';
 
 const ObjectId = mongoose.Types.ObjectId;
@@ -129,7 +130,17 @@ PaymentTermsTC.addResolver({
       _id: contract.user,
     });
 
-    if (!creative.stripeClientId) {
+    if (!creative.stripeClientId && !creative.stripeID) {
+      const stripeSetupEmail = noStripeEmailAdmin({
+        name: creative.name,
+        email: creative.email,
+      });
+
+      stripeSetupEmail
+        .then((result) => {})
+        .catch((err) => {
+          console.log(err);
+        });
       return 'STRIPE SETUP';
     }
 

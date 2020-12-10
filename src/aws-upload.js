@@ -63,7 +63,7 @@ exports.sign_s3 = async (req, res) => {
 
   const s3Params = {
     Bucket: S3_BUCKET,
-    Key: `${fileName}`,
+    Key: `${fileName}.${fileType}`,
     ContentType: fileType,
     ACL: 'public-read',
   };
@@ -75,7 +75,7 @@ exports.sign_s3 = async (req, res) => {
 
     const returnData = {
       signedRequest: data,
-      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`,
+      url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}.${fileType}`,
     };
 
     res.json({ success: true, data: { returnData } });

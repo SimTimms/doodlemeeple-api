@@ -249,14 +249,14 @@ UserTC.addResolver({
         { _id: { $in: sectionUserIds } },
         { profileImg: { $ne: '' } },
         { profileImg: { $ne: null } },
+        { summary: { $ne: null } },
+        { summary: { $ne: '' } },
       ],
     })
       .sort({
-        profileBG: -1,
         summary: -1,
-        profileImg: -1,
       })
-      .limit(75);
+      .limit(50);
     return users;
   },
 });

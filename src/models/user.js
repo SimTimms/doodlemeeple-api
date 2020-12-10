@@ -247,9 +247,7 @@ UserTC.addResolver({
     const users = await User.find({
       $and: [
         { _id: { $in: sectionUserIds } },
-        { profileBG: { $ne: '' } },
-        { profileBG: { $ne: null } },
-        { profileBG: { $ne: '' } },
+        { profileImg: { $ne: '' } },
         { profileImg: { $ne: null } },
       ],
     })

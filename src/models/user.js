@@ -254,6 +254,8 @@ UserTC.addResolver({
       ],
     })
       .sort({
+        stripeClientId: -1,
+        stripeID: -1,
         profileBG: -1,
         profileImg: -1,
         summary: -1,

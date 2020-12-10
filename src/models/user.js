@@ -254,6 +254,8 @@ UserTC.addResolver({
       ],
     })
       .sort({
+        profileBG: -1,
+        profileImg: -1,
         summary: -1,
       })
       .limit(50);

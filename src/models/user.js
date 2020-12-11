@@ -262,7 +262,7 @@ UserTC.addResolver({
         stripeID: -1,
         paymentMethod: -1,
       })
-      .skip(rp.args.page)
+      .skip(rp.args.page * 15)
       .limit(15);
 
     return users;

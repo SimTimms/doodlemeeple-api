@@ -16,6 +16,7 @@ const UserQuery = {
   userPagination: UserTC.getResolver('pagination'),
   profile: UserTC.getResolver('profile'),
   getCreatives: UserTC.getResolver('getCreatives'),
+  getLikes: UserTC.getResolver('getLikes'),
   getStripe: UserTC.getResolver('getStripe').wrapResolve(
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);

@@ -15,6 +15,7 @@ import {
   Gallery,
   InviteTC,
   FavouriteTC,
+  Favourite,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -232,7 +233,7 @@ UserTC.addResolver({
 
 UserTC.addResolver({
   name: 'getCreatives',
-  args: { type: ['String'] },
+  args: { type: ['String'], page: 'Int' },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
@@ -261,7 +262,25 @@ UserTC.addResolver({
         stripeID: -1,
         paymentMethod: -1,
       })
-      .limit(50);
+      .skip(rp.args.page)
+      .limit(15);
+
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'getLikes',
+  args: { type: ['String'] },
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const favourites = await Favourite.find({
+      receiver: userId,
+    }).limit(50);
+    const userIds = favourites.map((favourites) => ObjectId(favourites.user));
+    const users = await User.find({ _id: { $in: userIds } }).limit(50);
     return users;
   },
 });

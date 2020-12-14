@@ -21,10 +21,16 @@ import { emailInvite, earlyClosure } from '../email';
 export const JobSchema = new Schema(
   {
     name: { type: String },
+    genre: { type: String },
     keywords: [{ type: String }],
     img: { type: String },
     backgroundImg: { type: String },
     summary: { type: String },
+    scope: { type: String },
+    mechanics: { type: String },
+    timeframe: { type: String },
+    budget: { type: String },
+    extra: { type: String },
     location: { type: String },
     showreel: { type: String },
     creativeSummary: { type: String },

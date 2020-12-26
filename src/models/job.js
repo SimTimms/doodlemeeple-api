@@ -10,6 +10,7 @@ import {
   User,
   ContractTC,
   Contract,
+  GalleryTC,
 } from './';
 import { ContractSchema } from './contract';
 import { UserSchema } from './user';
@@ -21,10 +22,16 @@ import { emailInvite, earlyClosure } from '../email';
 export const JobSchema = new Schema(
   {
     name: { type: String },
+    genre: { type: String },
     keywords: [{ type: String }],
     img: { type: String },
     backgroundImg: { type: String },
     summary: { type: String },
+    scope: { type: String },
+    mechanics: { type: String },
+    timeframe: { type: String },
+    budget: { type: String },
+    extra: { type: String },
     location: { type: String },
     showreel: { type: String },
     creativeSummary: { type: String },
@@ -32,6 +39,10 @@ export const JobSchema = new Schema(
     paid: { type: String },
     format: [{ type: String }],
     imageRes: { type: String },
+    gallery: {
+      type: Schema.Types.ObjectId,
+      ref: 'Gallery',
+    },
     invites: [
       {
         type: Schema.Types.ObjectId,
@@ -52,7 +63,6 @@ export const JobSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Contract',
     },
-
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -78,6 +88,14 @@ JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {
     _id: (parent) => parent.user,
+  },
+  projection: { id: true },
+});
+
+JobTC.addRelation('gallery', {
+  resolver: () => GalleryTC.getResolver('findById'),
+  prepareArgs: {
+    _id: (parent) => parent.gallery,
   },
   projection: { id: true },
 });

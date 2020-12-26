@@ -1,4 +1,4 @@
-import { JobTC } from '../models';
+import { JobTC, Gallery } from '../models';
 import { getUserId } from '../utils';
 
 const JobQuery = {
@@ -19,6 +19,9 @@ const JobMutation = {
       const userId = getUserId(rp.context.headers.authorization);
       rp.args.record.user = userId;
       rp.args.record.submitted = 'draft';
+
+      const gallery = await Gallery.create({});
+      rp.args.record.gallery = gallery._id;
 
       const job = await next(rp);
       return job;

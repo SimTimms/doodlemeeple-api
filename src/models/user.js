@@ -62,6 +62,7 @@ export const UserSchema = new Schema(
     stripeAccess: { type: String },
     stripeClientId: { type: String },
     paymentMethod: { type: String },
+    viewCount: { type: Number },
     campaignId: { type: String },
     favourites: [
       {

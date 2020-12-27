@@ -14,7 +14,8 @@ const UserQuery = {
       _id: rp.args._id,
     });
 
-    userId !== user._id &&
+    user &&
+      userId !== user._id &&
       (await User.updateOne(
         { _id: rp.args._id },
         { viewCount: user.viewCount ? user.viewCount + 1 : 1 }

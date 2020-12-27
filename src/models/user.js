@@ -63,6 +63,7 @@ export const UserSchema = new Schema(
     stripeClientId: { type: String },
     paymentMethod: { type: String },
     viewCount: { type: Number },
+    responsePercent: { type: Number },
     campaignId: { type: String },
     favourites: [
       {
@@ -153,7 +154,6 @@ UserTC.addResolver({
 
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    console.log(user);
     const response = await stripe.oauth.deauthorize({
       client_id: process.env.STRIPE_CLIENT_ID,
       stripe_user_id: user.stripeClientId,

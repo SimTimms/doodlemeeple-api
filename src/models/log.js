@@ -3,7 +3,7 @@ import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC } from './';
 
-export const FavouriteSchema = new Schema(
+export const LogSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -16,14 +16,14 @@ export const FavouriteSchema = new Schema(
   }
 );
 
-FavouriteSchema.plugin(timestamps);
+LogSchema.plugin(timestamps);
 
-FavouriteSchema.index({ createdAt: 1, updatedAt: 1 });
+LogSchema.index({ createdAt: 1, updatedAt: 1 });
 
-export const Favourite = mongoose.model('Favourite', FavouriteSchema);
-export const FavouriteTC = composeWithMongoose(Favourite);
+export const Log = mongoose.model('Log', LogSchema);
+export const LogTC = composeWithMongoose(Log);
 
-FavouriteTC.addRelation('user', {
+LogTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ id: source.user }),
@@ -31,7 +31,7 @@ FavouriteTC.addRelation('user', {
   projection: { id: true },
 });
 
-FavouriteTC.addRelation('receiver', {
+LogTC.addRelation('receiver', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ _id: source.receiver }),

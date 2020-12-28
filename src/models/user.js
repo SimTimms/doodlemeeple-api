@@ -62,6 +62,7 @@ export const UserSchema = new Schema(
     stripeRefresh: { type: String },
     stripeAccess: { type: String },
     stripeClientId: { type: String },
+    available: { type: Boolean },
     paymentMethod: { type: String },
     viewCount: { type: Number },
     responsePercent: { type: Number },
@@ -255,6 +256,7 @@ UserTC.addResolver({
         { profileImg: { $ne: null } },
         { summary: { $ne: null } },
         { summary: { $ne: '' } },
+        { available: { $ne: false } },
       ],
     })
       .sort({

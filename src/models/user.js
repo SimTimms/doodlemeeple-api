@@ -284,7 +284,7 @@ UserTC.addFields({
       const percentResponse = 1 - invitesUnactioned.length / invites.length;
 
       return !isNaN(percentResponse)
-        ? `${Math.ceil(percentResponse * 100)}%`
+        ? `${Math.ceil(percentResponse * 100)}`
         : '';
     },
   },

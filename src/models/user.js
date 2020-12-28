@@ -14,6 +14,7 @@ import {
   Testimonial,
   Gallery,
   InviteTC,
+  Invite,
   FavouriteTC,
   Favourite,
 } from './';
@@ -246,6 +247,7 @@ UserTC.addResolver({
       { $limit: 1000 },
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
+
     const users = await User.find({
       $and: [
         { _id: { $in: sectionUserIds } },
@@ -267,6 +269,24 @@ UserTC.addResolver({
       .limit(15);
 
     return users;
+  },
+});
+
+UserTC.addFields({
+  responsePercent: {
+    type: 'String', // String, Int, Float, Boolean, ID, Json
+    description: 'response rate ',
+    resolve: async (source, args, context, info) => {
+      const invites = await Invite.find({ receiver: source._id });
+      const invitesUnactioned = invites.filter(
+        (item) => item.status === 'read'
+      );
+      const percentResponse = 1 - invitesUnactioned.length / invites.length;
+
+      return !isNaN(percentResponse)
+        ? `${Math.ceil(percentResponse * 100)}%`
+        : '';
+    },
   },
 });
 

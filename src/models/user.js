@@ -62,6 +62,8 @@ export const UserSchema = new Schema(
     stripeRefresh: { type: String },
     stripeAccess: { type: String },
     stripeClientId: { type: String },
+    termsAccepted: { type: Boolean },
+    acceptsSpeculative: { type: Boolean },
     available: { type: Boolean },
     paymentMethod: { type: String },
     viewCount: { type: Number },

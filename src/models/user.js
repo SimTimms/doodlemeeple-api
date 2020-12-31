@@ -301,7 +301,7 @@ UserTC.addResolver({
           .sort({
             profileBG: -1,
             profileImg: -1,
-            summary: -1,
+            createdAt: -1,
             stripeClientId: -1,
             stripeID: -1,
             paymentMethod: -1,

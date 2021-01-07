@@ -256,34 +256,35 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
 
-    console.log(job.funded, job.inLieu, job.speculative);
-    const fundedFilter = !job.funded
-      ? { acceptsUnfunded: true }
-      : {
-          $or: [
-            { acceptsUnfunded: false },
-            { acceptsUnfunded: true },
-            { acceptsUnfunded: null },
-          ],
-        };
-    const royaltiesFilter = job.inLieu
-      ? { acceptsRoyalties: true }
-      : {
-          $or: [
-            { acceptsRoyalties: false },
-            { acceptsRoyalties: true },
-            { acceptsRoyalties: null },
-          ],
-        };
-    const speculativeFilter = !job.speculative
-      ? { acceptsSpeculative: true }
-      : {
-          $or: [
-            { acceptsSpeculative: false },
-            { acceptsSpeculative: true },
-            { acceptsSpeculative: null },
-          ],
-        };
+    if (job) {
+      const fundedFilter = !job.funded
+        ? { acceptsUnfunded: true }
+        : {
+            $or: [
+              { acceptsUnfunded: false },
+              { acceptsUnfunded: true },
+              { acceptsUnfunded: null },
+            ],
+          };
+      const royaltiesFilter = job.inLieu
+        ? { acceptsRoyalties: true }
+        : {
+            $or: [
+              { acceptsRoyalties: false },
+              { acceptsRoyalties: true },
+              { acceptsRoyalties: null },
+            ],
+          };
+      const speculativeFilter = !job.speculative
+        ? { acceptsSpeculative: true }
+        : {
+            $or: [
+              { acceptsSpeculative: false },
+              { acceptsSpeculative: true },
+              { acceptsSpeculative: null },
+            ],
+          };
+    }
     const users = job
       ? await User.find({
           $and: [

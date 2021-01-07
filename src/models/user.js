@@ -14,8 +14,10 @@ import {
   Testimonial,
   Gallery,
   InviteTC,
+  Invite,
   FavouriteTC,
   Favourite,
+  Job,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -61,7 +63,14 @@ export const UserSchema = new Schema(
     stripeRefresh: { type: String },
     stripeAccess: { type: String },
     stripeClientId: { type: String },
+    termsAccepted: { type: Boolean },
+    acceptsSpeculative: { type: Boolean },
+    acceptsRoyalties: { type: Boolean },
+    acceptsUnfunded: { type: Boolean },
+    available: { type: Boolean },
     paymentMethod: { type: String },
+    viewCount: { type: Number },
+    responsePercent: { type: Number },
     campaignId: { type: String },
     favourites: [
       {
@@ -152,7 +161,6 @@ UserTC.addResolver({
 
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    console.log(user);
     const response = await stripe.oauth.deauthorize({
       client_id: process.env.STRIPE_CLIENT_ID,
       stripe_user_id: user.stripeClientId,
@@ -233,10 +241,12 @@ UserTC.addResolver({
 
 UserTC.addResolver({
   name: 'getCreatives',
-  args: { type: ['String'], page: 'Int' },
+  args: { type: ['String'], page: 'Int', job: 'MongoID' },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
+    const job = rp.args.job ? await Job.findOne({ _id: rp.args.job }) : null;
+
     const sections = await Section.aggregate([
       {
         $match: { type: { $in: rp.args.type } },
@@ -245,27 +255,99 @@ UserTC.addResolver({
       { $limit: 1000 },
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
-    const users = await User.find({
-      $and: [
-        { _id: { $in: sectionUserIds } },
-        { profileImg: { $ne: '' } },
-        { profileImg: { $ne: null } },
-        { summary: { $ne: null } },
-        { summary: { $ne: '' } },
-      ],
-    })
-      .sort({
-        profileBG: -1,
-        profileImg: -1,
-        summary: -1,
-        stripeClientId: -1,
-        stripeID: -1,
-        paymentMethod: -1,
-      })
-      .skip(rp.args.page * 15)
-      .limit(15);
+
+    console.log(job.funded, job.inLieu, job.speculative);
+    const fundedFilter = !job.funded
+      ? { acceptsUnfunded: true }
+      : {
+          $or: [
+            { acceptsUnfunded: false },
+            { acceptsUnfunded: true },
+            { acceptsUnfunded: null },
+          ],
+        };
+    const royaltiesFilter = job.inLieu
+      ? { acceptsRoyalties: true }
+      : {
+          $or: [
+            { acceptsRoyalties: false },
+            { acceptsRoyalties: true },
+            { acceptsRoyalties: null },
+          ],
+        };
+    const speculativeFilter = !job.speculative
+      ? { acceptsSpeculative: true }
+      : {
+          $or: [
+            { acceptsSpeculative: false },
+            { acceptsSpeculative: true },
+            { acceptsSpeculative: null },
+          ],
+        };
+    const users = job
+      ? await User.find({
+          $and: [
+            { _id: { $in: sectionUserIds } },
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { available: { $ne: false } },
+            fundedFilter,
+            royaltiesFilter,
+            speculativeFilter,
+          ],
+        })
+          .sort({
+            profileBG: -1,
+            profileImg: -1,
+            createdAt: -1,
+            stripeClientId: -1,
+            stripeID: -1,
+            paymentMethod: -1,
+          })
+          .skip(rp.args.page * 15)
+          .limit(15)
+      : await User.find({
+          $and: [
+            { _id: { $in: sectionUserIds } },
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { available: { $ne: false } },
+          ],
+        })
+          .sort({
+            profileBG: -1,
+            profileImg: -1,
+            summary: -1,
+            stripeClientId: -1,
+            stripeID: -1,
+            paymentMethod: -1,
+          })
+          .skip(rp.args.page * 15)
+          .limit(15);
 
     return users;
+  },
+});
+
+UserTC.addFields({
+  responsePercent: {
+    type: 'String', // String, Int, Float, Boolean, ID, Json
+    description: 'response rate ',
+    resolve: async (source, args, context, info) => {
+      const invites = await Invite.find({ receiver: source._id });
+      const invitesUnactioned = invites.filter(
+        (item) => item.status === 'read'
+      );
+      const percentResponse = 1 - invitesUnactioned.length / invites.length;
+
+      return !isNaN(percentResponse)
+        ? `${Math.ceil(percentResponse * 100)}`
+        : '';
+    },
   },
 });
 

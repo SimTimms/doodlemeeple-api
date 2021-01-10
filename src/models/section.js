@@ -35,7 +35,6 @@ export const SectionSchema = new Schema(
 );
 
 SectionSchema.plugin(timestamps);
-
 SectionSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Section = mongoose.model('Section', SectionSchema);

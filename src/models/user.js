@@ -54,6 +54,8 @@ export const UserSchema = new Schema(
     instagram: { type: String },
     linkedIn: { type: String },
     publicEmail: { type: String },
+    skype: { type: String },
+    phone: { type: String },
     password: { type: String, required: true },
     keywords: [{ type: String }],
     profileImg: { type: String },

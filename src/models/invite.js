@@ -4,6 +4,7 @@ import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC, JobTC, Notification, User, Message } from './';
 import { getUserId } from '../utils';
 import { DECLINED } from '../utils/notifications';
+
 export const InviteSchema = new Schema(
   {
     title: { type: String },
@@ -26,7 +27,6 @@ export const InviteSchema = new Schema(
 );
 
 InviteSchema.plugin(timestamps);
-
 InviteSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Invite = mongoose.model('Invite', InviteSchema);

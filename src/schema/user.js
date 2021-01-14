@@ -32,6 +32,7 @@ const UserQuery = {
   profile: UserTC.getResolver('profile'),
   getCreatives: UserTC.getResolver('getCreatives'),
   getLikes: UserTC.getResolver('getLikes'),
+  categoryImages: UserTC.getResolver('categoryImages'),
   getStripe: UserTC.getResolver('getStripe').wrapResolve(
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);

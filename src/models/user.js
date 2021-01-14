@@ -243,10 +243,12 @@ UserTC.addResolver({
     ]);
     const sectionUserIds = section.map((section) => ObjectId(section._id));
     const user = await User.findOne({
-      sections: { $in: sectionUserIds },
-      $and: [{ profileBG: { $ne: null } }, { profileBG: { $ne: '' } }],
+      $and: [
+        { profileBG: { $ne: null } },
+        { profileBG: { $ne: '' } },
+        { sections: { $in: sectionUserIds } },
+      ],
     });
-    console.log(user);
 
     return user;
   },

@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GalleryTC } from './';
+import { UserTC, GalleryTC, Section, Gallery } from './';
 
 export const ImageSchema = new Schema(
   {
@@ -14,6 +14,7 @@ export const ImageSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    category: { type: String },
   },
   {
     collection: 'images',
@@ -22,6 +23,42 @@ export const ImageSchema = new Schema(
 
 export const Image = mongoose.model('Image', ImageSchema);
 export const ImageTC = composeWithMongoose(Image);
+
+ImageTC.addResolver({
+  name: 'imageCategory',
+  type: [ImageTC],
+  args: { type: ['String'] },
+  kind: 'query',
+  resolve: async (rp) => {
+    const section = await Section.findOne({ type: { $in: rp.args.type } });
+    const img = await Image.aggregate([
+      { $match: { category: section.type } },
+      { $sample: { size: 1 } },
+    ]);
+    return img;
+  },
+});
+
+ImageTC.addResolver({
+  name: 'categoriseImages',
+  type: 'Boolean',
+  args: {},
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const section = await Section.find();
+
+    for (let i = 0; i < section.length; i++) {
+      const images = await Image.find({ gallery: section[i].gallery });
+      const imageIds = images.filter((image) => image._id);
+      await Image.updateMany(
+        { _id: { $in: imageIds } },
+        { category: section[i].type }
+      );
+    }
+
+    return true;
+  },
+});
 
 ImageTC.addRelation('gallery', {
   resolver: () => GalleryTC.getResolver('findOne'),

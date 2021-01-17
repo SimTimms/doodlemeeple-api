@@ -18,6 +18,7 @@ const ImageQuery = {
   imageCount: ImageTC.getResolver('count'),
   imageConnection: ImageTC.getResolver('connection'),
   imagePagination: ImageTC.getResolver('pagination'),
+  imageCategory: ImageTC.getResolver('imageCategory'),
 };
 
 const ImageMutation = {
@@ -56,6 +57,7 @@ const ImageMutation = {
   ),
   imageRemoveOne: ImageTC.getResolver('removeOne'),
   imageRemoveMany: ImageTC.getResolver('removeMany'),
+  categoriseImages: ImageTC.getResolver('categoriseImages'),
 };
 
 export { ImageQuery, ImageMutation };

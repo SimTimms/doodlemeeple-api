@@ -232,29 +232,6 @@ UserTC.addResolver({
 });
 
 UserTC.addResolver({
-  name: 'categoryImages',
-  type: UserTC,
-  args: { type: ['String'] },
-  kind: 'query',
-  resolve: async (rp) => {
-    const section = await Section.aggregate([
-      { $match: { type: { $in: rp.args.type } } },
-      { $sample: { size: 1 } },
-    ]);
-    const sectionUserIds = section.map((section) => ObjectId(section._id));
-    const user = await User.findOne({
-      $and: [
-        { profileBG: { $ne: null } },
-        { profileBG: { $ne: '' } },
-        { sections: { $in: sectionUserIds } },
-      ],
-    });
-
-    return user;
-  },
-});
-
-UserTC.addResolver({
   name: 'skipOnboarding',
   args: {},
   type: 'Boolean',

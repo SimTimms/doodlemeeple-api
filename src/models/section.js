@@ -53,12 +53,6 @@ SectionTC.addFields({
     type: 'String',
     description: 'Image',
     resolve: async (source, args, context, info) => {
-      console.log(source, info.variableValues);
-      const user = await Image.findOne({
-        category: source.type,
-        user: source.user,
-      });
-
       const img = await Image.findOne({
         category: source.type,
         user: info.variableValues.userId,

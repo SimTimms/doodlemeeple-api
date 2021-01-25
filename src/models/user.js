@@ -263,7 +263,6 @@ UserTC.addResolver({
       { $limit: 1000 },
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
-
     if (job) {
       const fundedFilter = !job.funded
         ? { acceptsUnfunded: true }
@@ -292,53 +291,53 @@ UserTC.addResolver({
               { acceptsSpeculative: null },
             ],
           };
+      const users = await User.find({
+        $and: [
+          { _id: { $in: sectionUserIds } },
+          { profileImg: { $ne: '' } },
+          { profileImg: { $ne: null } },
+          { summary: { $ne: null } },
+          { summary: { $ne: '' } },
+          { available: { $ne: false } },
+          fundedFilter,
+          royaltiesFilter,
+          speculativeFilter,
+        ],
+      })
+        .sort({
+          profileBG: -1,
+          profileImg: -1,
+          createdAt: -1,
+          stripeClientId: -1,
+          stripeID: -1,
+          paymentMethod: -1,
+        })
+        .skip(rp.args.page * 15)
+        .limit(15);
+      return users;
+    } else {
+      const users = await User.find({
+        $and: [
+          { _id: { $in: sectionUserIds } },
+          { profileImg: { $ne: '' } },
+          { profileImg: { $ne: null } },
+          { summary: { $ne: null } },
+          { summary: { $ne: '' } },
+          { available: { $ne: false } },
+        ],
+      })
+        .sort({
+          profileBG: -1,
+          profileImg: -1,
+          summary: -1,
+          stripeClientId: -1,
+          stripeID: -1,
+          paymentMethod: -1,
+        })
+        .skip(rp.args.page * 15)
+        .limit(15);
+      return users;
     }
-    const users = job
-      ? await User.find({
-          $and: [
-            { _id: { $in: sectionUserIds } },
-            { profileImg: { $ne: '' } },
-            { profileImg: { $ne: null } },
-            { summary: { $ne: null } },
-            { summary: { $ne: '' } },
-            { available: { $ne: false } },
-            fundedFilter,
-            royaltiesFilter,
-            speculativeFilter,
-          ],
-        })
-          .sort({
-            profileBG: -1,
-            profileImg: -1,
-            createdAt: -1,
-            stripeClientId: -1,
-            stripeID: -1,
-            paymentMethod: -1,
-          })
-          .skip(rp.args.page * 15)
-          .limit(15)
-      : await User.find({
-          $and: [
-            { _id: { $in: sectionUserIds } },
-            { profileImg: { $ne: '' } },
-            { profileImg: { $ne: null } },
-            { summary: { $ne: null } },
-            { summary: { $ne: '' } },
-            { available: { $ne: false } },
-          ],
-        })
-          .sort({
-            profileBG: -1,
-            profileImg: -1,
-            summary: -1,
-            stripeClientId: -1,
-            stripeID: -1,
-            paymentMethod: -1,
-          })
-          .skip(rp.args.page * 15)
-          .limit(15);
-
-    return users;
   },
 });
 

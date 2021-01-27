@@ -1,12 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { getUserId } from '../utils';
-import { Message, Invite, Contract, Job } from '../models';
+import { Message, Invite, Job, User } from '../models';
 
 export const CountSchema = new Schema({
   invites: { type: Number },
   messages: { type: Number },
   quotes: { type: Number },
+  jobs: { type: Number },
+  socials: { type: Number },
+  contact: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -19,6 +22,14 @@ CountTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
+    const user = await User.find({
+      _id: userId,
+    });
+
+    const social =
+      user.facebook || user.twitter || user.linked || user.instagram ? 1 : 0;
+
+    const contact = user.skype || user.email || user.website ? 1 : 0;
     const invites = await Invite.find({
       $and: [{ receiver: userId }, { sender: { $ne: userId } }],
       status: 'unopened',
@@ -26,6 +37,10 @@ CountTC.addResolver({
 
     const messages = await Message.find({ receiver: userId, status: 'unread' });
 
+    const activeJobs = await Job.find({
+      user: userId,
+      $and: [{ submitted: { $ne: 'draft' } }, { submitted: { $ne: 'closed' } }],
+    });
     const jobs = await Job.find(
       {
         user: userId,
@@ -43,6 +58,9 @@ CountTC.addResolver({
       invites: invites.length,
       messages: messages.length,
       quotes: jobTotal,
+      jobs: activeJobs.length,
+      socials: social,
+      contact,
     };
   },
 });

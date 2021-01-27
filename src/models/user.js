@@ -64,6 +64,7 @@ export const UserSchema = new Schema(
     summary: { type: String },
     location: { type: String },
     onboarding: { type: String },
+    creatorOnboardSkip: { type: Boolean },
     rating: { type: Number },
     stripeID: { type: String },
     stripeStatus: { type: String },

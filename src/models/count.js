@@ -10,6 +10,7 @@ export const CountSchema = new Schema({
   jobs: { type: Number },
   socials: { type: Number },
   contact: { type: Number },
+  skills: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -22,14 +23,15 @@ CountTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.find({
+    const user = await User.findOne({
       _id: userId,
     });
 
     const social =
       user.facebook || user.twitter || user.linked || user.instagram ? 1 : 0;
-
     const contact = user.skype || user.email || user.website ? 1 : 0;
+    const skills = user.sections.length;
+
     const invites = await Invite.find({
       $and: [{ receiver: userId }, { sender: { $ne: userId } }],
       status: 'unopened',
@@ -61,6 +63,7 @@ CountTC.addResolver({
       jobs: activeJobs.length,
       socials: social,
       contact,
+      skills: skills,
     };
   },
 });

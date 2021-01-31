@@ -300,9 +300,9 @@ UserTC.addResolver({
           { summary: { $ne: null } },
           { summary: { $ne: '' } },
           { available: { $ne: false } },
-          fundedFilter,
-          royaltiesFilter,
-          speculativeFilter,
+          //  fundedFilter,
+          //royaltiesFilter,
+          // speculativeFilter,
         ],
       })
         .sort({

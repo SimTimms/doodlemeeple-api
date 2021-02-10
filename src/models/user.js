@@ -17,6 +17,8 @@ import {
   Invite,
   FavouriteTC,
   Favourite,
+  BadgeTC,
+  Badge,
   Job,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
@@ -81,6 +83,12 @@ export const UserSchema = new Schema(
     viewCount: { type: Number },
     responsePercent: { type: Number },
     campaignId: { type: String },
+    badges: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Badges',
+      },
+    ],
     favourites: [
       {
         type: Schema.Types.ObjectId,
@@ -158,6 +166,14 @@ UserTC.addResolver({
   },
 });
 
+UserTC.addRelation('badges', {
+  resolver: () => BadgeTC.getResolver('findByIds'),
+  prepareArgs: {
+    _ids: (parent) => parent.badges,
+  },
+  projection: { id: true },
+});
+
 UserTC.addResolver({
   name: 'disconnectStripe',
   args: {},
@@ -170,7 +186,7 @@ UserTC.addResolver({
 
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    const response = await stripe.oauth.deauthorize({
+    await stripe.oauth.deauthorize({
       client_id: process.env.STRIPE_CLIENT_ID,
       stripe_user_id: user.stripeClientId,
     });

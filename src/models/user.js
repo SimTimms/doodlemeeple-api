@@ -17,6 +17,8 @@ import {
   Invite,
   FavouriteTC,
   Favourite,
+  BadgeTC,
+  Badge,
   Job,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
@@ -48,6 +50,14 @@ export const UserSchema = new Schema(
     },
     creatorTrue: { type: Boolean, default: false },
     creativeTrue: { type: Boolean, default: false },
+    facebook: { type: String },
+    twitter: { type: String },
+    website: { type: String },
+    instagram: { type: String },
+    linkedIn: { type: String },
+    publicEmail: { type: String },
+    skype: { type: String },
+    phone: { type: String },
     password: { type: String, required: true },
     keywords: [{ type: String }],
     profileImg: { type: String },
@@ -56,6 +66,7 @@ export const UserSchema = new Schema(
     summary: { type: String },
     location: { type: String },
     onboarding: { type: String },
+    creatorOnboardSkip: { type: Boolean },
     rating: { type: Number },
     stripeID: { type: String },
     stripeStatus: { type: String },
@@ -72,6 +83,12 @@ export const UserSchema = new Schema(
     viewCount: { type: Number },
     responsePercent: { type: Number },
     campaignId: { type: String },
+    badges: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Badges',
+      },
+    ],
     favourites: [
       {
         type: Schema.Types.ObjectId,
@@ -149,6 +166,14 @@ UserTC.addResolver({
   },
 });
 
+UserTC.addRelation('badges', {
+  resolver: () => BadgeTC.getResolver('findByIds'),
+  prepareArgs: {
+    _ids: (parent) => parent.badges,
+  },
+  projection: { id: true },
+});
+
 UserTC.addResolver({
   name: 'disconnectStripe',
   args: {},
@@ -161,7 +186,7 @@ UserTC.addResolver({
 
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-    const response = await stripe.oauth.deauthorize({
+    await stripe.oauth.deauthorize({
       client_id: process.env.STRIPE_CLIENT_ID,
       stripe_user_id: user.stripeClientId,
     });
@@ -255,81 +280,77 @@ UserTC.addResolver({
       { $limit: 1000 },
     ]);
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
-
-    console.log(job.funded, job.inLieu, job.speculative);
-    const fundedFilter = !job.funded
-      ? { acceptsUnfunded: true }
-      : {
-          $or: [
-            { acceptsUnfunded: false },
-            { acceptsUnfunded: true },
-            { acceptsUnfunded: null },
-          ],
-        };
-    const royaltiesFilter = job.inLieu
-      ? { acceptsRoyalties: true }
-      : {
-          $or: [
-            { acceptsRoyalties: false },
-            { acceptsRoyalties: true },
-            { acceptsRoyalties: null },
-          ],
-        };
-    const speculativeFilter = !job.speculative
-      ? { acceptsSpeculative: true }
-      : {
-          $or: [
-            { acceptsSpeculative: false },
-            { acceptsSpeculative: true },
-            { acceptsSpeculative: null },
-          ],
-        };
-    const users = job
-      ? await User.find({
-          $and: [
-            { _id: { $in: sectionUserIds } },
-            { profileImg: { $ne: '' } },
-            { profileImg: { $ne: null } },
-            { summary: { $ne: null } },
-            { summary: { $ne: '' } },
-            { available: { $ne: false } },
-            fundedFilter,
-            royaltiesFilter,
-            speculativeFilter,
-          ],
+    if (job) {
+      const fundedFilter = !job.funded
+        ? { acceptsUnfunded: true }
+        : {
+            $or: [
+              { acceptsUnfunded: false },
+              { acceptsUnfunded: true },
+              { acceptsUnfunded: null },
+            ],
+          };
+      const royaltiesFilter = job.inLieu
+        ? { acceptsRoyalties: true }
+        : {
+            $or: [
+              { acceptsRoyalties: false },
+              { acceptsRoyalties: true },
+              { acceptsRoyalties: null },
+            ],
+          };
+      const speculativeFilter = !job.speculative
+        ? { acceptsSpeculative: true }
+        : {
+            $or: [
+              { acceptsSpeculative: false },
+              { acceptsSpeculative: true },
+              { acceptsSpeculative: null },
+            ],
+          };
+      const users = await User.find({
+        $and: [
+          { _id: { $in: sectionUserIds } },
+          { profileImg: { $ne: '' } },
+          { profileImg: { $ne: null } },
+          { summary: { $ne: null } },
+          { summary: { $ne: '' } },
+          { available: { $ne: false } },
+          //  fundedFilter,
+          //royaltiesFilter,
+          // speculativeFilter,
+        ],
+      })
+        .sort({
+          profileBG: -1,
+          profileImg: -1,
+          createdAt: -1,
+          badges: 1,
         })
-          .sort({
-            profileBG: -1,
-            profileImg: -1,
-            createdAt: -1,
-            stripeClientId: -1,
-            stripeID: -1,
-            paymentMethod: -1,
-          })
-          .skip(rp.args.page * 15)
-          .limit(15)
-      : await User.find({
-          $and: [
-            { _id: { $in: sectionUserIds } },
-            { profileImg: { $ne: '' } },
-            { profileImg: { $ne: null } },
-            { summary: { $ne: null } },
-            { summary: { $ne: '' } },
-            { available: { $ne: false } },
-          ],
+        .skip(rp.args.page * 15)
+        .limit(15);
+      return users;
+    } else {
+      const users = await User.find({
+        $and: [
+          { _id: { $in: sectionUserIds } },
+          { profileImg: { $ne: '' } },
+          { profileImg: { $ne: null } },
+          { summary: { $ne: null } },
+          { summary: { $ne: '' } },
+          { available: { $ne: false } },
+        ],
+      })
+        .sort({
+          profileBG: -1,
+          profileImg: -1,
+          summary: -1,
+          badges: 1,
         })
-          .sort({
-            profileBG: -1,
-            profileImg: -1,
-            summary: -1,
-            stripeClientId: -1,
-            stripeID: -1,
-            paymentMethod: -1,
-          })
-          .skip(rp.args.page * 15)
-          .limit(15);
-
-    return users;
+        .skip(rp.args.page * 15)
+        .limit(15);
+      return users;
+    }
   },
 });
 

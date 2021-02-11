@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GalleryTC, NotableProjectTC, TestimonialTC } from './';
+import { UserTC, GalleryTC, NotableProjectTC, TestimonialTC, Image } from './';
 
 export const SectionSchema = new Schema(
   {
@@ -35,7 +35,6 @@ export const SectionSchema = new Schema(
 );
 
 SectionSchema.plugin(timestamps);
-
 SectionSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Section = mongoose.model('Section', SectionSchema);
@@ -47,6 +46,20 @@ SectionTC.addRelation('user', {
     filter: (source) => ({ id: source._id }),
   },
   projection: { id: true },
+});
+
+SectionTC.addFields({
+  referenceImage: {
+    type: 'String',
+    description: 'Image',
+    resolve: async (source, args, context, info) => {
+      const img = await Image.findOne({
+        category: source.type,
+        user: info.variableValues.userId,
+      });
+      return img ? img.img : '';
+    },
+  },
 });
 
 SectionTC.addRelation('gallery', {

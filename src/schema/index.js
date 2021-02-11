@@ -36,13 +36,13 @@ schemaComposer.Query.addFields({
   ...ContractQuery,
   ...PaymentQuery,
   ...PaymentTermsQuery,
+  ...ImageQuery,
 });
 
 schemaComposer.Mutation.addFields({
   ...UserMutation,
   ...SectionMutation,
   ...NotificationMutation,
-  ...ImageQuery,
   ...ImageMutation,
   ...NotableProjectMutation,
   ...TestimonialMutation,

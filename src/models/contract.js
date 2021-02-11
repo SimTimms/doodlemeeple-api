@@ -152,9 +152,7 @@ ContractTC.addResolver({
     //Notifications
     const request = emailQuote(creator, contract, creative);
     request
-      .then((result) => {
-        //  console.log(result);
-      })
+      .then((result) => {})
       .catch((err) => {
         console.log(err);
       });

@@ -29,7 +29,7 @@ CountTC.addResolver({
 
     const social =
       user.facebook || user.twitter || user.linked || user.instagram ? 1 : 0;
-    const contact = user.skype || user.email || user.website ? 1 : 0;
+    const contact = user.skype || user.publicEmail || user.website ? 1 : 0;
     const skills = user.sections.length;
 
     const invites = await Invite.find({

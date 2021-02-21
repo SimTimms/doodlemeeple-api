@@ -43,6 +43,7 @@ CountTC.addResolver({
       user: userId,
       $and: [{ submitted: { $ne: 'draft' } }, { submitted: { $ne: 'closed' } }],
     });
+
     const jobs = await Job.find(
       {
         user: userId,
@@ -51,6 +52,7 @@ CountTC.addResolver({
       },
       { contracts: 1 }
     );
+
     let jobTotal = 0;
     for (let i = 0; i < jobs.length; i++) {
       jobTotal += jobs[i].contracts.length;

@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { getUserId } from '../utils';
-import { Message, Invite, Job, User } from '../models';
+import { Message, Invite, Job, User, Contract } from '../models';
 
 export const CountSchema = new Schema({
   invites: { type: Number },
@@ -11,6 +11,7 @@ export const CountSchema = new Schema({
   socials: { type: Number },
   contact: { type: Number },
   skills: { type: Number },
+  draftQuotes: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -53,6 +54,11 @@ CountTC.addResolver({
       { contracts: 1 }
     );
 
+    const draftQuotes = await Contract.find({
+      user: userId,
+      status: 'draft',
+    });
+
     let jobTotal = 0;
     for (let i = 0; i < jobs.length; i++) {
       jobTotal += jobs[i].contracts.length;
@@ -66,6 +72,7 @@ CountTC.addResolver({
       socials: social,
       contact,
       skills: skills,
+      draftQuotes: draftQuotes.length,
     };
   },
 });

@@ -18,12 +18,26 @@ const ContractMutation = {
   contractCreateOne: ContractTC.getResolver('createOne').wrapResolve(
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
-
       rp.args.record.user = userId;
+      const contractExists = await Contract.findOne({
+        job: ObjectId(rp.args.record.job),
+        user: userId,
+      });
 
-      const contract = await next(rp);
+      await Invite.updateOne(
+        {
+          job: ObjectId(rp.args.record.job),
+          receiver: userId,
+        },
+        { status: 'draft' }
+      );
 
-      return contract;
+      if (!contractExists) {
+        const contract = await next(rp);
+        return contract;
+      } else {
+        return null;
+      }
     }
   ),
   contractCreateMany: ContractTC.getResolver('createMany'),

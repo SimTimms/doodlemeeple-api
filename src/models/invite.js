@@ -4,7 +4,7 @@ import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC, JobTC, Notification, User, Message } from './';
 import { getUserId } from '../utils';
 import { DECLINED } from '../utils/notifications';
-
+import { emailDeclineInvite } from '../email';
 export const InviteSchema = new Schema(
   {
     title: { type: String },
@@ -86,11 +86,13 @@ InviteTC.addResolver({
   resolve: async ({ source, args, context }) => {
     const invite = await Invite.findOne({ _id: args._id });
     const sender = await User.findOne({ _id: invite.sender._id });
+    const receiver = await User.findOne({ _id: invite.receiver._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });
 
     const notificationMessage = { ...DECLINED };
     notificationMessage.message = `${sender.name} ${notificationMessage.message}`;
     await Notification.create({ ...notificationMessage, user: sender._id });
+    await emailDeclineInvite(sender, receiver);
     //email
   },
 });

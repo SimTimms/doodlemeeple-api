@@ -32,7 +32,17 @@ const SectionMutation = {
   sectionUpdateById: SectionTC.getResolver('updateById'),
   sectionUpdateOne: SectionTC.getResolver('updateOne'),
   sectionUpdateMany: SectionTC.getResolver('updateMany'),
-  sectionRemoveById: SectionTC.getResolver('removeById'),
+  sectionRemoveById: SectionTC.getResolver('removeById').wrapResolve(
+    (next) => async (rp) => {
+      const userId = getUserId(rp.context.headers.authorization);
+      await User.updateOne(
+        { _id: userId },
+        { $pull: { sections: rp.args._id } }
+      );
+
+      next(rp);
+    }
+  ),
   sectionRemoveOne: SectionTC.getResolver('removeOne'),
   sectionRemoveMany: SectionTC.getResolver('removeMany'),
 };

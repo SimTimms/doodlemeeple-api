@@ -320,6 +320,31 @@ async function emailSignup(email, name) {
   return request;
 }
 
+async function emailDeclineInvite(user, creative) {
+  const request = mailjet.post('send', { version: 'v3.1' }).request({
+    Messages: [
+      {
+        From: {
+          Email: emailAddress.noreply,
+          Name: 'DoodleMeeple',
+        },
+        To: [
+          {
+            Email: user.email,
+            Name: user.name,
+          },
+        ],
+        Subject: `${creative.name} has declined your invite`,
+        TextPart: `${creative.name} has declined your invite on DoodleMeeple: View your project at ${emailAddress.appURL}. ${emailAddress.signoffHTML}`,
+        HTMLPart: `<p>Hi ${user.name},</p>
+        <p>${creative.name} has declined your invite on DoodleMeeple</p><p>View your project at <a style="border-radius:5px; padding:10px; color:#57499e; font-weight:bold; margin-top:10px; margin-bottom:10px;" href='${emailAddress.appURL}'>DoodleMeeple</a></p><p>${emailAddress.signoffHTML}</p>
+        `,
+      },
+    ],
+  });
+  return request;
+}
+
 module.exports = {
   emailForgot,
   emailReset,
@@ -334,4 +359,5 @@ module.exports = {
   withdrawFailedEmailAdmin,
   earlyClosure,
   noStripeEmailAdmin,
+  emailDeclineInvite,
 };

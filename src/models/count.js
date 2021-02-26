@@ -35,9 +35,9 @@ CountTC.addResolver({
 
     const invites = await Invite.find({
       $and: [{ receiver: userId }, { sender: { $ne: userId } }],
-      status: 'unopened',
+      $or: [{ status: 'unopened' }, { status: 'read' }],
     });
-
+    console.log(invites);
     const messages = await Message.find({ receiver: userId, status: 'unread' });
 
     const activeJobs = await Job.find({

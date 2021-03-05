@@ -14,6 +14,7 @@ export const CountSchema = new Schema({
   draftQuotes: { type: Number },
   totalDeclined: { type: Number },
   draftJobs: { type: Number },
+  unansweredQuotes: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -76,6 +77,14 @@ CountTC.addResolver({
       jobTotal += jobs[i].contracts.length;
     }
 
+    const unansweredQuotes = await Contract.find(
+      {
+        jobOwner: userId,
+        status: 'submitted',
+      },
+      { status: 1 }
+    );
+
     return {
       invites: invites.length,
       messages: messages.length,
@@ -87,6 +96,7 @@ CountTC.addResolver({
       draftQuotes: draftQuotes.length,
       totalDeclined: totalDeclined.length,
       draftJobs: draftJobs.length,
+      unansweredQuotes: unansweredQuotes.length,
     };
   },
 });

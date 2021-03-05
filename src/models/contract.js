@@ -40,6 +40,10 @@ export const ContractSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    jobOwner: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
   {
     collection: 'contracts',
@@ -124,6 +128,8 @@ ContractTC.addResolver({
     const contractId = rp.args._id;
     const contract = await Contract.findOne({ _id: contractId, user: userId });
     const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
+
+    console.log(job.user);
     const creator = await User.findOne(
       { _id: ObjectId(job.user) },
       { email: 1, name: 1 }
@@ -148,8 +154,7 @@ ContractTC.addResolver({
       { _id: contract.job },
       { $addToSet: { contracts: rp.args._id } }
     );
-
-    //Notifications
+    console.log(creator);
     const request = emailQuote(creator, contract, creative);
     request
       .then((result) => {})

@@ -1,5 +1,6 @@
-import { MessageTC } from '../models';
+import { MessageTC, Message, User } from '../models';
 import { getUserId } from '../utils';
+import { emailNewMessage } from '../email';
 
 const MessageQuery = {
   messageById: MessageTC.getResolver('findById'),
@@ -20,6 +21,18 @@ const MessageMutation = {
       rp.args.record.sender = senderId;
       rp.args.record.status = 'unread';
 
+      const receiver = await User.findOne(
+        { _id: rp.args.record.receiver },
+        { email: 1, name: 1 }
+      );
+
+      const unreadMessages = await Message.findOne({
+        receiver: receiver._id,
+        status: 'unread',
+      });
+
+      !unreadMessages &&
+        (await emailNewMessage(receiver, 'You have a message'));
       const message = await next(rp);
       return message;
     }

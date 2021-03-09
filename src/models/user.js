@@ -322,10 +322,10 @@ UserTC.addResolver({
         ],
       })
         .sort({
+          badges: -1,
           profileBG: -1,
           profileImg: -1,
           createdAt: -1,
-          badges: 1,
         })
         .skip(rp.args.page * 15)
         .limit(15);
@@ -342,10 +342,10 @@ UserTC.addResolver({
         ],
       })
         .sort({
+          badges: -1,
           profileBG: -1,
           profileImg: -1,
           summary: -1,
-          badges: 1,
         })
         .skip(rp.args.page * 15)
         .limit(15);

@@ -277,8 +277,10 @@ UserTC.addResolver({
         $match: { type: { $in: rp.args.type } },
       },
       { $group: { _id: '$user' } },
-      { $limit: 1000 },
+      { $limit: 15 },
+      { $skip: rp.args.page * 15 },
     ]);
+
     const sectionUserIds = sections.map((section) => ObjectId(section._id));
     if (job) {
       const fundedFilter = !job.funded

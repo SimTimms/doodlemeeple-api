@@ -279,7 +279,14 @@ UserTC.addResolver({
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
 
     const users = await User.find({
-      $and: [{ _id: { $in: sectionUserIds } }],
+      $and: [
+        { _id: { $in: sectionUserIds } },
+        { profileImg: { $ne: '' } },
+        { profileImg: { $ne: null } },
+        { summary: { $ne: null } },
+        { summary: { $ne: '' } },
+        { available: { $ne: false } },
+      ],
     }).sort({
       badges: -1,
       profileBG: -1,

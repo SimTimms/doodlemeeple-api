@@ -282,7 +282,9 @@ UserTC.addResolver({
       $and: [
         { _id: { $in: sectionUserIds } },
         { profileImg: { $ne: '' } },
+        { profileBG: { $ne: '' } },
         { profileImg: { $ne: null } },
+        { profileBG: { $ne: null } },
         { summary: { $ne: null } },
         { summary: { $ne: '' } },
         { available: { $ne: false } },

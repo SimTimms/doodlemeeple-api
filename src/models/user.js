@@ -288,8 +288,8 @@ UserTC.addResolver({
         { available: { $ne: false } },
       ],
     })
-    .skip(rp.args.page * 1)
-    .limit(1)
+    .skip(rp.args.page * 12)
+    .limit(12)
     .sort({
       badges: -1,
       profileBG: -1,

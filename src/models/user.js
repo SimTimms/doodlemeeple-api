@@ -272,7 +272,7 @@ UserTC.addResolver({
   resolve: async (rp) => {
     const sections = await Section.find({
       type: { $in: rp.args.type },
-    }).limit(150);
+    }).limit(rp.args.page * 150);
 
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
 
@@ -288,7 +288,7 @@ UserTC.addResolver({
         { available: { $ne: false } },
       ],
     })
-    .skip(rp.args.page * 12)
+    .skip(rp.args.page * 12])
     .limit(12)
     .sort({
       badges: -1,

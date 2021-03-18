@@ -13,6 +13,10 @@ export const BadgeSchema = new Schema(
     userId: {
       type: String,
     },
+    badgeIcon: {
+      type: String,
+    },
+    description: { type: String },
   },
   {
     collection: 'badges',

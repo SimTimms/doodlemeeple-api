@@ -270,87 +270,34 @@ UserTC.addResolver({
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    const job = rp.args.job ? await Job.findOne({ _id: rp.args.job }) : null;
+    const sections = await Section.find({
+      type: { $in: rp.args.type },
+    }).limit(500);
 
-    const sections = await Section.aggregate([
-      {
-        $match: { type: { $in: rp.args.type } },
-      },
-      { $group: { _id: '$user' } },
-      { $limit: 1000 },
-    ]);
-    const sectionUserIds = sections.map((section) => ObjectId(section._id));
-    if (job) {
-      const fundedFilter = !job.funded
-        ? { acceptsUnfunded: true }
-        : {
-            $or: [
-              { acceptsUnfunded: false },
-              { acceptsUnfunded: true },
-              { acceptsUnfunded: null },
-            ],
-          };
-      const royaltiesFilter = job.inLieu
-        ? { acceptsRoyalties: true }
-        : {
-            $or: [
-              { acceptsRoyalties: false },
-              { acceptsRoyalties: true },
-              { acceptsRoyalties: null },
-            ],
-          };
-      const speculativeFilter = !job.speculative
-        ? { acceptsSpeculative: true }
-        : {
-            $or: [
-              { acceptsSpeculative: false },
-              { acceptsSpeculative: true },
-              { acceptsSpeculative: null },
-            ],
-          };
-      const users = await User.find({
-        $and: [
-          { _id: { $in: sectionUserIds } },
-          { profileImg: { $ne: '' } },
-          { profileImg: { $ne: null } },
-          { summary: { $ne: null } },
-          { summary: { $ne: '' } },
-          { available: { $ne: false } },
-          //  fundedFilter,
-          //royaltiesFilter,
-          // speculativeFilter,
-        ],
-      })
-        .sort({
-          profileBG: -1,
-          profileImg: -1,
-          createdAt: -1,
-          badges: 1,
-        })
-        .skip(rp.args.page * 15)
-        .limit(15);
-      return users;
-    } else {
-      const users = await User.find({
-        $and: [
-          { _id: { $in: sectionUserIds } },
-          { profileImg: { $ne: '' } },
-          { profileImg: { $ne: null } },
-          { summary: { $ne: null } },
-          { summary: { $ne: '' } },
-          { available: { $ne: false } },
-        ],
-      })
-        .sort({
-          profileBG: -1,
-          profileImg: -1,
-          summary: -1,
-          badges: 1,
-        })
-        .skip(rp.args.page * 15)
-        .limit(15);
-      return users;
-    }
+    const sectionUserIds = sections.map((section) => ObjectId(section.user));
+
+    const users = await User.find({
+      $and: [
+        { _id: { $in: sectionUserIds } },
+        { profileImg: { $ne: '' } },
+        { profileBG: { $ne: '' } },
+        { profileImg: { $ne: null } },
+        { profileBG: { $ne: null } },
+        { summary: { $ne: null } },
+        { summary: { $ne: '' } },
+        { available: { $ne: false } },
+      ],
+    })
+      .skip(rp.args.page * 12)
+      .limit(12)
+      .sort({
+        badges: -1,
+        profileBG: -1,
+        profileImg: -1,
+        createdAt: -1,
+      });
+
+    return users;
   },
 });
 

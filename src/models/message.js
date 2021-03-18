@@ -45,7 +45,7 @@ MessageTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-
+    console.log(rp.args);
     const messages = await Message.find({
       $and: [
         { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
@@ -68,7 +68,7 @@ MessageTC.addResolver({
       { status: 'read' }
     );
 
-    return userId === rp.args.userId ? null : messages;
+    return messages;
   },
 });
 

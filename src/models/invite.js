@@ -1,10 +1,12 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, JobTC, Notification, User, Message } from './';
+import { UserTC, JobTC, Job, Notification, User, Message, Contract } from './';
 import { getUserId } from '../utils';
 import { DECLINED } from '../utils/notifications';
 import { emailDeclineInvite } from '../email';
+const ObjectId = mongoose.Types.ObjectId;
+
 export const InviteSchema = new Schema(
   {
     title: { type: String },
@@ -84,7 +86,25 @@ InviteTC.addResolver({
   kind: 'mutation',
   args: { _id: 'MongoID!' },
   resolve: async ({ source, args, context }) => {
+    async function allInvitesDeclined(invite) {
+      const openInvites = await Invite.find({
+        job: invite.job,
+        status: { $ne: 'declined' },
+      });
+      return openInvites.length === 1 ? true : false;
+    }
+
     const invite = await Invite.findOne({ _id: args._id });
+
+    const allDeclined = await allInvitesDeclined(invite);
+    allDeclined &&
+      (await Job.updateOne({ _id: invite.job }, { submitted: 'totalDecline' }));
+
+    await Contract.updateOne(
+      { job: invite.job, user: invite.receiver._id },
+      { status: 'declined' }
+    );
+
     const sender = await User.findOne({ _id: invite.sender._id });
     const receiver = await User.findOne({ _id: invite.receiver._id });
     await Invite.updateOne({ _id: args._id }, { status: 'declined' });

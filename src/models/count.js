@@ -12,6 +12,9 @@ export const CountSchema = new Schema({
   contact: { type: Number },
   skills: { type: Number },
   draftQuotes: { type: Number },
+  totalDeclined: { type: Number },
+  draftJobs: { type: Number },
+  unansweredQuotes: { type: Number },
 });
 
 export const Count = mongoose.model('Count', CountSchema);
@@ -37,12 +40,22 @@ CountTC.addResolver({
       $and: [{ receiver: userId }, { sender: { $ne: userId } }],
       $or: [{ status: 'unopened' }, { status: 'read' }],
     });
-    console.log(invites);
+
     const messages = await Message.find({ receiver: userId, status: 'unread' });
 
     const activeJobs = await Job.find({
       user: userId,
       $and: [{ submitted: { $ne: 'draft' } }, { submitted: { $ne: 'closed' } }],
+    });
+
+    const draftJobs = await Job.find({
+      user: userId,
+      submitted: 'draft',
+    });
+
+    const totalDeclined = await Job.find({
+      user: userId,
+      $and: [{ submitted: 'totalDecline' }],
     });
 
     const jobs = await Job.find(
@@ -64,6 +77,14 @@ CountTC.addResolver({
       jobTotal += jobs[i].contracts.length;
     }
 
+    const unansweredQuotes = await Contract.find(
+      {
+        jobOwner: userId,
+        status: 'submitted',
+      },
+      { status: 1 }
+    );
+
     return {
       invites: invites.length,
       messages: messages.length,
@@ -73,6 +94,9 @@ CountTC.addResolver({
       contact,
       skills: skills,
       draftQuotes: draftQuotes.length,
+      totalDeclined: totalDeclined.length,
+      draftJobs: draftJobs.length,
+      unansweredQuotes: unansweredQuotes.length,
     };
   },
 });

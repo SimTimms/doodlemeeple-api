@@ -32,6 +32,8 @@ const ContractMutation = {
         { status: 'draft' }
       );
 
+      const job = await Job.findOne({ _id: ObjectId(rp.args.record.job) });
+      rp.args.record.jobOwner = job.user;
       if (!contractExists) {
         const contract = await next(rp);
         return contract;

@@ -82,6 +82,7 @@ export const UserSchema = new Schema(
     paymentMethod: { type: String },
     viewCount: { type: Number },
     responsePercent: { type: Number },
+    priority: { type: Number },
     campaignId: { type: String },
     badges: [
       {
@@ -291,6 +292,7 @@ UserTC.addResolver({
       .skip(rp.args.page * 12)
       .limit(12)
       .sort({
+        priority: -1,
         badges: -1,
         profileBG: -1,
         profileImg: -1,

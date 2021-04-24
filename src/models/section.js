@@ -7,7 +7,7 @@ export const SectionSchema = new Schema(
   {
     summary: { type: String },
     showreel: { type: String },
-    type: { type: String },
+    type: { type: String, index: { unique: true } },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',

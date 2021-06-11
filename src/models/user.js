@@ -18,8 +18,6 @@ import {
   FavouriteTC,
   Favourite,
   BadgeTC,
-  Badge,
-  Job,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -333,6 +331,29 @@ UserTC.addResolver({
     }).limit(50);
     const userIds = favourites.map((favourites) => ObjectId(favourites.user));
     const users = await User.find({ _id: { $in: userIds } }).limit(50);
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'creativeMinis',
+  args: { count: 'Int' },
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    let users = await User.aggregate([
+      { $sort: { createdAt: -1 } },
+      {
+        $match: {
+          profileImg: { $ne: null },
+          profileBG: { $ne: null },
+          name: { $ne: null },
+          summary: { $ne: null },
+        },
+      },
+      { $limit: rp.args.count },
+    ]);
+
     return users;
   },
 });

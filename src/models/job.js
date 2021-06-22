@@ -43,6 +43,7 @@ export const JobSchema = new Schema(
     paid: { type: String },
     format: [{ type: String }],
     imageRes: { type: String },
+    isPublic: { type: Boolean },
     gallery: {
       type: Schema.Types.ObjectId,
       ref: 'Gallery',
@@ -205,6 +206,24 @@ JobTC.addResolver({
       { submitted: 'complete' }
     );
     return null;
+  },
+});
+
+JobTC.addResolver({
+  name: 'submitPublicBrief',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    const jobId = args._id;
+    const jobDeets = await Job.findOne({ _id: jobId });
+
+    await Job.updateOne(
+      { _id: jobId },
+      { submitted: 'submitted', isPublic: true }
+    );
   },
 });
 

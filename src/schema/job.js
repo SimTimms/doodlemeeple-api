@@ -37,6 +37,7 @@ const JobMutation = {
   jobRemoveOne: JobTC.getResolver('removeOne'),
   jobRemoveMany: JobTC.getResolver('removeMany'),
   submitBrief: JobTC.getResolver('submitBrief'),
+  submitPublicBrief: JobTC.getResolver('submitPublicBrief'),
   closeEarly: JobTC.getResolver('closeEarly'),
 };
 

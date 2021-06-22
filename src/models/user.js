@@ -144,22 +144,8 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'query',
   resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-
-    try {
-      const account = user.stripeID
-        ? await stripe.accounts.retrieve(`${user.stripeID}`)
-        : null;
-      user.stripeStatus = account ? account.payouts_enabled : 'false';
-    } catch (error) {
-      console.log(error);
-      user.stripeStatus = 'error';
-    }
 
     return user;
   },

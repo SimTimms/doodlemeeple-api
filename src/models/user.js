@@ -232,7 +232,7 @@ UserTC.addResolver({
           ],
         },
       },
-      { $sample: { size: 4 } },
+      { $sample: { size: 3 } },
     ]);
 
     return users;

@@ -211,7 +211,7 @@ JobTC.addResolver({
 
 JobTC.addResolver({
   name: 'submitPublicBrief',
-  type: JobTC,
+  type: 'Boolean',
   args: {
     _id: 'MongoID!',
   },
@@ -224,6 +224,25 @@ JobTC.addResolver({
       { _id: jobId },
       { submitted: 'submitted', isPublic: true }
     );
+
+    return true;
+  },
+});
+
+JobTC.addResolver({
+  name: 'acceptTerms',
+  type: 'Boolean',
+  args: {
+    _id: 'MongoID!',
+    termsAccepted: 'Boolean!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    await Job.updateOne(
+      { _id: args._id },
+      { termsAccepted: args.termsAccepted }
+    );
+    return true;
   },
 });
 

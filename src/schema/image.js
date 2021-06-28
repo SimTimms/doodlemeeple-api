@@ -47,10 +47,7 @@ const ImageMutation = {
         Bucket: S3_BUCKET,
         Key: image.img.replace('https://dm-uploads-uk.s3.amazonaws.com/', ''),
       };
-      await s3.deleteObject(params, function (err, data) {
-        if (err) console.log(err, err.stack);
-        else console.log('deleted'); // deleted
-      });
+      await s3.deleteObject(params, function (err, data) {});
 
       return next(rp);
     }

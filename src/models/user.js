@@ -160,80 +160,6 @@ UserTC.addRelation('badges', {
 });
 
 UserTC.addResolver({
-  name: 'disconnectStripe',
-  args: {},
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.findOne({ _id: userId });
-    await stripe.oauth.deauthorize({
-      client_id: process.env.STRIPE_CLIENT_ID,
-      stripe_user_id: user.stripeClientId,
-    });
-
-    await User.updateOne(
-      { _id: userId },
-      { stripeID: null, stripeClientId: null }
-    );
-
-    return 'deleted';
-  },
-});
-
-UserTC.addResolver({
-  name: 'deleteStripe',
-  args: {},
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne({ _id: userId }, { stripeID: null });
-
-    return 'deleted';
-  },
-});
-
-UserTC.addResolver({
-  name: 'connectStripe',
-  args: { token: 'String!' },
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne(
-      { _id: userId },
-      { stripeRefresh: rp.args.token }
-    );
-
-    const stripe = require('stripe')(`${process.env.STRIPE_KEY}`);
-
-    const response = await stripe.oauth.token({
-      grant_type: 'authorization_code',
-      code: rp.args.token,
-    });
-
-    const access = await User.updateOne(
-      { _id: userId },
-      {
-        stripeAccess: response.access_token,
-        stripeRefresh: response.refresh_token,
-        stripeClientId: response.stripe_user_id,
-      }
-    );
-    return 'connected';
-  },
-});
-
-UserTC.addResolver({
   name: 'skipOnboarding',
   args: {},
   type: 'Boolean',
@@ -280,6 +206,34 @@ UserTC.addResolver({
         profileImg: -1,
         createdAt: -1,
       });
+
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'featuredCreativesWidget',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { profileBG: { $ne: '' } },
+            { profileBG: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { badges: { $ne: null } },
+            { badges: { $ne: [] } },
+          ],
+        },
+      },
+      { $sample: { size: 4 } },
+    ]);
 
     return users;
   },

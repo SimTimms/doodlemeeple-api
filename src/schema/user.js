@@ -31,6 +31,7 @@ const UserQuery = {
   userPagination: UserTC.getResolver('pagination'),
   profile: UserTC.getResolver('profile'),
   getCreatives: UserTC.getResolver('getCreatives'),
+  featuredCreativesWidget: UserTC.getResolver('featuredCreativesWidget'),
   getLikes: UserTC.getResolver('getLikes'),
   creativeMinis: UserTC.getResolver('creativeMinis'),
   getStripe: UserTC.getResolver('getStripe').wrapResolve(
@@ -86,9 +87,6 @@ const UserMutation = {
   updateProfile: UserTC.getResolver('updateProfile'),
   passwordForgot: UserTC.getResolver('passwordForgot'),
   passwordReset: UserTC.getResolver('passwordReset'),
-  deleteStripe: UserTC.getResolver('deleteStripe'),
-  connectStripe: UserTC.getResolver('connectStripe'),
-  disconnectStripe: UserTC.getResolver('disconnectStripe'),
   skipOnboarding: UserTC.getResolver('skipOnboarding'),
 };
 

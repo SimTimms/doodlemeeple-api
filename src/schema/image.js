@@ -19,6 +19,7 @@ const ImageQuery = {
   imageConnection: ImageTC.getResolver('connection'),
   imagePagination: ImageTC.getResolver('pagination'),
   imageCategory: ImageTC.getResolver('imageCategory'),
+  profileImages: ImageTC.getResolver('profileImages'),
 };
 
 const ImageMutation = {

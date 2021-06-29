@@ -239,6 +239,32 @@ UserTC.addResolver({
   },
 });
 
+UserTC.addResolver({
+  name: 'creativeRosterWidget',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { profileBG: { $ne: '' } },
+            { profileBG: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+          ],
+        },
+      },
+      { $sample: { size: 25 } },
+    ]);
+
+    return users;
+  },
+});
+
 UserTC.addFields({
   responsePercent: {
     type: 'String', // String, Int, Float, Boolean, ID, Json

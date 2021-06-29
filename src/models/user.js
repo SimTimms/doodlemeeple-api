@@ -249,7 +249,7 @@ UserTC.addResolver({
   resolve: async (rp) => {
     const sections = await Section.find({
       type: { $in: rp.args.filter },
-    }).limit(rp.args.page * 12);
+    });
 
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
     const users = await User.find({

@@ -241,25 +241,23 @@ UserTC.addResolver({
 
 UserTC.addResolver({
   name: 'creativeRosterWidget',
-  args: {},
+  args: { page: 'Int' },
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
-    const users = await User.aggregate([
-      {
-        $match: {
-          $and: [
-            { profileImg: { $ne: '' } },
-            { profileImg: { $ne: null } },
-            { profileBG: { $ne: '' } },
-            { profileBG: { $ne: null } },
-            { summary: { $ne: null } },
-            { summary: { $ne: '' } },
-          ],
-        },
-      },
-      { $sample: { size: 25 } },
-    ]);
+    const users = await User.find({
+      $and: [
+        { profileImg: { $ne: '' } },
+        { profileImg: { $ne: null } },
+        { profileBG: { $ne: '' } },
+        { profileBG: { $ne: null } },
+        { summary: { $ne: null } },
+        { summary: { $ne: '' } },
+      ],
+    })
+      .sort({ createdAt: -1 })
+      .skip(rp.args.page * 2)
+      .limit(2);
 
     return users;
   },

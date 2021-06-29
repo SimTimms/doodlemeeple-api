@@ -258,8 +258,8 @@ UserTC.addResolver({
       ],
     })
       .sort({ createdAt: -1 })
-      .skip(rp.args.page * 2)
-      .limit(2);
+      .skip(rp.args.page * 12)
+      .limit(12);
 
     return users;
   },

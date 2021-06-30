@@ -263,7 +263,7 @@ UserTC.addResolver({
         { summary: { $ne: '' } },
       ],
     })
-      .sort({ createdAt: -1 })
+      .sort({ priority: -1, createdAt: -1 })
       .skip(rp.args.page * 12)
       .limit(12);
 

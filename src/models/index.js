@@ -14,8 +14,11 @@ import { Message, MessageTC } from './message';
 import { Contract, ContractTC } from './contract';
 import { Payment, PaymentTC } from './payment';
 import { PaymentTerms, PaymentTermsTC } from './paymentTerms';
+import { Kickstarter, KickstarterTC } from './kickstarter';
 import { Badge, BadgeTC } from './badge';
 export {
+  Kickstarter,
+  KickstarterTC,
   Badge,
   BadgeTC,
   User,

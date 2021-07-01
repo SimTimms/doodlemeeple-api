@@ -231,6 +231,7 @@ UserTC.addResolver({
             { badges: { $ne: [] } },
             { sections: { $ne: [] } },
             { sections: { $ne: null } },
+            { priority: 0 },
           ],
         },
       },

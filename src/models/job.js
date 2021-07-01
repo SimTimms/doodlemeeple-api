@@ -89,6 +89,17 @@ JobSchema.index({ createdAt: 1, updatedAt: 1 });
 export const Job = mongoose.model('Job', JobSchema);
 export const JobTC = composeWithMongoose(Job);
 
+JobTC.addResolver({
+  name: 'jobWidget',
+  args: { jobId: 'MongoID!' },
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.find({ _id: rp.args.jobId });
+    return jobs;
+  },
+});
+
 JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {

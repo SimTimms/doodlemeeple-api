@@ -227,8 +227,6 @@ UserTC.addResolver({
             { profileBG: { $ne: null } },
             { summary: { $ne: null } },
             { summary: { $ne: '' } },
-            { badges: { $ne: null } },
-            { badges: { $ne: [] } },
             { sections: { $ne: [] } },
             { sections: { $ne: null } },
             { priority: 0 },

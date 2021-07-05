@@ -80,7 +80,7 @@ ContractTC.addResolver({
 
     const quotes = await Contract.find({
       jobOwner: userId,
-      status: { $ne: 'draft' },
+      $and: [{ status: { $ne: 'draft' } }, { status: { $ne: 'declined' } }],
       job: rp.args.jobId,
     });
 

@@ -96,7 +96,9 @@ JobTC.addResolver({
   type: JobTC,
   kind: 'query',
   resolve: async (rp) => {
-    const jobs = await Job.findOne({ _id: rp.args.jobId });
+    const jobs = await Job.findOne({
+      _id: rp.args.jobId,
+    });
     return jobs;
   },
 });
@@ -106,7 +108,10 @@ JobTC.addResolver({
   type: [JobTC],
   kind: 'query',
   resolve: async (rp) => {
-    const jobs = await Job.find({ isPublic: true });
+    const jobs = await Job.find({
+      isPublic: true,
+      submitted: { $ne: 'accepted' },
+    });
 
     return jobs;
   },

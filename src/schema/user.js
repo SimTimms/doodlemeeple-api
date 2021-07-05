@@ -31,6 +31,7 @@ const UserQuery = {
   userPagination: UserTC.getResolver('pagination'),
   profile: UserTC.getResolver('profile'),
   getCreatives: UserTC.getResolver('getCreatives'),
+  featuredProfile: UserTC.getResolver('featuredProfile'),
   featuredCreativesWidget: UserTC.getResolver('featuredCreativesWidget'),
   creativeRosterWidget: UserTC.getResolver('creativeRosterWidget'),
   getLikes: UserTC.getResolver('getLikes'),

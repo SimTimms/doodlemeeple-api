@@ -40,6 +40,7 @@ export const JobSchema = new Schema(
     showreel: { type: String },
     creativeSummary: { type: String },
     submitted: { type: String },
+    contactEmail: { type: String },
     paid: { type: String },
     format: [{ type: String }],
     imageRes: { type: String },
@@ -92,10 +93,21 @@ export const JobTC = composeWithMongoose(Job);
 JobTC.addResolver({
   name: 'jobWidget',
   args: { jobId: 'MongoID!' },
+  type: JobTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.findOne({ _id: rp.args.jobId });
+    return jobs;
+  },
+});
+
+JobTC.addResolver({
+  name: 'jobBoardWidget',
   type: [JobTC],
   kind: 'query',
   resolve: async (rp) => {
-    const jobs = await Job.find({ _id: rp.args.jobId });
+    const jobs = await Job.find({ isPublic: true });
+
     return jobs;
   },
 });

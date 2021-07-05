@@ -56,6 +56,52 @@ ContractSchema.index({ createdAt: 1, updatedAt: 1 });
 export const Contract = mongoose.model('Contract', ContractSchema);
 export const ContractTC = composeWithMongoose(Contract);
 
+ContractTC.addResolver({
+  name: 'quoteWidget',
+  args: {},
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({ user: userId });
+
+    return quotes;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'jobResponsesWidget',
+  args: { jobId: 'MongoID!' },
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({
+      jobOwner: userId,
+      status: { $ne: 'draft' },
+      job: rp.args.jobId,
+    });
+
+    return quotes;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'quoteInWidget',
+  args: {},
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({ jobOwner: userId });
+
+    return quotes;
+  },
+});
+
 ContractTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {

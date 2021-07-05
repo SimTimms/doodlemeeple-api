@@ -12,6 +12,7 @@ const JobQuery = {
   jobPagination: JobTC.getResolver('pagination'),
   jobChecklist: JobTC.getResolver('jobChecklist'),
   jobWidget: JobTC.getResolver('jobWidget'),
+  jobBoardWidget: JobTC.getResolver('jobBoardWidget'),
 };
 
 const JobMutation = {

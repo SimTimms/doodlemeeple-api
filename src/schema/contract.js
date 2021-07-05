@@ -12,6 +12,9 @@ const ContractQuery = {
   contractCount: ContractTC.getResolver('count'),
   contractConnection: ContractTC.getResolver('connection'),
   contractPagination: ContractTC.getResolver('pagination'),
+  quoteWidget: ContractTC.getResolver('quoteWidget'),
+  quoteInWidget: ContractTC.getResolver('quoteInWidget'),
+  jobResponsesWidget: ContractTC.getResolver('jobResponsesWidget'),
 };
 
 const ContractMutation = {
@@ -33,12 +36,15 @@ const ContractMutation = {
       );
 
       const job = await Job.findOne({ _id: ObjectId(rp.args.record.job) });
+      if (userId === job.user._id) return null;
+
       rp.args.record.jobOwner = job.user;
       if (!contractExists) {
         const contract = await next(rp);
         return contract;
       } else {
-        return null;
+        rp.args.record = contractExists;
+        return await next(rp);
       }
     }
   ),

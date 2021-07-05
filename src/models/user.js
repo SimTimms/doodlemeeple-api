@@ -212,6 +212,18 @@ UserTC.addResolver({
 });
 
 UserTC.addResolver({
+  name: 'featuredProfile',
+  args: { userId: 'MongoID' },
+  type: UserTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const user = await User.findOne({ _id: rp.args.userId });
+
+    return user;
+  },
+});
+
+UserTC.addResolver({
   name: 'featuredCreativesWidget',
   args: {},
   type: [UserTC],

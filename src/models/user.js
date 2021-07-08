@@ -289,8 +289,6 @@ UserTC.addResolver({
         { _id: { $in: sectionUserIds } },
         { profileImg: { $ne: '' } },
         { profileImg: { $ne: null } },
-        { profileBG: { $ne: '' } },
-        { profileBG: { $ne: null } },
         { summary: { $ne: null } },
         { summary: { $ne: '' } },
       ],

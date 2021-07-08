@@ -301,11 +301,11 @@ UserTC.addResolver({
         $project: {
           name: 1,
           profileBG: 1,
-          field_length: { $strLenCP: '$profileBG' },
+          profileBG: { $ifNull: ['$profileBG', ''] },
         },
       },
       {
-        $sort: { priority: -1, field_length: -1, viewCount: 1, createdAt: -1 },
+        $sort: { priority: -1, profileBG: -1, viewCount: 1, createdAt: -1 },
       },
       { $limit: 12 },
       { $skip: rp.args.page * 12 },

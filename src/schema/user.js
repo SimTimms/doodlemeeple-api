@@ -34,6 +34,7 @@ const UserQuery = {
   featuredProfile: UserTC.getResolver('featuredProfile'),
   featuredCreativesWidget: UserTC.getResolver('featuredCreativesWidget'),
   creativeRosterWidget: UserTC.getResolver('creativeRosterWidget'),
+  latestCreativesWidget: UserTC.getResolver('latestCreativesWidget'),
   getLikes: UserTC.getResolver('getLikes'),
   creativeMinis: UserTC.getResolver('creativeMinis'),
   getStripe: UserTC.getResolver('getStripe').wrapResolve(

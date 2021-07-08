@@ -117,6 +117,22 @@ JobTC.addResolver({
   },
 });
 
+JobTC.addResolver({
+  name: 'jobBoardMiniWidget',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.find({
+      isPublic: true,
+      submitted: { $ne: 'accepted' },
+    })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    return jobs;
+  },
+});
+
 JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findById'),
   prepareArgs: {

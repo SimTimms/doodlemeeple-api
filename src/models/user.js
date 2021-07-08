@@ -165,12 +165,6 @@ UserTC.addResolver({
   type: 'Boolean',
   kind: 'mutation',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne(
-      { _id: userId },
-      { onboarding: 'complete' }
-    );
-
     return true;
   },
 });
@@ -220,6 +214,33 @@ UserTC.addResolver({
     const user = await User.findOne({ _id: rp.args.userId });
 
     return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'latestCreativesWidget',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
+          ],
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $limit: 10 },
+    ]);
+
+    return users;
   },
 });
 

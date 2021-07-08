@@ -50,7 +50,6 @@ ImageTC.addResolver({
       { $match: { user: ObjectId(rp.args.userId) } },
       { $sample: { size: 5 } },
     ]);
-    console.log(rp.args.userId);
     return img;
   },
 });

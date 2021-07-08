@@ -284,18 +284,32 @@ UserTC.addResolver({
     });
 
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
-    const users = await User.find({
-      $and: [
-        { _id: { $in: sectionUserIds } },
-        { profileImg: { $ne: '' } },
-        { profileImg: { $ne: null } },
-        { summary: { $ne: null } },
-        { summary: { $ne: '' } },
-      ],
-    })
-      .sort({ priority: -1, createdAt: -1 })
-      .skip(rp.args.page * 12)
-      .limit(12);
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: { $in: sectionUserIds } },
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+          ],
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          profileBG: 1,
+          field_length: { $strLenCP: '$profileBG' },
+        },
+      },
+      {
+        $sort: { priority: -1, field_length: -1, viewCount: 1, createdAt: -1 },
+      },
+      { $limit: 12 },
+      { $skip: rp.args.page * 12 },
+    ]);
 
     return users;
   },

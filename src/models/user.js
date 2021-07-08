@@ -300,7 +300,18 @@ UserTC.addResolver({
       {
         $project: {
           name: 1,
+          summary: 1,
+          profileImg: 1,
           profileBG: 1,
+          linkedIn: 1,
+          twitter: 1,
+          instagram: 1,
+          website: 1,
+          facebook: 1,
+          publicEmail: 1,
+          viewCount: 1,
+          createdAt: 1,
+          priority: 1,
           profileBG: { $ifNull: ['$profileBG', ''] },
         },
       },

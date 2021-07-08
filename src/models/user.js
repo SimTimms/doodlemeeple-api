@@ -177,7 +177,7 @@ UserTC.addResolver({
   resolve: async (rp) => {
     const sections = await Section.find({
       type: { $in: rp.args.type },
-    }).limit(2000);
+    });
 
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
 

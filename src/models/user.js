@@ -318,8 +318,8 @@ UserTC.addResolver({
       {
         $sort: { priority: -1, profileBG: -1, viewCount: 1, createdAt: -1 },
       },
-      { $limit: 12 },
       { $skip: rp.args.page * 12 },
+      { $limit: 12 },
     ]);
 
     return users;

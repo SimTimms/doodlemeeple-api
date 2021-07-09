@@ -45,6 +45,9 @@ export const JobSchema = new Schema(
     format: [{ type: String }],
     imageRes: { type: String },
     isPublic: { type: Boolean },
+    isExternal: { type: Boolean },
+    externalLink: { type: String },
+    approved: { type: Boolean },
     gallery: {
       type: Schema.Types.ObjectId,
       ref: 'Gallery',
@@ -111,6 +114,7 @@ JobTC.addResolver({
     const jobs = await Job.find({
       isPublic: true,
       submitted: { $ne: 'accepted' },
+      approved: true,
     });
 
     return jobs;

@@ -313,6 +313,7 @@ UserTC.addResolver({
           createdAt: 1,
           priority: 1,
           profileBG: { $ifNull: ['$profileBG', ''] },
+          priority: { $ifNull: ['$priority', 5] },
         },
       },
       {

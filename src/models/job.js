@@ -131,6 +131,7 @@ JobTC.addResolver({
     const jobs = await Job.find({
       isPublic: true,
       submitted: { $ne: 'accepted' },
+      approved: true,
     })
       .sort({ createdAt: -1 })
       .limit(5);

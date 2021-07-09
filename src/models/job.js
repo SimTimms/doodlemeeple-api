@@ -47,6 +47,8 @@ export const JobSchema = new Schema(
     isPublic: { type: Boolean },
     isExternal: { type: Boolean },
     externalLink: { type: String },
+    externalSource: { type: String },
+    sourceLink: { type: String },
     approved: { type: Boolean },
     gallery: {
       type: Schema.Types.ObjectId,

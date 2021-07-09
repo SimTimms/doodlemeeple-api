@@ -50,11 +50,10 @@ MessageTC.addResolver({
         { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
         { $or: [{ receiver: userId }, { sender: userId }] },
       ],
-      job: rp.args.jobId,
     })
       .sort({ createdAt: -1 })
-      .skip(rp.args.pageNbr * 10)
-      .limit(10);
+      .skip(rp.args.pageNbr * 30)
+      .limit(30);
 
     await Message.updateMany(
       {

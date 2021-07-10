@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC, GalleryTC, Section, Gallery } from './';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const ImageSchema = new Schema(
   {
@@ -34,6 +35,20 @@ ImageTC.addResolver({
     const img = await Image.aggregate([
       { $match: { category: section.type } },
       { $sample: { size: 1 } },
+    ]);
+    return img;
+  },
+});
+
+ImageTC.addResolver({
+  name: 'profileImages',
+  type: [ImageTC],
+  args: { userId: 'MongoID!' },
+  kind: 'query',
+  resolve: async (rp) => {
+    const img = await Image.aggregate([
+      { $match: { user: ObjectId(rp.args.userId) } },
+      { $sample: { size: 5 } },
     ]);
     return img;
   },

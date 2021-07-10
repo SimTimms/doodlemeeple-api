@@ -11,6 +11,9 @@ const JobQuery = {
   jobConnection: JobTC.getResolver('connection'),
   jobPagination: JobTC.getResolver('pagination'),
   jobChecklist: JobTC.getResolver('jobChecklist'),
+  jobWidget: JobTC.getResolver('jobWidget'),
+  jobBoardWidget: JobTC.getResolver('jobBoardWidget'),
+  jobBoardMiniWidget: JobTC.getResolver('jobBoardMiniWidget'),
 };
 
 const JobMutation = {
@@ -37,6 +40,8 @@ const JobMutation = {
   jobRemoveOne: JobTC.getResolver('removeOne'),
   jobRemoveMany: JobTC.getResolver('removeMany'),
   submitBrief: JobTC.getResolver('submitBrief'),
+  acceptTerms: JobTC.getResolver('acceptTerms'),
+  submitPublicBrief: JobTC.getResolver('submitPublicBrief'),
   closeEarly: JobTC.getResolver('closeEarly'),
 };
 

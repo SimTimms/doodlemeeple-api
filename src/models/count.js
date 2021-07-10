@@ -12,6 +12,8 @@ export const CountSchema = new Schema({
   contact: { type: Number },
   skills: { type: Number },
   draftQuotes: { type: Number },
+  quotesDeclined: { type: Number },
+  quotesAccepted: { type: Number },
   totalDeclined: { type: Number },
   draftJobs: { type: Number },
   unansweredQuotes: { type: Number },
@@ -41,7 +43,11 @@ CountTC.addResolver({
       $or: [{ status: 'unopened' }, { status: 'read' }],
     });
 
-    const messages = await Message.find({ receiver: userId, status: 'unread' });
+    const messages = await Message.find({
+      receiver: userId,
+      status: 'unread',
+      job: { $ne: null },
+    });
 
     const activeJobs = await Job.find({
       user: userId,
@@ -56,6 +62,16 @@ CountTC.addResolver({
     const totalDeclined = await Job.find({
       user: userId,
       $and: [{ submitted: 'totalDecline' }],
+    });
+
+    const contractDeclined = await Contract.find({
+      user: userId,
+      $and: [{ status: 'declined' }, { seenByOwner: false }],
+    });
+
+    const contractAccepted = await Contract.find({
+      user: userId,
+      $and: [{ status: 'accepted' }, { seenByOwner: false }],
     });
 
     const jobs = await Job.find(
@@ -76,6 +92,7 @@ CountTC.addResolver({
     for (let i = 0; i < jobs.length; i++) {
       jobTotal += jobs[i].contracts.length;
     }
+    jobTotal += contractDeclined.length;
 
     const unansweredQuotes = await Contract.find(
       {
@@ -84,13 +101,14 @@ CountTC.addResolver({
       },
       { status: 1 }
     );
-
     return {
       invites: invites.length,
       messages: messages.length,
       quotes: jobTotal,
       jobs: activeJobs.length,
       socials: social,
+      quotesDeclined: contractDeclined.length,
+      quotesAccepted: contractAccepted.length,
       contact,
       skills: skills,
       draftQuotes: draftQuotes.length,

@@ -18,8 +18,6 @@ import {
   FavouriteTC,
   Favourite,
   BadgeTC,
-  Badge,
-  Job,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -82,6 +80,7 @@ export const UserSchema = new Schema(
     paymentMethod: { type: String },
     viewCount: { type: Number },
     responsePercent: { type: Number },
+    priority: { type: Number },
     campaignId: { type: String },
     badges: [
       {
@@ -145,22 +144,8 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'query',
   resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
     const userId = getUserId(rp.context.headers.authorization);
     const user = await User.findOne({ _id: userId });
-
-    try {
-      const account = user.stripeID
-        ? await stripe.accounts.retrieve(`${user.stripeID}`)
-        : null;
-      user.stripeStatus = account ? account.payouts_enabled : 'false';
-    } catch (error) {
-      console.log(error);
-      user.stripeStatus = 'error';
-    }
 
     return user;
   },
@@ -175,91 +160,11 @@ UserTC.addRelation('badges', {
 });
 
 UserTC.addResolver({
-  name: 'disconnectStripe',
-  args: {},
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.findOne({ _id: userId });
-    await stripe.oauth.deauthorize({
-      client_id: process.env.STRIPE_CLIENT_ID,
-      stripe_user_id: user.stripeClientId,
-    });
-
-    await User.updateOne(
-      { _id: userId },
-      { stripeID: null, stripeClientId: null }
-    );
-
-    return 'deleted';
-  },
-});
-
-UserTC.addResolver({
-  name: 'deleteStripe',
-  args: {},
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const stripe = require('stripe')(process.env.STRIPE_KEY, {
-      apiVersion: '2020-03-02',
-    });
-
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne({ _id: userId }, { stripeID: null });
-
-    return 'deleted';
-  },
-});
-
-UserTC.addResolver({
-  name: 'connectStripe',
-  args: { token: 'String!' },
-  type: 'String',
-  kind: 'mutation',
-  resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne(
-      { _id: userId },
-      { stripeRefresh: rp.args.token }
-    );
-
-    const stripe = require('stripe')(`${process.env.STRIPE_KEY}`);
-
-    const response = await stripe.oauth.token({
-      grant_type: 'authorization_code',
-      code: rp.args.token,
-    });
-
-    const access = await User.updateOne(
-      { _id: userId },
-      {
-        stripeAccess: response.access_token,
-        stripeRefresh: response.refresh_token,
-        stripeClientId: response.stripe_user_id,
-      }
-    );
-    return 'connected';
-  },
-});
-
-UserTC.addResolver({
   name: 'skipOnboarding',
   args: {},
   type: 'Boolean',
   kind: 'mutation',
   resolve: async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-    const user = await User.updateOne(
-      { _id: userId },
-      { onboarding: 'complete' }
-    );
-
     return true;
   },
 });
@@ -272,7 +177,7 @@ UserTC.addResolver({
   resolve: async (rp) => {
     const sections = await Section.find({
       type: { $in: rp.args.type },
-    }).limit(500);
+    });
 
     const sectionUserIds = sections.map((section) => ObjectId(section.user));
 
@@ -280,9 +185,7 @@ UserTC.addResolver({
       $and: [
         { _id: { $in: sectionUserIds } },
         { profileImg: { $ne: '' } },
-        { profileBG: { $ne: '' } },
         { profileImg: { $ne: null } },
-        { profileBG: { $ne: null } },
         { summary: { $ne: null } },
         { summary: { $ne: '' } },
         { available: { $ne: false } },
@@ -291,11 +194,151 @@ UserTC.addResolver({
       .skip(rp.args.page * 12)
       .limit(12)
       .sort({
+        priority: -1,
         badges: -1,
         profileBG: -1,
         profileImg: -1,
         createdAt: -1,
       });
+
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'featuredProfile',
+  args: { userId: 'MongoID' },
+  type: UserTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const user = await User.findOne({ _id: rp.args.userId });
+
+    return user;
+  },
+});
+
+UserTC.addResolver({
+  name: 'latestCreativesWidget',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
+          ],
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $limit: 10 },
+    ]);
+
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'featuredCreativesWidget',
+  args: {},
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { profileBG: { $ne: '' } },
+            { profileBG: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
+            { priority: 0 },
+          ],
+        },
+      },
+      { $sample: { size: 3 } },
+    ]);
+
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'creativeRosterWidget',
+  args: { page: 'Int', filter: ['String'] },
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const sections = await Section.find({
+      type: { $in: rp.args.filter },
+    });
+
+    const sectionUserIds = sections.map((section) => ObjectId(section.user));
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { _id: { $in: sectionUserIds } },
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+          ],
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          summary: 1,
+          profileImg: 1,
+          profileBG: 1,
+          linkedIn: 1,
+          twitter: 1,
+          instagram: 1,
+          website: 1,
+          facebook: 1,
+          publicEmail: 1,
+          viewCount: 1,
+          createdAt: 1,
+          priority: 1,
+          profileBG: { $ifNull: ['$profileBG', ''] },
+          linkedIn: { $ifNull: ['$linkedIn', ''] },
+          twitter: { $ifNull: ['$twitter', ''] },
+          instagram: { $ifNull: ['$instagram', ''] },
+          website: { $ifNull: ['$website', ''] },
+          facebook: { $ifNull: ['$facebook', ''] },
+          publicEmail: { $ifNull: ['$publicEmail', ''] },
+          priority: { $ifNull: ['$priority', 5] },
+        },
+      },
+      {
+        $sort: {
+          priority: 1,
+          profileBG: -1,
+          viewCount: 1,
+          publicEmail: -1,
+          website: -1,
+          linkedIn: -1,
+          twitter: -1,
+          facebook: -1,
+          instagram: -1,
+          createdAt: -1,
+        },
+      },
+      { $skip: rp.args.page * 12 },
+      { $limit: 12 },
+    ]);
 
     return users;
   },
@@ -331,6 +374,29 @@ UserTC.addResolver({
     }).limit(50);
     const userIds = favourites.map((favourites) => ObjectId(favourites.user));
     const users = await User.find({ _id: { $in: userIds } }).limit(50);
+    return users;
+  },
+});
+
+UserTC.addResolver({
+  name: 'creativeMinis',
+  args: { count: 'Int' },
+  type: [UserTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    let users = await User.aggregate([
+      { $sort: { createdAt: -1 } },
+      {
+        $match: {
+          profileImg: { $ne: null },
+          profileBG: { $ne: null },
+          name: { $ne: null },
+          summary: { $ne: null },
+        },
+      },
+      { $limit: rp.args.count },
+    ]);
+
     return users;
   },
 });

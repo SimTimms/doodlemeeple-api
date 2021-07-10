@@ -40,9 +40,16 @@ export const JobSchema = new Schema(
     showreel: { type: String },
     creativeSummary: { type: String },
     submitted: { type: String },
+    contactEmail: { type: String },
     paid: { type: String },
     format: [{ type: String }],
     imageRes: { type: String },
+    isPublic: { type: Boolean },
+    isExternal: { type: Boolean },
+    externalLink: { type: String },
+    externalSource: { type: String },
+    sourceLink: { type: String },
+    approved: { type: Boolean },
     gallery: {
       type: Schema.Types.ObjectId,
       ref: 'Gallery',
@@ -87,6 +94,51 @@ JobSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Job = mongoose.model('Job', JobSchema);
 export const JobTC = composeWithMongoose(Job);
+
+JobTC.addResolver({
+  name: 'jobWidget',
+  args: { jobId: 'MongoID!' },
+  type: JobTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.findOne({
+      _id: rp.args.jobId,
+    });
+    return jobs;
+  },
+});
+
+JobTC.addResolver({
+  name: 'jobBoardWidget',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.find({
+      isPublic: true,
+      submitted: { $ne: 'accepted' },
+      approved: true,
+    });
+
+    return jobs;
+  },
+});
+
+JobTC.addResolver({
+  name: 'jobBoardMiniWidget',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const jobs = await Job.find({
+      isPublic: true,
+      submitted: { $ne: 'accepted' },
+      approved: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    return jobs;
+  },
+});
 
 JobTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findById'),
@@ -205,6 +257,43 @@ JobTC.addResolver({
       { submitted: 'complete' }
     );
     return null;
+  },
+});
+
+JobTC.addResolver({
+  name: 'submitPublicBrief',
+  type: 'Boolean',
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    const jobId = args._id;
+    const jobDeets = await Job.findOne({ _id: jobId });
+
+    await Job.updateOne(
+      { _id: jobId },
+      { submitted: 'submitted', isPublic: true }
+    );
+
+    return true;
+  },
+});
+
+JobTC.addResolver({
+  name: 'acceptTerms',
+  type: 'Boolean',
+  args: {
+    _id: 'MongoID!',
+    termsAccepted: 'Boolean!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    await Job.updateOne(
+      { _id: args._id },
+      { termsAccepted: args.termsAccepted }
+    );
+    return true;
   },
 });
 

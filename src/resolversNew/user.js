@@ -131,7 +131,7 @@ export async function userRegistration(rp) {
   }
   const passwordEncrypted = await bcrypt.hash(password, 10);
   rp.args.record.password = passwordEncrypted;
-  /*TEMP 
+
   const request = emailSignup(email, name);
   request
     .then((result) => {})
@@ -139,7 +139,6 @@ export async function userRegistration(rp) {
       console.log(err.statusCode);
     });
 
-    */
   return rp;
 }
 

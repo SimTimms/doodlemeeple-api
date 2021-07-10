@@ -12,6 +12,10 @@ const ContractQuery = {
   contractCount: ContractTC.getResolver('count'),
   contractConnection: ContractTC.getResolver('connection'),
   contractPagination: ContractTC.getResolver('pagination'),
+  quoteWidget: ContractTC.getResolver('quoteWidget'),
+  quoteInWidget: ContractTC.getResolver('quoteInWidget'),
+  jobResponsesWidget: ContractTC.getResolver('jobResponsesWidget'),
+  jobContract: ContractTC.getResolver('jobContract'),
 };
 
 const ContractMutation = {
@@ -19,10 +23,15 @@ const ContractMutation = {
     (next) => async (rp) => {
       const userId = getUserId(rp.context.headers.authorization);
       rp.args.record.user = userId;
+
       const contractExists = await Contract.findOne({
         job: ObjectId(rp.args.record.job),
         user: userId,
       });
+
+      if (contractExists) {
+        return null;
+      }
 
       await Invite.updateOne(
         {
@@ -33,13 +42,11 @@ const ContractMutation = {
       );
 
       const job = await Job.findOne({ _id: ObjectId(rp.args.record.job) });
+      if (userId === job.user._id) return null;
+
       rp.args.record.jobOwner = job.user;
-      if (!contractExists) {
-        const contract = await next(rp);
-        return contract;
-      } else {
-        return null;
-      }
+      const contract = await next(rp);
+      return contract;
     }
   ),
   contractCreateMany: ContractTC.getResolver('createMany'),
@@ -49,11 +56,12 @@ const ContractMutation = {
       const contract = await Contract.findOne({ _id: rp.args.record._id });
 
       //REFACTOR: I should've commented this before now I'm not sure why the $pull is in there, it may be to stop a creative posting multiple contracts. Find out why it's here and remove if unnecessary.
+      /*
       await Job.update(
         { _id: contract.job },
         { $pull: { contracts: rp.args.record._id } }
       );
-
+*/
       return next(rp);
     }
   ),

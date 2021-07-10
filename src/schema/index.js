@@ -17,9 +17,11 @@ import { MessageQuery, MessageMutation, MessageSubscription } from './message';
 import { ContractQuery, ContractMutation } from './contract';
 import { PaymentQuery, PaymentMutation } from './payment';
 import { PaymentTermsQuery, PaymentTermsMutation } from './paymentTerms';
+import { KickstarterQuery, KickstarterMutation } from './kickstarter';
 import { CountQuery } from './count';
 
 schemaComposer.Query.addFields({
+  ...KickstarterQuery,
   ...UserQuery,
   ...SectionQuery,
   ...NotificationQuery,
@@ -40,6 +42,7 @@ schemaComposer.Query.addFields({
 });
 
 schemaComposer.Mutation.addFields({
+  ...KickstarterMutation,
   ...UserMutation,
   ...SectionMutation,
   ...NotificationMutation,

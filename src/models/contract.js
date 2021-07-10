@@ -29,6 +29,8 @@ export const ContractSchema = new Schema(
     currency: { type: String },
     status: { type: String },
     signedDate: { type: Date },
+    seenByOwner: { type: Boolean },
+    seenByJobOwner: { type: Boolean },
     signedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -55,6 +57,71 @@ ContractSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Contract = mongoose.model('Contract', ContractSchema);
 export const ContractTC = composeWithMongoose(Contract);
+
+ContractTC.addResolver({
+  name: 'quoteWidget',
+  args: {},
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({ user: userId });
+
+    return quotes;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'jobContract',
+  args: { jobId: 'MongoID!' },
+  type: ContractTC,
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quote = await Contract.findOne({
+      user: userId,
+      job: rp.args.jobId,
+    });
+
+    await Contract.updateOne({ _id: quote._id }, { seenByOwner: true });
+
+    return quote;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'jobResponsesWidget',
+  args: { jobId: 'MongoID!' },
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({
+      jobOwner: userId,
+      $and: [{ status: { $ne: 'draft' } }, { status: { $ne: 'declined' } }],
+      job: rp.args.jobId,
+    });
+
+    return quotes;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'quoteInWidget',
+  args: {},
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const quotes = await Contract.find({ jobOwner: userId });
+
+    return quotes;
+  },
+});
 
 ContractTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
@@ -129,7 +196,6 @@ ContractTC.addResolver({
     const contract = await Contract.findOne({ _id: contractId, user: userId });
     const job = await Job.findOne({ _id: ObjectId(contract.job) }, { user: 1 });
 
-    console.log(job.user);
     const creator = await User.findOne(
       { _id: ObjectId(job.user) },
       { email: 1, name: 1 }
@@ -139,7 +205,7 @@ ContractTC.addResolver({
     //Update Data
     await Contract.updateOne(
       { _id: rp.args._id, user: userId },
-      { status: 'submitted' }
+      { status: 'submitted', seenByOwner: true, seenByJobOwner: false }
     );
 
     await Invite.updateOne(
@@ -154,7 +220,7 @@ ContractTC.addResolver({
       { _id: contract.job },
       { $addToSet: { contracts: rp.args._id } }
     );
-    console.log(creator);
+
     const request = emailQuote(creator, contract, creative);
     request
       .then((result) => {})
@@ -191,7 +257,12 @@ ContractTC.addResolver({
 
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },
-      { status: 'declined' }
+      { status: 'declined', seenByOwner: false, seenByJobOwner: true }
+    );
+
+    await Job.updateOne(
+      { _id: contract.job },
+      { $pull: { contracts: rp.args._id } }
     );
 
     await Invite.updateOne(
@@ -255,7 +326,12 @@ ContractTC.addResolver({
 
     await Contract.updateOne(
       { _id: rp.args._id, user: creative._id },
-      { status: 'accepted', signedBy: client._id, signedDate: new Date() }
+      {
+        status: 'accepted',
+        signedBy: client._id,
+        signedDate: new Date(),
+        seenByOwner: false,
+      }
     );
 
     await Job.updateOne(

@@ -10,7 +10,7 @@ export function getUserId(auth) {
     return userId;
   }
 
-  throw new Error('Not authenticated');
+  return null;
 }
 
 export function getUserIdWithoutContext(Authorization) {
@@ -23,7 +23,7 @@ export function getUserIdWithoutContext(Authorization) {
     return userId;
   }
 
-  throw new Error('Not authenticated');
+  return null;
 }
 
 export function signupChecks(input) {

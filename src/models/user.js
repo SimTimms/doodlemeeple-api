@@ -312,7 +312,13 @@ UserTC.addResolver({
           viewCount: 1,
           createdAt: 1,
           priority: 1,
-          profileBG: { $ifNull: ['$profileBG', ''] },
+          resultBG: { $not: [{ $ne: ['$profileBG', null] }] },
+          resultFB: { $not: [{ $ne: ['$facebook', ''] }] },
+          resultTwitter: { $not: [{ $ne: ['$twitter', ''] }] },
+          resultLinkedIn: { $not: [{ $ne: ['$linkedIn', ''] }] },
+          resultInstagram: { $not: [{ $ne: ['$instagram', ''] }] },
+          resultPublicEmail: { $not: [{ $ne: ['$publicEmail', ''] }] },
+          resultWebsite: { $not: [{ $ne: ['$website', ''] }] },
           linkedIn: { $ifNull: ['$linkedIn', ''] },
           twitter: { $ifNull: ['$twitter', ''] },
           instagram: { $ifNull: ['$instagram', ''] },
@@ -325,20 +331,22 @@ UserTC.addResolver({
       {
         $sort: {
           priority: 1,
-          profileBG: -1,
+          resultBG: 1,
+          resultFB: 1,
+          resultTwitter: 1,
+          resultLinkedIn: 1,
+          resultInstagram: 1,
+          resultPublicEmail: 1,
+          resultWebsite: 1,
           viewCount: 1,
-          publicEmail: -1,
-          website: -1,
-          linkedIn: -1,
-          twitter: -1,
-          facebook: -1,
-          instagram: -1,
           createdAt: -1,
         },
       },
       { $skip: rp.args.page * 12 },
       { $limit: 12 },
     ]);
+
+    console.log(users);
 
     return users;
   },

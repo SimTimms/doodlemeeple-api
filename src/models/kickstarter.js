@@ -2,6 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC } from './';
+import { getUserId } from '../utils';
 
 export const KickstarterSchema = new Schema(
   {
@@ -37,12 +38,47 @@ KickstarterTC.addRelation('user', {
 });
 
 KickstarterTC.addResolver({
+  name: 'myKickstarters',
+  args: {},
+  type: [KickstarterTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const kickstarters = await Kickstarter.find({
+      user: userId,
+    }).sort({ createdAt: -1 });
+
+    return kickstarters;
+  },
+});
+
+KickstarterTC.addResolver({
   name: 'featuredKickstarterWidget',
   args: {},
   type: [KickstarterTC],
   kind: 'query',
   resolve: async (rp) => {
-    const kickstarters = await Kickstarter.find({ approved: true });
+    const kickstarters = await Kickstarter.find({
+      approved: true,
+      featuredImage: { $ne: '' },
+    })
+      .sort({ createdAt: -1 })
+      .limit(3);
+
+    return kickstarters;
+  },
+});
+
+KickstarterTC.addResolver({
+  name: 'kickstarterWidget',
+  args: {},
+  type: [KickstarterTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const kickstarters = await Kickstarter.find({
+      approved: true,
+      featuredImage: { $ne: '' },
+    });
 
     return kickstarters;
   },

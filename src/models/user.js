@@ -266,7 +266,7 @@ UserTC.addResolver({
           ],
         },
       },
-      { $sample: { size: 3 } },
+      { $sample: { size: 10 } },
     ]);
 
     return users;

@@ -52,6 +52,11 @@ GameTC.addResolver({
   resolve: async (rp) => {
     const Games = await Game.find({
       featuredImage: { $ne: '' },
+      featuredImage: { $ne: null },
+      summary: { $ne: null },
+      summary: { $ne: '' },
+      title: { $ne: null },
+      title: { $ne: '' },
       approved: true,
     })
       .sort({ createdAt: -1 })
@@ -69,6 +74,11 @@ GameTC.addResolver({
   resolve: async (rp) => {
     const Games = await Game.find({
       featuredImage: { $ne: '' },
+      featuredImage: { $ne: null },
+      summary: { $ne: null },
+      summary: { $ne: '' },
+      title: { $ne: null },
+      title: { $ne: '' },
     }).sort({ createdAt: -1 });
 
     return Games;

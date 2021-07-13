@@ -63,7 +63,7 @@ KickstarterTC.addResolver({
       featuredImage: { $ne: '' },
     })
       .sort({ createdAt: -1 })
-      .limit(3);
+      .limit(10);
 
     return kickstarters;
   },

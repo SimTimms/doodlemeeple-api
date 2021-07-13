@@ -57,8 +57,7 @@ GameTC.addResolver({
       summary: { $ne: '' },
       title: { $ne: null },
       title: { $ne: '' },
-      url: { $ne: null },
-      url: { $ne: '' },
+      $and: [{ url: { $ne: null } }, { url: { $ne: '' } }],
       approved: true,
     })
       .sort({ createdAt: -1 })
@@ -81,8 +80,7 @@ GameTC.addResolver({
       summary: { $ne: '' },
       title: { $ne: null },
       title: { $ne: '' },
-      url: { $ne: null },
-      url: { $ne: '' },
+      $and: [{ url: { $ne: null } }, { url: { $ne: '' } }],
     }).sort({ createdAt: -1 });
 
     return Games;

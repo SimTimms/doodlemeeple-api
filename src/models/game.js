@@ -7,17 +7,16 @@ import { getUserId } from '../utils';
 export const GameSchema = new Schema(
   {
     name: { type: String },
-    keywords: [{ type: String }],
-    img: { type: String },
-    backgroundImg: { type: String },
+    logo: { type: String },
+    featuredImage: { type: String },
     summary: { type: String },
-    location: { type: String },
+    url: { type: String },
     showreel: { type: String },
+    approved: { type: Boolean },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    type: { type: String },
   },
   {
     collection: 'games',
@@ -29,6 +28,52 @@ GameSchema.index({ createdAt: 1, updatedAt: 1 });
 
 export const Game = mongoose.model('Game', GameSchema);
 export const GameTC = composeWithMongoose(Game);
+
+GameTC.addResolver({
+  name: 'myGames',
+  args: {},
+  type: [GameTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const Games = await Game.find({
+      user: userId,
+    }).sort({ createdAt: -1 });
+
+    return Games;
+  },
+});
+
+GameTC.addResolver({
+  name: 'featuredGameWidget',
+  args: {},
+  type: [GameTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const Games = await Game.find({
+      featuredImage: { $ne: '' },
+      approved: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    return Games;
+  },
+});
+
+GameTC.addResolver({
+  name: 'gameWidget',
+  args: {},
+  type: [GameTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const Games = await Game.find({
+      featuredImage: { $ne: '' },
+    }).sort({ createdAt: -1 });
+
+    return Games;
+  },
+});
 
 GameTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),

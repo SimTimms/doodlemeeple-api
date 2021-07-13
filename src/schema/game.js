@@ -10,6 +10,9 @@ const GameQuery = {
   gameCount: GameTC.getResolver('count'),
   gameConnection: GameTC.getResolver('connection'),
   gamePagination: GameTC.getResolver('pagination'),
+  featuredGameWidget: GameTC.getResolver('featuredGameWidget'),
+  gameWidget: GameTC.getResolver('gameWidget'),
+  myGames: GameTC.getResolver('myGames'),
 };
 
 const GameMutation = {

@@ -78,7 +78,7 @@ KickstarterTC.addResolver({
     const kickstarters = await Kickstarter.find({
       approved: true,
       featuredImage: { $ne: '' },
-    });
+    }).sort({ createdAt: -1 });
 
     return kickstarters;
   },

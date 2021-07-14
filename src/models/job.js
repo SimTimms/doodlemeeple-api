@@ -117,7 +117,7 @@ JobTC.addResolver({
       isPublic: true,
       submitted: { $ne: 'accepted' },
       approved: true,
-    });
+    }).sort({ createdAt: -1 });
 
     return jobs;
   },

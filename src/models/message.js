@@ -61,6 +61,7 @@ MessageTC.addResolver({
           { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
           { $or: [{ receiver: userId }, { sender: userId }] },
         ],
+        job: rp.args.jobId,
       },
       { status: 'read' }
     );

@@ -109,7 +109,7 @@ MessageTC.addResolver({
       },
       {
         $group: {
-          _id: { job: '$job._id' },
+          _id: { job: '$job' },
           status: { $first: '$status' },
           sender: { $first: '$sender' },
           receiver: { $first: '$receiver' },
@@ -117,6 +117,8 @@ MessageTC.addResolver({
         },
       },
     ]);
+
+    console.log(messages);
     return messages;
   },
 });

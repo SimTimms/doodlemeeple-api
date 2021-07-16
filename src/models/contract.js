@@ -85,9 +85,11 @@ ContractTC.addResolver({
       job: rp.args.jobId,
     });
 
-    await Contract.updateOne({ _id: quote._id }, { seenByOwner: true });
+    if (quote) {
+      await Contract.updateOne({ _id: quote._id }, { seenByOwner: true });
 
-    return quote;
+      return quote;
+    }
   },
 });
 

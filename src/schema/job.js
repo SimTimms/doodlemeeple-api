@@ -14,6 +14,7 @@ const JobQuery = {
   jobWidget: JobTC.getResolver('jobWidget'),
   jobBoardWidget: JobTC.getResolver('jobBoardWidget'),
   jobBoardMiniWidget: JobTC.getResolver('jobBoardMiniWidget'),
+  jobHistory: JobTC.getResolver('jobHistory'),
 };
 
 const JobMutation = {

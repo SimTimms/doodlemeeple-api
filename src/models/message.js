@@ -109,17 +109,36 @@ MessageTC.addResolver({
         },
       },
       {
+        $project: {
+          status: 1,
+          sender: 1,
+          receiver: 1,
+          job: 1,
+          count: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$status', 'unread'] },
+                  { $eq: ['$receiver', ObjectId(userId)] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+        },
+      },
+      {
         $group: {
           _id: { job: '$job' },
-          status: { $first: '$status' },
+          job: { $first: '$job' },
           sender: { $first: '$sender' },
           receiver: { $first: '$receiver' },
-          job: { $first: '$job' },
+          count: { $sum: '$count' },
         },
       },
     ]);
 
-    console.log(messages);
     return messages;
   },
 });

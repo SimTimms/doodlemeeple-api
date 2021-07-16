@@ -18,6 +18,7 @@ import { InviteSchema } from './invite';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
 import { emailInvite, earlyClosure } from '../email';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const JobSchema = new Schema(
   {
@@ -101,10 +102,11 @@ JobTC.addResolver({
   type: JobTC,
   kind: 'query',
   resolve: async (rp) => {
-    const jobs = await Job.findOne({
+    const job = await Job.findOne({
       _id: rp.args.jobId,
     });
-    return jobs;
+
+    return job;
   },
 });
 
@@ -355,6 +357,24 @@ export const ChecklistSchema = new Schema({
 
 export const Checklist = mongoose.model('Checklist', ChecklistSchema);
 export const ChecklistTC = composeWithMongoose(Checklist);
+
+JobTC.addResolver({
+  name: 'jobHistory',
+  type: [JobTC],
+  args: { status: ['String'] },
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobs = await Job.find({
+      user: userId,
+      submitted: { $in: ['declined', 'rejected', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return jobs;
+  },
+});
 
 JobTC.addResolver({
   name: 'jobChecklist',

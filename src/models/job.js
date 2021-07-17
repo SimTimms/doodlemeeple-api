@@ -361,7 +361,6 @@ export const ChecklistTC = composeWithMongoose(Checklist);
 JobTC.addResolver({
   name: 'jobHistory',
   type: [JobTC],
-  args: { status: ['String'] },
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);

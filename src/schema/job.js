@@ -34,6 +34,7 @@ const JobMutation = {
   jobCreateMany: JobTC.getResolver('createMany'),
   jobUpdateById: JobTC.getResolver('updateById'),
   closeJob: JobTC.getResolver('closeJob'),
+  openJob: JobTC.getResolver('openJob'),
   completeJob: JobTC.getResolver('completeJob'),
   jobUpdateOne: JobTC.getResolver('updateOne'),
   jobUpdateMany: JobTC.getResolver('updateMany'),

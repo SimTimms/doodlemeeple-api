@@ -246,6 +246,24 @@ JobTC.addResolver({
 });
 
 JobTC.addResolver({
+  name: 'openJob',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await Job.updateOne(
+      { _id: rp.args._id, user: userId },
+      { submitted: 'draft' }
+    );
+
+    return null;
+  },
+});
+
+JobTC.addResolver({
   name: 'completeJob',
   type: JobTC,
   args: {

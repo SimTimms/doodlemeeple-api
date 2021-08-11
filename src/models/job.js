@@ -394,6 +394,30 @@ JobTC.addResolver({
 });
 
 JobTC.addResolver({
+  name: 'workHistory',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const invites = await Invite.find({
+      receiver: userId,
+      status: { $in: ['declined', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    const jobs = await Job.find({
+      _id: { $in: invites.map((item) => item.job._id) },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return jobs;
+  },
+});
+
+JobTC.addResolver({
   name: 'jobChecklist',
   type: ChecklistTC,
   args: {

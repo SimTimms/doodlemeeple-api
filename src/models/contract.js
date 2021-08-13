@@ -60,13 +60,15 @@ export const ContractTC = composeWithMongoose(Contract);
 
 ContractTC.addResolver({
   name: 'quoteWidget',
-  args: {},
+  args: { status: ['String'] },
   type: [ContractTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const quotes = await Contract.find({ user: userId });
+    const quotes = await Contract.find({
+      $and: [{ user: userId }, { status: { $in: rp.args.status } }],
+    }).sort({ createdAt: -1 });
 
     return quotes;
   },

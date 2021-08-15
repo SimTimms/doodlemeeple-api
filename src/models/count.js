@@ -47,6 +47,8 @@ CountTC.addResolver({
       receiver: userId,
       status: 'unread',
       job: { $ne: null },
+      sender: { $ne: null },
+      reciever: { $ne: null },
     });
 
     const activeJobs = await Job.find({

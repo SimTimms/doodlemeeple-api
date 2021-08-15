@@ -33,24 +33,12 @@ CountTC.addResolver({
       _id: userId,
     });
 
+    //profile
     const social =
       user.facebook || user.twitter || user.linked || user.instagram ? 1 : 0;
     const contact = user.skype || user.publicEmail || user.website ? 1 : 0;
     const skills = user.sections.length;
-
-    const invites = await Invite.find({
-      $and: [{ receiver: userId }, { sender: { $ne: userId } }],
-      $or: [{ status: 'unopened' }, { status: 'read' }],
-    });
-
-    const messages = await Message.find({
-      receiver: userId,
-      status: 'unread',
-      job: { $ne: null },
-      sender: { $ne: null },
-      reciever: { $ne: null },
-    });
-
+    //job ads
     const activeJobs = await Job.find({
       user: userId,
       $and: [{ submitted: { $ne: 'draft' } }, { submitted: { $ne: 'closed' } }],
@@ -60,20 +48,9 @@ CountTC.addResolver({
       user: userId,
       submitted: 'draft',
     });
-
     const totalDeclined = await Job.find({
       user: userId,
       $and: [{ submitted: 'totalDecline' }],
-    });
-
-    const contractDeclined = await Contract.find({
-      user: userId,
-      $and: [{ status: 'declined' }, { seenByOwner: false }],
-    });
-
-    const contractAccepted = await Contract.find({
-      user: userId,
-      $and: [{ status: 'accepted' }, { seenByOwner: false }],
     });
 
     const jobs = await Job.find(
@@ -84,18 +61,6 @@ CountTC.addResolver({
       },
       { contracts: 1 }
     );
-
-    const draftQuotes = await Contract.find({
-      user: userId,
-      status: 'draft',
-    });
-
-    let jobTotal = 0;
-    for (let i = 0; i < jobs.length; i++) {
-      jobTotal += jobs[i].contracts.length;
-    }
-    jobTotal += contractDeclined.length;
-
     const unansweredQuotes = await Contract.find(
       {
         jobOwner: userId,
@@ -103,6 +68,47 @@ CountTC.addResolver({
       },
       { status: 1 }
     );
+    //work
+    const invites = await Invite.find({
+      $and: [
+        { receiver: userId },
+        { sender: { $ne: userId } },
+        { sender: { $ne: null } },
+        { job: { $ne: null } },
+      ],
+      status: 'unopened',
+    });
+    console.log(invites);
+
+    const contractDeclined = await Contract.find({
+      user: userId,
+      $and: [{ status: 'declined' }, { seenByOwner: false }],
+    });
+
+    const contractAccepted = await Contract.find({
+      user: userId,
+      $and: [{ status: 'accepted' }, { seenByOwner: false }],
+    });
+    const draftQuotes = await Contract.find({
+      user: userId,
+      status: 'draft',
+    });
+    //messages
+    const messages = await Message.find({
+      receiver: userId,
+      status: 'unread',
+      job: { $ne: null },
+      sender: { $ne: null },
+      reciever: { $ne: null },
+    });
+
+    //other
+    let jobTotal = 0;
+    for (let i = 0; i < jobs.length; i++) {
+      jobTotal += jobs[i].contracts.length;
+    }
+    jobTotal += contractDeclined.length;
+
     return {
       invites: invites.length,
       messages: messages.length,

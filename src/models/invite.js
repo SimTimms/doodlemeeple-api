@@ -68,6 +68,7 @@ InviteTC.addResolver({
         { receiver: userId },
         { sender: { $ne: userId } },
         { sender: { $ne: null } },
+        { job: { $ne: null } },
         { status: { $in: rp.args.status } },
       ],
     });

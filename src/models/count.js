@@ -78,7 +78,6 @@ CountTC.addResolver({
       ],
       status: 'unopened',
     });
-    console.log(invites);
 
     const contractDeclined = await Contract.find({
       user: userId,

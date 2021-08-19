@@ -115,13 +115,16 @@ ContractTC.addResolver({
 
 ContractTC.addResolver({
   name: 'quoteInWidget',
-  args: {},
+  args: { jobId: 'MongoID!' },
   type: [ContractTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const quotes = await Contract.find({ jobOwner: userId });
+    const quotes = await Contract.find({
+      jobOwner: userId,
+      job: rp.args.jobId,
+    });
 
     return quotes;
   },

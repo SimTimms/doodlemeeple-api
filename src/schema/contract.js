@@ -16,6 +16,7 @@ const ContractQuery = {
   quoteInWidget: ContractTC.getResolver('quoteInWidget'),
   jobResponsesWidget: ContractTC.getResolver('jobResponsesWidget'),
   jobContract: ContractTC.getResolver('jobContract'),
+  contractHistory: ContractTC.getResolver('contractHistory'),
 };
 
 const ContractMutation = {
@@ -52,16 +53,15 @@ const ContractMutation = {
   contractCreateMany: ContractTC.getResolver('createMany'),
   contractUpdateById: ContractTC.getResolver('updateById').wrapResolve(
     (next) => async (rp) => {
-      const userId = getUserId(rp.context.headers.authorization);
       const contract = await Contract.findOne({ _id: rp.args.record._id });
 
-      //REFACTOR: I should've commented this before now I'm not sure why the $pull is in there, it may be to stop a creative posting multiple contracts. Find out why it's here and remove if unnecessary.
-      /*
+      //This is so that if the contract is changed it is removed from the job
+
       await Job.update(
         { _id: contract.job },
         { $pull: { contracts: rp.args.record._id } }
       );
-*/
+
       return next(rp);
     }
   ),

@@ -70,6 +70,15 @@ ContractTC.addResolver({
       $and: [{ user: userId }, { status: { $in: rp.args.status } }],
     }).sort({ createdAt: -1 });
 
+    await Contract.updateOne(
+      {
+        $and: [{ user: userId }, { status: { $in: rp.args.status } }],
+      },
+      {
+        seenByOwner: true,
+      }
+    );
+
     return quotes;
   },
 });
@@ -124,6 +133,7 @@ ContractTC.addResolver({
     const quotes = await Contract.find({
       jobOwner: userId,
       job: rp.args.jobId,
+      status: 'submitted',
     });
 
     return quotes;
@@ -296,6 +306,32 @@ ContractTC.addResolver({
     Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'contractHistory',
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const contracts = await Contract.find({
+      user: userId,
+      status: { $in: ['declined', 'closed', 'deleted'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    await Contract.updateMany(
+      {
+        user: userId,
+        status: { $in: ['declined', 'closed'] },
+      },
+      { seenByOwner: true }
+    );
+
+    return contracts;
   },
 });
 

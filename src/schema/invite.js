@@ -11,6 +11,7 @@ const InviteQuery = {
   invitePagination: InviteTC.getResolver('pagination'),
   invitesByUser: InviteTC.getResolver('invitesByUser'),
   inviteDetails: InviteTC.getResolver('inviteDetails'),
+  inviteHistory: InviteTC.getResolver('inviteHistory'),
 };
 
 const InviteMutation = {

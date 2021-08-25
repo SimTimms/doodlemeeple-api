@@ -77,9 +77,27 @@ InviteTC.addResolver({
   },
 });
 
+InviteTC.addResolver({
+  name: 'inviteHistory',
+  type: [InviteTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const invites = await Invite.find({
+      receiver: userId,
+      status: { $in: ['declined', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return invites;
+  },
+});
+
 InviteTC.addFields({
   messages: {
-    type: 'Int', // String, Int, Float, Boolean, ID, Json
+    type: 'Int',
     description: 'message count',
     resolve: async (source, args, context, info) => {
       const userId = getUserId(context.headers.authorization);

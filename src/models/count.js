@@ -61,13 +61,25 @@ CountTC.addResolver({
       },
       { contracts: 1 }
     );
+
+    //Contracts
+
     const unansweredQuotes = await Contract.find(
       {
         jobOwner: userId,
         status: 'submitted',
       },
-      { status: 1 }
+      { status: 1, job: 1 }
     );
+    const contractIds = unansweredQuotes.map((item) => {
+      return item.job;
+    });
+    //Check if job is closed
+    const openJobs = await Job.find({
+      _id: { $in: contractIds },
+      submitted: { $ne: 'closed' },
+    });
+
     //work
     const invites = await Invite.find({
       $and: [
@@ -79,6 +91,15 @@ CountTC.addResolver({
       status: 'unopened',
     });
 
+    const inviteIds = invites.map((item) => {
+      return item.job;
+    });
+
+    const openJobsInvites = await Job.find({
+      _id: { $in: inviteIds },
+      submitted: { $ne: 'closed' },
+    });
+
     const contractDeclined = await Contract.find({
       user: userId,
       $and: [{ status: 'declined' }, { seenByOwner: false }],
@@ -88,6 +109,7 @@ CountTC.addResolver({
       user: userId,
       $and: [{ status: 'accepted' }, { seenByOwner: false }],
     });
+
     const draftQuotes = await Contract.find({
       user: userId,
       status: 'draft',
@@ -109,7 +131,7 @@ CountTC.addResolver({
     jobTotal += contractDeclined.length;
 
     return {
-      invites: invites.length,
+      invites: openJobsInvites.length,
       messages: messages.length,
       quotes: jobTotal,
       jobs: activeJobs.length,
@@ -121,7 +143,7 @@ CountTC.addResolver({
       draftQuotes: draftQuotes.length,
       totalDeclined: totalDeclined.length,
       draftJobs: draftJobs.length,
-      unansweredQuotes: unansweredQuotes.length,
+      unansweredQuotes: openJobs.length,
     };
   },
 });

@@ -1,8 +1,15 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, WebshopTC } from './';
 import { getUserId } from '../utils';
+
+const WebshopSchema = new Schema({
+  name: { type: String },
+  logo: { type: String },
+  url: { type: String },
+  price: { type: String },
+});
 
 export const GameSchema = new Schema(
   {
@@ -12,6 +19,8 @@ export const GameSchema = new Schema(
     summary: { type: String },
     url: { type: String },
     showreel: { type: String },
+    price: { type: String },
+    webshop: { type: [WebshopSchema] },
     approved: { type: Boolean },
     user: {
       type: Schema.Types.ObjectId,

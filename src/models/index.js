@@ -7,6 +7,7 @@ import { Image, ImageTC } from './image';
 import { NotableProject, NotableProjectTC } from './notableProject';
 import { Testimonial, TestimonialTC } from './testimonial';
 import { Game, GameTC } from './game';
+import { Webshop, WebshopTC } from './webshop';
 import { Job, JobTC } from './job';
 import { Invite, InviteTC } from './invite';
 import { Favourite, FavouriteTC } from './favourite';
@@ -17,6 +18,8 @@ import { PaymentTerms, PaymentTermsTC } from './paymentTerms';
 import { Kickstarter, KickstarterTC } from './kickstarter';
 import { Badge, BadgeTC } from './badge';
 export {
+  Webshop,
+  WebshopTC,
   Kickstarter,
   KickstarterTC,
   Badge,

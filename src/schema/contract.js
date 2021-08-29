@@ -53,6 +53,8 @@ const ContractMutation = {
   contractCreateMany: ContractTC.getResolver('createMany'),
   contractUpdateById: ContractTC.getResolver('updateById').wrapResolve(
     (next) => async (rp) => {
+      const userId = getUserId(rp.context.headers.authorization);
+
       const contract = await Contract.findOne({ _id: rp.args.record._id });
 
       //This is so that if the contract is changed it is removed from the job
@@ -60,6 +62,11 @@ const ContractMutation = {
       await Job.update(
         { _id: contract.job },
         { $pull: { contracts: rp.args.record._id } }
+      );
+
+      await Invite.update(
+        { job: contract.job, user: userId },
+        { status: 'read' }
       );
 
       return next(rp);

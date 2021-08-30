@@ -99,9 +99,9 @@ GameTC.addResolver({
 GameTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
-    filter: (source) => ({ id: source._id }),
+    filter: (source) => ({ _id: ObjectId(source.user) }),
   },
-  projection: { id: true },
+  projection: { _id: true },
 });
 
 GameTC.addResolver({

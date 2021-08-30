@@ -3,8 +3,9 @@ import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC } from './';
 import { getUserId } from '../utils';
+const ObjectId = mongoose.Types.ObjectId;
 
-export const KickstarterSchema = new Schema(
+export const MyPostSchema = new Schema(
   {
     name: { type: String },
     logo: { type: String },
@@ -19,17 +20,17 @@ export const KickstarterSchema = new Schema(
     },
   },
   {
-    collection: 'kickstarter',
+    collection: 'myPost',
   }
 );
 
-KickstarterSchema.plugin(timestamps);
-KickstarterSchema.index({ createdAt: 1, updatedAt: 1 });
+MyPostSchema.plugin(timestamps);
+MyPostSchema.index({ createdAt: 1, updatedAt: 1 });
 
-export const Kickstarter = mongoose.model('Kickstarter', KickstarterSchema);
-export const KickstarterTC = composeWithMongoose(Kickstarter);
+export const MyPost = mongoose.model('MyPost', MyPostSchema);
+export const MyPostTC = composeWithMongoose(MyPost);
 
-KickstarterTC.addRelation('user', {
+MyPostTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ _id: ObjectId(source.user) }),
@@ -37,49 +38,48 @@ KickstarterTC.addRelation('user', {
   projection: { _id: true },
 });
 
-KickstarterTC.addResolver({
-  name: 'myKickstarters',
+MyPostTC.addResolver({
+  name: 'myPosts',
   args: {},
-  type: [KickstarterTC],
+  type: [MyPostTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
-    const kickstarters = await Kickstarter.find({
+    const myPosts = await MyPost.find({
       user: userId,
     }).sort({ createdAt: -1 });
 
-    return kickstarters;
+    return myPosts;
   },
 });
 
-KickstarterTC.addResolver({
-  name: 'featuredKickstarterWidget',
+MyPostTC.addResolver({
+  name: 'featuredMyPostWidget',
   args: {},
-  type: [KickstarterTC],
+  type: [MyPostTC],
   kind: 'query',
   resolve: async (rp) => {
-    const kickstarters = await Kickstarter.find({
+    const myPosts = await MyPost.find({
       approved: true,
       featuredImage: { $ne: '' },
     })
       .sort({ createdAt: -1 })
       .limit(10);
 
-    return kickstarters;
+    return myPosts;
   },
 });
 
-KickstarterTC.addResolver({
-  name: 'kickstarterWidget',
+MyPostTC.addResolver({
+  name: 'myPostsWidget',
   args: {},
-  type: [KickstarterTC],
+  type: [MyPostTC],
   kind: 'query',
   resolve: async (rp) => {
-    const kickstarters = await Kickstarter.find({
+    const myPosts = await MyPost.find({
       approved: true,
-      featuredImage: { $ne: '' },
     }).sort({ createdAt: -1 });
 
-    return kickstarters;
+    return myPosts;
   },
 });

@@ -12,7 +12,14 @@ const WebshopQuery = {
 };
 
 const WebshopMutation = {
-  webshopCreateOne: WebshopTC.getResolver('createOne'),
+  webshopCreateOne: WebshopTC.getResolver('createOne').wrapResolve(
+    (next) => async (rp) => {
+      rp.args.record.gameId = userId;
+
+      const game = await next(rp);
+      return game;
+    }
+  ),
   webshopCreateMany: WebshopTC.getResolver('createMany'),
   webshopUpdateById: WebshopTC.getResolver('updateById'),
   webshopUpdateOne: WebshopTC.getResolver('updateOne'),

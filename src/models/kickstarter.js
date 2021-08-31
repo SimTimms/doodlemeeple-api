@@ -3,6 +3,7 @@ import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
 import { UserTC } from './';
 import { getUserId } from '../utils';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const KickstarterSchema = new Schema(
   {

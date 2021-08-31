@@ -35,6 +35,13 @@ aws.config.update({
 const S3_BUCKET = process.env.BUCKET;
 var s3 = new aws.S3();
 
+const WebshopSchema = new Schema({
+  name: { type: String },
+  logo: { type: String },
+  url: { type: String },
+  price: { type: String },
+});
+
 export const UserSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -116,6 +123,7 @@ export const UserSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Notification',
     },
+    webshop: { type: [WebshopSchema] },
     token: { type: String },
   },
   {

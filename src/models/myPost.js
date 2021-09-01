@@ -13,6 +13,7 @@ export const MyPostSchema = new Schema(
     summary: { type: String },
     url: { type: String },
     showreel: { type: String },
+    type: { type: String },
     approved: { type: Boolean },
     user: {
       type: Schema.Types.ObjectId,

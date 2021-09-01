@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, WebshopTC } from './';
+import { UserTC } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -10,6 +10,14 @@ const WebshopSchema = new Schema({
   logo: { type: String },
   url: { type: String },
   price: { type: String },
+});
+
+const GamePostSchema = new Schema({
+  name: { type: String },
+  summary: { type: String },
+  url: { type: String },
+  video: { type: String },
+  img: { type: String },
 });
 
 export const GameSchema = new Schema(
@@ -22,6 +30,7 @@ export const GameSchema = new Schema(
     showreel: { type: String },
     price: { type: String },
     webshop: { type: [WebshopSchema] },
+    gamePost: { type: [GamePostSchema] },
     approved: { type: Boolean },
     user: {
       type: Schema.Types.ObjectId,

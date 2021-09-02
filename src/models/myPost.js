@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, GameTC } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -19,6 +19,10 @@ export const MyPostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    game: {
+      type: Schema.Types.ObjectId,
+      ref: 'Game',
+    },
   },
   {
     collection: 'myPost',
@@ -35,6 +39,14 @@ MyPostTC.addRelation('user', {
   resolver: () => UserTC.getResolver('findOne'),
   prepareArgs: {
     filter: (source) => ({ _id: ObjectId(source.user) }),
+  },
+  projection: { _id: true },
+});
+
+MyPostTC.addRelation('game', {
+  resolver: () => GameTC.getResolver('findOne'),
+  prepareArgs: {
+    filter: (source) => ({ _id: ObjectId(source.game) }),
   },
   projection: { _id: true },
 });

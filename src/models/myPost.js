@@ -75,9 +75,7 @@ MyPostTC.addResolver({
     const myPosts = await MyPost.find({
       approved: true,
       featuredImage: { $ne: '' },
-    })
-      .sort({ createdAt: -1 })
-      .limit(10);
+    }).sort({ createdAt: -1 });
 
     return myPosts;
   },
@@ -91,7 +89,9 @@ MyPostTC.addResolver({
   resolve: async (rp) => {
     const myPosts = await MyPost.find({
       approved: true,
-    }).sort({ createdAt: -1 });
+    })
+      .sort({ createdAt: -1 })
+      .limit(5);
 
     return myPosts;
   },

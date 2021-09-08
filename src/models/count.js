@@ -120,7 +120,15 @@ CountTC.addResolver({
       status: 'unread',
       job: { $ne: null },
       sender: { $ne: null },
-      reciever: { $ne: null },
+    });
+
+    const messagesIds = messages.map((item) => {
+      return item.job;
+    });
+    //Check if job is closed
+    const openJobsMessages = await Job.find({
+      _id: { $in: messagesIds },
+      submitted: { $ne: 'closed' },
     });
 
     //other
@@ -132,7 +140,7 @@ CountTC.addResolver({
 
     return {
       invites: openJobsInvites.length,
-      messages: messages.length,
+      messages: openJobsMessages.length,
       quotes: jobTotal,
       jobs: activeJobs.length,
       socials: social,

@@ -102,10 +102,52 @@ MessageTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const messages = await Message.aggregate([
+    const senderMessages = await Message.aggregate([
       {
         $match: {
-          $or: [{ sender: ObjectId(userId) }, { receiver: ObjectId(userId) }],
+          $or: [{ sender: ObjectId(userId) }],
+        },
+      },
+      {
+        $project: {
+          status: 1,
+          sender: 1,
+          receiver: 1,
+          job: 1,
+          msgId: 1,
+          count: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$status', 'unread'] },
+                  { $eq: ['$receiver', ObjectId(userId)] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { job: '$job' },
+          msgId: { $first: '$_id' },
+          job: { $first: '$job' },
+          sender: { $first: '$sender' },
+          receiver: { $first: '$receiver' },
+          count: { $sum: '$count' },
+        },
+      },
+    ]);
+
+    const senderMsgIds = senderMessages.map((item) => item._id);
+    console.log(senderMsgIds);
+    const receiverMessages = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ receiver: ObjectId(userId) }],
+          job: { $nin: senderMsgIds },
         },
       },
       {
@@ -138,7 +180,6 @@ MessageTC.addResolver({
         },
       },
     ]);
-
-    return messages;
+    return [...senderMessages, ...receiverMessages];
   },
 });

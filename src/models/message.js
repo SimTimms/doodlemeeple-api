@@ -131,7 +131,7 @@ MessageTC.addResolver({
       },
       {
         $group: {
-          _id: { job: '$job' },
+          _id: { job: '$job', receiver: '$receiver' },
           msgId: { $first: '$_id' },
           job: { $first: '$job' },
           sender: { $first: '$sender' },
@@ -141,8 +141,8 @@ MessageTC.addResolver({
       },
     ]);
 
-    const senderMsgIds = senderMessages.map((item) => item._id);
-    console.log(senderMsgIds);
+    const senderMsgIds = senderMessages.map((item) => item.job);
+
     const receiverMessages = await Message.aggregate([
       {
         $match: {
@@ -172,7 +172,7 @@ MessageTC.addResolver({
       },
       {
         $group: {
-          _id: { job: '$job' },
+          _id: { job: '$job', sender: '$sender' },
           job: { $first: '$job' },
           sender: { $first: '$sender' },
           receiver: { $first: '$receiver' },
@@ -180,6 +180,8 @@ MessageTC.addResolver({
         },
       },
     ]);
+    const recMsgIds = receiverMessages.map((item) => item.job);
+    console.log(senderMsgIds, recMsgIds);
     return [...senderMessages, ...receiverMessages];
   },
 });

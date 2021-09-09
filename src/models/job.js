@@ -241,6 +241,8 @@ JobTC.addResolver({
       { job: rp.args._id, status: { $ne: 'declined' } },
       { status: 'closed' }
     );
+
+    await Contract.updateMany({ job: rp.args._id }, { status: 'job_closed' });
     return null;
   },
 });

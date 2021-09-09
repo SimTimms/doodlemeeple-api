@@ -245,7 +245,7 @@ UserTC.addResolver({
         },
       },
       { $sort: { createdAt: -1 } },
-      { $limit: 10 },
+      { $limit: 12 },
     ]);
 
     return users;

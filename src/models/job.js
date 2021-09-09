@@ -362,6 +362,36 @@ JobTC.addResolver({
   },
 });
 
+JobTC.addResolver({
+  name: 'submitBriefSingle',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+    userId: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    const jobId = args._id;
+    const jobDeets = await Job.findOne({ _id: jobId });
+    await Invite.create({
+      receiver: args.userId,
+      job: jobId,
+      sender: jobDeets.user._id,
+      status: 'unopened',
+    });
+
+    const invitee = await User.findOne({ _id: args.userId });
+    await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
+
+    const notificationMessage = { ...INVITED };
+    notificationMessage.message = `${jobDeets.name}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}`;
+    await Notification.create({ ...notificationMessage, user: invitee._id });
+
+    const request = await emailInvite(invitee, jobDeets);
+  },
+});
+
 export const ChecklistSchema = new Schema({
   contract: {
     type: ContractSchema,

@@ -14,6 +14,7 @@ export const MyPostSchema = new Schema(
     url: { type: String },
     showreel: { type: String },
     type: { type: String },
+    tags: [{ type: String }],
     approved: { type: Boolean },
     user: {
       type: Schema.Types.ObjectId,

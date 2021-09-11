@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, ActivityLog } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -45,6 +45,10 @@ KickstarterTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'my-kickstarters',
+      actionBy: userId,
+    });
     const kickstarters = await Kickstarter.find({
       user: userId,
     }).sort({ createdAt: -1 });
@@ -76,6 +80,11 @@ KickstarterTC.addResolver({
   type: [KickstarterTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'browse-kickstarters',
+      actionBy: userId,
+    });
     const kickstarters = await Kickstarter.find({
       approved: true,
       featuredImage: { $ne: '' },

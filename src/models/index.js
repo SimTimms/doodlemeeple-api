@@ -18,7 +18,10 @@ import { PaymentTerms, PaymentTermsTC } from './paymentTerms';
 import { Kickstarter, KickstarterTC } from './kickstarter';
 import { MyPost, MyPostTC } from './myPost';
 import { Badge, BadgeTC } from './badge';
+import { ActivityLog, ActivityLogTC } from './activityLog';
 export {
+  ActivityLog,
+  ActivityLogTC,
   Webshop,
   WebshopTC,
   Kickstarter,

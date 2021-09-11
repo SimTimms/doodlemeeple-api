@@ -18,6 +18,7 @@ import {
   FavouriteTC,
   Favourite,
   BadgeTC,
+  ActivityLog,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -462,7 +463,36 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'mutation',
   resolve: async ({ source, args }) => {
+    await ActivityLog.create({ action: 'login', value: args.email });
     return login(args);
+  },
+});
+
+UserTC.addResolver({
+  name: 'userByIdWithTracker',
+  args: { _id: 'MongoID!' },
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async ({ source, args, context }) => {
+    const userId = getUserId(context.headers.authorization);
+    await ActivityLog.create({
+      action: 'profile-view',
+      actionBy: userId,
+      user: args._id,
+    });
+
+    const user = await User.findOne({
+      _id: args._id,
+    });
+
+    user &&
+      userId !== user._id &&
+      (await User.updateOne(
+        { _id: args._id },
+        { viewCount: user.viewCount ? user.viewCount + 1 : 1 }
+      ));
+
+    return user;
   },
 });
 

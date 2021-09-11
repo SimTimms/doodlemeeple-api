@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC } from './';
+import { UserTC, GameTC, ActivityLog } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -73,6 +73,11 @@ MyPostTC.addResolver({
   type: [MyPostTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'my-posts',
+      actionBy: userId,
+    });
     const myPosts = await MyPost.find({
       approved: true,
       featuredImage: { $ne: '' },
@@ -88,6 +93,11 @@ MyPostTC.addResolver({
   type: [MyPostTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'browse-posts',
+      actionBy: userId,
+    });
     const myPosts = await MyPost.find({
       approved: true,
     })

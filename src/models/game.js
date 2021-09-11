@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC } from './';
+import { UserTC, ActivityLog } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -55,6 +55,10 @@ GameTC.addResolver({
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'my-games',
+      actionBy: userId,
+    });
     const Games = await Game.find({
       user: userId,
     }).sort({ createdAt: -1 });
@@ -92,6 +96,11 @@ GameTC.addResolver({
   type: [GameTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await ActivityLog.create({
+      action: 'browse-games',
+      actionBy: userId,
+    });
     const Games = await Game.find({
       featuredImage: { $ne: '' },
       featuredImage: { $ne: null },

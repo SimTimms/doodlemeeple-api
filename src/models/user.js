@@ -59,6 +59,7 @@ export const UserSchema = new Schema(
     facebook: { type: String },
     twitter: { type: String },
     website: { type: String },
+    lastOn: { type: Date },
     instagram: { type: String },
     linkedIn: { type: String },
     publicEmail: { type: String },
@@ -464,6 +465,7 @@ UserTC.addResolver({
   kind: 'mutation',
   resolve: async ({ source, args }) => {
     await ActivityLog.create({ action: 'login', value: args.email });
+    await User.updateOne({ email: args.email }, { lastOn: new Date() });
     return login(args);
   },
 });

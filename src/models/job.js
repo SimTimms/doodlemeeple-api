@@ -132,7 +132,10 @@ JobTC.addResolver({
   resolve: async (rp) => {
     const jobs = await Job.find({
       isPublic: true,
-      submitted: { $ne: 'accepted' },
+      $and: [
+        { submitted: { $ne: 'accepted' } },
+        { submitted: { $ne: 'closed' } },
+      ],
       approved: true,
     })
       .sort({ createdAt: -1 })

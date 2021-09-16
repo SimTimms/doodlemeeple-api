@@ -10,6 +10,8 @@ const InviteQuery = {
   inviteConnection: InviteTC.getResolver('connection'),
   invitePagination: InviteTC.getResolver('pagination'),
   invitesByUser: InviteTC.getResolver('invitesByUser'),
+  inviteDetails: InviteTC.getResolver('inviteDetails'),
+  inviteHistory: InviteTC.getResolver('inviteHistory'),
 };
 
 const InviteMutation = {
@@ -50,6 +52,7 @@ const InviteMutation = {
   inviteRemoveOne: InviteTC.getResolver('removeOne'),
   inviteRemoveMany: InviteTC.getResolver('removeMany'),
   declineInvite: InviteTC.getResolver('declineInvite'),
+  declineInviteByJob: InviteTC.getResolver('declineInviteByJob'),
 };
 
 export { InviteQuery, InviteMutation };

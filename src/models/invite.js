@@ -43,6 +43,20 @@ InviteTC.addRelation('sender', {
 });
 
 InviteTC.addResolver({
+  name: 'inviteDetails',
+  type: InviteTC,
+  args: { jobId: 'MongoID!' },
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const invites = await Invite.findOne({
+      $and: [{ receiver: userId }, { job: rp.args.jobId }],
+    });
+    return invites;
+  },
+});
+
+InviteTC.addResolver({
   name: 'invitesByUser',
   type: [InviteTC],
   args: { status: ['String'] },
@@ -54,6 +68,7 @@ InviteTC.addResolver({
         { receiver: userId },
         { sender: { $ne: userId } },
         { sender: { $ne: null } },
+        { job: { $ne: null } },
         { status: { $in: rp.args.status } },
       ],
     });
@@ -62,9 +77,27 @@ InviteTC.addResolver({
   },
 });
 
+InviteTC.addResolver({
+  name: 'inviteHistory',
+  type: [InviteTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const invites = await Invite.find({
+      receiver: userId,
+      status: { $in: ['declined', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return invites;
+  },
+});
+
 InviteTC.addFields({
   messages: {
-    type: 'Int', // String, Int, Float, Boolean, ID, Json
+    type: 'Int',
     description: 'message count',
     resolve: async (source, args, context, info) => {
       const userId = getUserId(context.headers.authorization);
@@ -77,6 +110,44 @@ InviteTC.addFields({
       });
       return messages ? messages.length : 0;
     },
+  },
+});
+
+InviteTC.addResolver({
+  name: 'declineInviteByJob',
+  args: { jobId: 'MongoID!' },
+  type: InviteTC,
+  kind: 'mutation',
+  resolve: async ({ source, args, context }) => {
+    const userId = getUserId(context.headers.authorization);
+
+    async function allInvitesDeclined(invite) {
+      const openInvites = await Invite.find({
+        job: invite.job,
+        status: { $ne: 'declined' },
+      });
+      return openInvites.length === 1 ? true : false;
+    }
+
+    const invite = await Invite.findOne({
+      receiver: userId,
+      job: args.jobId,
+    });
+
+    const allDeclined = await allInvitesDeclined(invite);
+    allDeclined &&
+      (await Job.updateOne({ _id: invite.job }, { submitted: 'totalDecline' }));
+
+    await Contract.updateOne(
+      { job: invite.job, user: invite.receiver._id },
+      { status: 'declined' }
+    );
+
+    const sender = await User.findOne({ _id: invite.sender._id });
+    const receiver = await User.findOne({ _id: invite.receiver._id });
+    await Invite.updateOne({ _id: invite._id }, { status: 'declined' });
+
+    await emailDeclineInvite(sender, receiver);
   },
 });
 

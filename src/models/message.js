@@ -61,6 +61,7 @@ MessageTC.addResolver({
           { $or: [{ receiver: rp.args.userId }, { sender: rp.args.userId }] },
           { $or: [{ receiver: userId }, { sender: userId }] },
         ],
+        job: rp.args.jobId,
       },
       { status: 'read' }
     );
@@ -101,22 +102,86 @@ MessageTC.addResolver({
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const messages = await Message.aggregate([
+    const senderMessages = await Message.aggregate([
       {
         $match: {
-          $or: [{ sender: ObjectId(userId) }, { receiver: ObjectId(userId) }],
+          $or: [{ sender: ObjectId(userId) }],
+        },
+      },
+      {
+        $project: {
+          status: 1,
+          sender: 1,
+          receiver: 1,
+          job: 1,
+          msgId: 1,
+          count: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$status', 'unread'] },
+                  { $eq: ['$receiver', ObjectId(userId)] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
         },
       },
       {
         $group: {
-          _id: { job: '$job._id' },
-          status: { $first: '$status' },
+          _id: { job: '$job', receiver: '$receiver' },
+          msgId: { $first: '$_id' },
+          job: { $first: '$job' },
           sender: { $first: '$sender' },
           receiver: { $first: '$receiver' },
-          job: { $first: '$job' },
+          count: { $sum: '$count' },
         },
       },
     ]);
-    return messages;
+
+    const senderMsgIds = senderMessages.map((item) => item.job);
+
+    const receiverMessages = await Message.aggregate([
+      {
+        $match: {
+          $or: [{ receiver: ObjectId(userId) }],
+          job: { $nin: senderMsgIds },
+        },
+      },
+      {
+        $project: {
+          status: 1,
+          sender: 1,
+          receiver: 1,
+          job: 1,
+          count: {
+            $cond: [
+              {
+                $and: [
+                  { $eq: ['$status', 'unread'] },
+                  { $eq: ['$receiver', ObjectId(userId)] },
+                ],
+              },
+              1,
+              0,
+            ],
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { job: '$job', sender: '$sender' },
+          job: { $first: '$job' },
+          sender: { $first: '$sender' },
+          receiver: { $first: '$receiver' },
+          count: { $sum: '$count' },
+        },
+      },
+    ]);
+    const recMsgIds = receiverMessages.map((item) => item.job);
+    console.log(senderMsgIds, recMsgIds);
+    return [...senderMessages, ...receiverMessages];
   },
 });

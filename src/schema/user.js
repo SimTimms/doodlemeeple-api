@@ -7,22 +7,8 @@ const stripe = require('stripe')(process.env.STRIPE_KEY, {
 });
 
 const UserQuery = {
-  userById: UserTC.getResolver('findById').wrapResolve((next) => async (rp) => {
-    const userId = getUserId(rp.context.headers.authorization);
-
-    const user = await User.findOne({
-      _id: rp.args._id,
-    });
-
-    user &&
-      userId !== user._id &&
-      (await User.updateOne(
-        { _id: rp.args._id },
-        { viewCount: user.viewCount ? user.viewCount + 1 : 1 }
-      ));
-
-    return await next(rp);
-  }),
+  userById: UserTC.getResolver('findById'),
+  userByIdWithTracker: UserTC.getResolver('userByIdWithTracker'),
   userByIds: UserTC.getResolver('findByIds'),
   userOne: UserTC.getResolver('findOne'),
   userMany: UserTC.getResolver('findMany'),

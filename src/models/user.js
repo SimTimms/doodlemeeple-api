@@ -18,6 +18,7 @@ import {
   FavouriteTC,
   Favourite,
   BadgeTC,
+  ActivityLog,
 } from './';
 const ObjectId = mongoose.Types.ObjectId;
 const { emailReset, emailForgot } = require('../email');
@@ -35,6 +36,13 @@ aws.config.update({
 const S3_BUCKET = process.env.BUCKET;
 var s3 = new aws.S3();
 
+const WebshopSchema = new Schema({
+  name: { type: String },
+  logo: { type: String },
+  url: { type: String },
+  price: { type: String },
+});
+
 export const UserSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -51,6 +59,7 @@ export const UserSchema = new Schema(
     facebook: { type: String },
     twitter: { type: String },
     website: { type: String },
+    lastOn: { type: Date },
     instagram: { type: String },
     linkedIn: { type: String },
     publicEmail: { type: String },
@@ -116,6 +125,7 @@ export const UserSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Notification',
     },
+    webshop: { type: [WebshopSchema] },
     token: { type: String },
   },
   {
@@ -237,7 +247,7 @@ UserTC.addResolver({
         },
       },
       { $sort: { createdAt: -1 } },
-      { $limit: 10 },
+      { $limit: 12 },
     ]);
 
     return users;
@@ -266,7 +276,7 @@ UserTC.addResolver({
           ],
         },
       },
-      { $sample: { size: 3 } },
+      { $sample: { size: 6 } },
     ]);
 
     return users;
@@ -312,7 +322,13 @@ UserTC.addResolver({
           viewCount: 1,
           createdAt: 1,
           priority: 1,
-          profileBG: { $ifNull: ['$profileBG', ''] },
+          resultBG: { $not: [{ $ne: ['$profileBG', null] }] },
+          resultFB: { $not: [{ $ne: ['$facebook', ''] }] },
+          resultTwitter: { $not: [{ $ne: ['$twitter', ''] }] },
+          resultLinkedIn: { $not: [{ $ne: ['$linkedIn', ''] }] },
+          resultInstagram: { $not: [{ $ne: ['$instagram', ''] }] },
+          resultPublicEmail: { $not: [{ $ne: ['$publicEmail', ''] }] },
+          resultWebsite: { $not: [{ $ne: ['$website', ''] }] },
           linkedIn: { $ifNull: ['$linkedIn', ''] },
           twitter: { $ifNull: ['$twitter', ''] },
           instagram: { $ifNull: ['$instagram', ''] },
@@ -325,20 +341,22 @@ UserTC.addResolver({
       {
         $sort: {
           priority: 1,
-          profileBG: -1,
+          resultBG: 1,
+          resultFB: 1,
+          resultTwitter: 1,
+          resultLinkedIn: 1,
+          resultInstagram: 1,
+          resultPublicEmail: 1,
+          resultWebsite: 1,
           viewCount: 1,
-          publicEmail: -1,
-          website: -1,
-          linkedIn: -1,
-          twitter: -1,
-          facebook: -1,
-          instagram: -1,
           createdAt: -1,
         },
       },
       { $skip: rp.args.page * 12 },
       { $limit: 12 },
     ]);
+
+    console.log(users);
 
     return users;
   },
@@ -446,7 +464,37 @@ UserTC.addResolver({
   type: UserTC,
   kind: 'mutation',
   resolve: async ({ source, args }) => {
+    await ActivityLog.create({ action: 'login', value: args.email });
+    await User.updateOne({ email: args.email }, { lastOn: new Date() });
     return login(args);
+  },
+});
+
+UserTC.addResolver({
+  name: 'userByIdWithTracker',
+  args: { _id: 'MongoID!' },
+  type: UserTC,
+  kind: 'mutation',
+  resolve: async ({ source, args, context }) => {
+    const userId = getUserId(context.headers.authorization);
+    await ActivityLog.create({
+      action: 'profile-view',
+      actionBy: userId,
+      user: args._id,
+    });
+
+    const user = await User.findOne({
+      _id: args._id,
+    });
+
+    user &&
+      userId !== user._id &&
+      (await User.updateOne(
+        { _id: args._id },
+        { viewCount: user.viewCount ? user.viewCount + 1 : 1 }
+      ));
+
+    return user;
   },
 });
 

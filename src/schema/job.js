@@ -14,6 +14,8 @@ const JobQuery = {
   jobWidget: JobTC.getResolver('jobWidget'),
   jobBoardWidget: JobTC.getResolver('jobBoardWidget'),
   jobBoardMiniWidget: JobTC.getResolver('jobBoardMiniWidget'),
+  jobHistory: JobTC.getResolver('jobHistory'),
+  workHistory: JobTC.getResolver('workHistory'),
 };
 
 const JobMutation = {
@@ -33,6 +35,7 @@ const JobMutation = {
   jobCreateMany: JobTC.getResolver('createMany'),
   jobUpdateById: JobTC.getResolver('updateById'),
   closeJob: JobTC.getResolver('closeJob'),
+  openJob: JobTC.getResolver('openJob'),
   completeJob: JobTC.getResolver('completeJob'),
   jobUpdateOne: JobTC.getResolver('updateOne'),
   jobUpdateMany: JobTC.getResolver('updateMany'),
@@ -40,6 +43,7 @@ const JobMutation = {
   jobRemoveOne: JobTC.getResolver('removeOne'),
   jobRemoveMany: JobTC.getResolver('removeMany'),
   submitBrief: JobTC.getResolver('submitBrief'),
+  submitBriefSingle: JobTC.getResolver('submitBriefSingle'),
   acceptTerms: JobTC.getResolver('acceptTerms'),
   submitPublicBrief: JobTC.getResolver('submitPublicBrief'),
   closeEarly: JobTC.getResolver('closeEarly'),

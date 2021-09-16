@@ -60,13 +60,24 @@ export const ContractTC = composeWithMongoose(Contract);
 
 ContractTC.addResolver({
   name: 'quoteWidget',
-  args: {},
+  args: { status: ['String'] },
   type: [ContractTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const quotes = await Contract.find({ user: userId });
+    const quotes = await Contract.find({
+      $and: [{ user: userId }, { status: { $in: rp.args.status } }],
+    }).sort({ createdAt: -1 });
+
+    await Contract.updateOne(
+      {
+        $and: [{ user: userId }, { status: { $in: rp.args.status } }],
+      },
+      {
+        seenByOwner: true,
+      }
+    );
 
     return quotes;
   },
@@ -85,9 +96,11 @@ ContractTC.addResolver({
       job: rp.args.jobId,
     });
 
-    await Contract.updateOne({ _id: quote._id }, { seenByOwner: true });
+    if (quote) {
+      await Contract.updateOne({ _id: quote._id }, { seenByOwner: true });
 
-    return quote;
+      return quote;
+    }
   },
 });
 
@@ -111,13 +124,17 @@ ContractTC.addResolver({
 
 ContractTC.addResolver({
   name: 'quoteInWidget',
-  args: {},
+  args: { jobId: 'MongoID!' },
   type: [ContractTC],
   kind: 'query',
   resolve: async (rp) => {
     const userId = getUserId(rp.context.headers.authorization);
 
-    const quotes = await Contract.find({ jobOwner: userId });
+    const quotes = await Contract.find({
+      jobOwner: userId,
+      job: rp.args.jobId,
+      status: 'submitted',
+    });
 
     return quotes;
   },
@@ -289,6 +306,32 @@ ContractTC.addResolver({
     Notification.create({ ...notificationMessage, user: creative._id });
 
     return contract;
+  },
+});
+
+ContractTC.addResolver({
+  name: 'contractHistory',
+  type: [ContractTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const contracts = await Contract.find({
+      user: userId,
+      status: { $in: ['declined', 'closed', 'deleted'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    await Contract.updateMany(
+      {
+        user: userId,
+        status: { $in: ['declined', 'closed'] },
+      },
+      { seenByOwner: true }
+    );
+
+    return contracts;
   },
 });
 

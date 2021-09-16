@@ -12,6 +12,8 @@ const KickstarterQuery = {
   featuredKickstarterWidget: KickstarterTC.getResolver(
     'featuredKickstarterWidget'
   ),
+  kickstarterWidget: KickstarterTC.getResolver('kickstarterWidget'),
+  myKickstarters: KickstarterTC.getResolver('myKickstarters'),
 };
 
 const KickstarterMutation = {

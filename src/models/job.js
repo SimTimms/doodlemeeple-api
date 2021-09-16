@@ -18,6 +18,7 @@ import { InviteSchema } from './invite';
 import { getUserId } from '../utils';
 import { INVITED } from '../utils/notifications';
 import { emailInvite, earlyClosure } from '../email';
+const ObjectId = mongoose.Types.ObjectId;
 
 export const JobSchema = new Schema(
   {
@@ -101,10 +102,11 @@ JobTC.addResolver({
   type: JobTC,
   kind: 'query',
   resolve: async (rp) => {
-    const jobs = await Job.findOne({
+    const job = await Job.findOne({
       _id: rp.args.jobId,
     });
-    return jobs;
+
+    return job;
   },
 });
 
@@ -117,7 +119,7 @@ JobTC.addResolver({
       isPublic: true,
       submitted: { $ne: 'accepted' },
       approved: true,
-    });
+    }).sort({ createdAt: -1 });
 
     return jobs;
   },
@@ -130,7 +132,10 @@ JobTC.addResolver({
   resolve: async (rp) => {
     const jobs = await Job.find({
       isPublic: true,
-      submitted: { $ne: 'accepted' },
+      $and: [
+        { submitted: { $ne: 'accepted' } },
+        { submitted: { $ne: 'closed' } },
+      ],
       approved: true,
     })
       .sort({ createdAt: -1 })
@@ -239,6 +244,26 @@ JobTC.addResolver({
       { job: rp.args._id, status: { $ne: 'declined' } },
       { status: 'closed' }
     );
+
+    await Contract.updateMany({ job: rp.args._id }, { status: 'job_closed' });
+    return null;
+  },
+});
+
+JobTC.addResolver({
+  name: 'openJob',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    await Job.updateOne(
+      { _id: rp.args._id, user: userId },
+      { submitted: 'draft' }
+    );
+
     return null;
   },
 });
@@ -340,6 +365,36 @@ JobTC.addResolver({
   },
 });
 
+JobTC.addResolver({
+  name: 'submitBriefSingle',
+  type: JobTC,
+  args: {
+    _id: 'MongoID!',
+    userId: 'MongoID!',
+  },
+  kind: 'mutation',
+  resolve: async ({ source, args, context, info }) => {
+    const jobId = args._id;
+    const jobDeets = await Job.findOne({ _id: jobId });
+    await Invite.create({
+      receiver: args.userId,
+      job: jobId,
+      sender: jobDeets.user._id,
+      status: 'unopened',
+    });
+
+    const invitee = await User.findOne({ _id: args.userId });
+    await Job.updateOne({ _id: jobId }, { submitted: 'submitted' });
+
+    const notificationMessage = { ...INVITED };
+    notificationMessage.message = `${jobDeets.name}`;
+    notificationMessage.linkTo = `${notificationMessage.linkTo}`;
+    await Notification.create({ ...notificationMessage, user: invitee._id });
+
+    const request = await emailInvite(invitee, jobDeets);
+  },
+});
+
 export const ChecklistSchema = new Schema({
   contract: {
     type: ContractSchema,
@@ -355,6 +410,47 @@ export const ChecklistSchema = new Schema({
 
 export const Checklist = mongoose.model('Checklist', ChecklistSchema);
 export const ChecklistTC = composeWithMongoose(Checklist);
+
+JobTC.addResolver({
+  name: 'jobHistory',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+    const jobs = await Job.find({
+      user: userId,
+      submitted: { $in: ['declined', 'rejected', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return jobs;
+  },
+});
+
+JobTC.addResolver({
+  name: 'workHistory',
+  type: [JobTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    const invites = await Invite.find({
+      receiver: userId,
+      status: { $in: ['declined', 'closed'] },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    const jobs = await Job.find({
+      _id: { $in: invites.map((item) => item.job._id) },
+    }).sort({
+      updatedAt: -1,
+    });
+
+    return jobs;
+  },
+});
 
 JobTC.addResolver({
   name: 'jobChecklist',

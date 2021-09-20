@@ -322,6 +322,7 @@ UserTC.addResolver({
           viewCount: 1,
           createdAt: 1,
           priority: 1,
+          lastOn: 1,
           resultBG: { $not: [{ $ne: ['$profileBG', null] }] },
           resultFB: { $not: [{ $ne: ['$facebook', ''] }] },
           resultTwitter: { $not: [{ $ne: ['$twitter', ''] }] },

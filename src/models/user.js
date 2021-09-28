@@ -341,6 +341,7 @@ UserTC.addResolver({
       },
       {
         $sort: {
+          lastOn: -1,
           priority: 1,
           resultBG: 1,
           resultFB: 1,
@@ -356,8 +357,6 @@ UserTC.addResolver({
       { $skip: rp.args.page * 12 },
       { $limit: 12 },
     ]);
-
-    console.log(users);
 
     return users;
   },

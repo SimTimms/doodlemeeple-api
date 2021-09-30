@@ -102,7 +102,7 @@ MyPostTC.addResolver({
       approved: true,
     })
       .sort({ createdAt: -1 })
-      .limit(5);
+      .limit(15);
 
     return myPosts;
   },

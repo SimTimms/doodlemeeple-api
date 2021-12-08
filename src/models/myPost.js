@@ -107,3 +107,19 @@ MyPostTC.addResolver({
     return myPosts;
   },
 });
+
+MyPostTC.addResolver({
+  name: 'postFeed',
+  args: {},
+  type: [MyPostTC],
+  kind: 'query',
+  resolve: async (rp) => {
+    const myPosts = await MyPost.find({
+      approved: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(15);
+
+    return myPosts;
+  },
+});

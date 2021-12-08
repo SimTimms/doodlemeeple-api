@@ -12,6 +12,7 @@ const MyPostQuery = {
   featuredMyPostWidget: MyPostTC.getResolver('featuredMyPostWidget'),
   myPostsWidget: MyPostTC.getResolver('myPostsWidget'),
   myPosts: MyPostTC.getResolver('myPosts'),
+  postFeed: MyPostTC.getResolver('postFeed'),
 };
 
 const MyPostMutation = {

@@ -187,15 +187,17 @@ MyPostTC.addResolver({
         user: item.user._id,
       };
     });
-    console.log(kickstarterArranged);
 
     const usersSignedIn = await User.aggregate([
       {
         $match: {
           $and: [
+            { profileImg: { $ne: '' } },
             { profileImg: { $ne: null } },
             { summary: { $ne: null } },
             { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
           ],
         },
       },
@@ -205,7 +207,7 @@ MyPostTC.addResolver({
     const usersSignedInArranged = usersSignedIn.map((item) => {
       return {
         name: item.name,
-        summary: item.sections[0].name,
+        summary: item.summary,
         type: 'lastOn',
         createdAt: item.lastOn,
         user: item._id,

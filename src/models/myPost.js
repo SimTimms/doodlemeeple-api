@@ -149,19 +149,6 @@ MyPostTC.addResolver({
         user: item.user._id,
       };
     });
-    const jobsInvite = await Job.find({ isPublic: null })
-      .sort({ createdAt: -1 })
-      .limit(15);
-
-    const jobsInviteArranged = jobsInvite.map((item) => {
-      return {
-        name: item.name,
-        summary: item.summary,
-        type: 'jobPrivate',
-        createdAt: item.createdAt,
-        user: item.user._id,
-      };
-    });
 
     const users = await User.aggregate([
       {
@@ -179,11 +166,10 @@ MyPostTC.addResolver({
       { $sort: { createdAt: -1 } },
       { $limit: 12 },
     ]);
-
     const usersArranged = users.map((item) => {
       return {
         name: item.name,
-        summary: item.sections[0].name,
+        summary: item.summary,
         type: 'newUser',
         createdAt: item.createdAt,
         user: item._id,

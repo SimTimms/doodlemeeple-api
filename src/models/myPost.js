@@ -136,7 +136,7 @@ MyPostTC.addResolver({
       };
     });
 
-    const jobs = await Job.find({ isPublic: true })
+    const jobs = await Job.find({ isPublic: true, approved: true })
       .sort({ createdAt: -1 })
       .limit(15);
 

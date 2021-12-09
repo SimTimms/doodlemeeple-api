@@ -213,7 +213,7 @@ MyPostTC.addResolver({
           ],
         },
       },
-      { $sort: { lastOn: 1 } },
+      { $sort: { lastOn: -1 } },
       { $limit: 10 },
     ]);
     const usersSignedInArranged = usersSignedIn.map((item) => {

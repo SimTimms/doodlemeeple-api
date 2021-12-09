@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC, ActivityLog, Kickstarter, User, Game } from './';
+import { UserTC, GameTC, ActivityLog, Kickstarter, User, Game, Job } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -120,7 +120,7 @@ MyPostTC.addResolver({
       .sort({ createdAt: -1 })
       .limit(15);
 
-    const kickstarters = await Kickstarter.find()
+    const kickstarters = await Kickstarter.find({ approved: true })
       .sort({ createdAt: -1 })
       .limit(15);
 
@@ -130,6 +130,36 @@ MyPostTC.addResolver({
         summary: item.summary,
         type: 'kickstarter',
         createdAt: item.createdAt,
+        user: item.user._id,
+        url: item.url,
+        featuredImage: item.featuredImage,
+      };
+    });
+
+    const jobs = await Job.find({ isPublic: true })
+      .sort({ createdAt: -1 })
+      .limit(15);
+
+    const jobsArranged = jobs.map((item) => {
+      return {
+        name: item.name,
+        summary: item.summary,
+        type: 'job',
+        createdAt: item.createdAt,
+        user: item.user._id,
+      };
+    });
+    const jobsInvite = await Job.find({ isPublic: null })
+      .sort({ createdAt: -1 })
+      .limit(15);
+
+    const jobsInviteArranged = jobsInvite.map((item) => {
+      return {
+        name: item.name,
+        summary: item.summary,
+        type: 'jobPrivate',
+        createdAt: item.createdAt,
+        user: item.user._id,
       };
     });
 
@@ -156,6 +186,7 @@ MyPostTC.addResolver({
         summary: item.sections[0].name,
         type: 'newUser',
         createdAt: item.createdAt,
+        user: item._id,
       };
     });
 
@@ -167,32 +198,31 @@ MyPostTC.addResolver({
         summary: item.summary,
         type: 'game',
         createdAt: item.createdAt,
+        user: item.user._id,
       };
     });
+    console.log(kickstarterArranged);
 
     const usersSignedIn = await User.aggregate([
       {
         $match: {
           $and: [
-            { profileImg: { $ne: '' } },
             { profileImg: { $ne: null } },
             { summary: { $ne: null } },
             { summary: { $ne: '' } },
-            { sections: { $ne: [] } },
-            { sections: { $ne: null } },
           ],
         },
       },
-      { $sort: { lastOn: -1 } },
+      { $sort: { lastOn: 1 } },
       { $limit: 10 },
     ]);
-
     const usersSignedInArranged = usersSignedIn.map((item) => {
       return {
         name: item.name,
         summary: item.sections[0].name,
         type: 'lastOn',
-        createdAt: item.createdAt,
+        createdAt: item.lastOn,
+        user: item._id,
       };
     });
 
@@ -202,6 +232,8 @@ MyPostTC.addResolver({
       ...usersArranged,
       ...gamesArranged,
       ...usersSignedInArranged,
+      ...jobsArranged,
+      //...jobsInviteArranged,
     ];
 
     const sortedPosts = totalPosts.sort((a, b) => b.createdAt - a.createdAt);

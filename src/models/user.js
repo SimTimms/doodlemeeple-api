@@ -263,7 +263,6 @@ UserTC.addResolver({
     const userId = getUserId(rp.context.headers.authorization);
 
     await User.updateOne({ _id: userId }, { lastOn: new Date() });
-
     const users = await User.aggregate([
       {
         $match: {

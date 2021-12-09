@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import timestamps from 'mongoose-timestamp';
 import { composeWithMongoose } from 'graphql-compose-mongoose';
-import { UserTC, GameTC, ActivityLog } from './';
+import { UserTC, GameTC, ActivityLog, Kickstarter, User, Game } from './';
 import { getUserId } from '../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -120,6 +120,92 @@ MyPostTC.addResolver({
       .sort({ createdAt: -1 })
       .limit(15);
 
-    return myPosts;
+    const kickstarters = await Kickstarter.find()
+      .sort({ createdAt: -1 })
+      .limit(15);
+
+    const kickstarterArranged = kickstarters.map((item) => {
+      return {
+        name: item.name,
+        summary: item.summary,
+        type: 'kickstarter',
+        createdAt: item.createdAt,
+      };
+    });
+
+    const users = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
+          ],
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      { $limit: 12 },
+    ]);
+
+    const usersArranged = users.map((item) => {
+      return {
+        name: item.name,
+        summary: item.sections[0].name,
+        type: 'newUser',
+        createdAt: item.createdAt,
+      };
+    });
+
+    const games = await Game.find().sort({ createdAt: -1 }).limit(15);
+
+    const gamesArranged = games.map((item) => {
+      return {
+        name: item.name,
+        summary: item.summary,
+        type: 'game',
+        createdAt: item.createdAt,
+      };
+    });
+
+    const usersSignedIn = await User.aggregate([
+      {
+        $match: {
+          $and: [
+            { profileImg: { $ne: '' } },
+            { profileImg: { $ne: null } },
+            { summary: { $ne: null } },
+            { summary: { $ne: '' } },
+            { sections: { $ne: [] } },
+            { sections: { $ne: null } },
+          ],
+        },
+      },
+      { $sort: { lastOn: -1 } },
+      { $limit: 10 },
+    ]);
+
+    const usersSignedInArranged = usersSignedIn.map((item) => {
+      return {
+        name: item.name,
+        summary: item.sections[0].name,
+        type: 'lastOn',
+        createdAt: item.createdAt,
+      };
+    });
+
+    const totalPosts = [
+      ...kickstarterArranged,
+      ...myPosts,
+      ...usersArranged,
+      ...gamesArranged,
+      ...usersSignedInArranged,
+    ];
+
+    const sortedPosts = totalPosts.sort((a, b) => b.createdAt - a.createdAt);
+
+    return sortedPosts;
   },
 });

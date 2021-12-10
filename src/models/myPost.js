@@ -180,9 +180,7 @@ MyPostTC.addResolver({
       };
     });
 
-    const games = await Game.find({ approved: true })
-      .sort({ createdAt: -1 })
-      .limit(15);
+    const games = await Game.find().sort({ createdAt: -1 }).limit(15);
 
     const gamesArranged = games.map((item) => {
       return {

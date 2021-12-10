@@ -180,15 +180,19 @@ MyPostTC.addResolver({
       };
     });
 
-    const games = await Game.find().sort({ createdAt: -1 }).limit(15);
+    const games = await Game.find({ approved: true })
+      .sort({ createdAt: -1 })
+      .limit(15);
 
     const gamesArranged = games.map((item) => {
       return {
+        game: item._id,
         name: item.name,
         summary: item.summary,
         type: 'game',
         createdAt: item.createdAt,
         user: item.user._id,
+        featuredImage: item.featuredImage,
       };
     });
 

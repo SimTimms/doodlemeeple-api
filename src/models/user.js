@@ -480,6 +480,8 @@ UserTC.addResolver({
   kind: 'mutation',
   resolve: async ({ source, args, context }) => {
     const userId = getUserId(context.headers.authorization);
+
+    await User.updateOne({ _id: userId }, { lastOn: new Date() });
     await ActivityLog.create({
       action: 'profile-view',
       actionBy: userId,

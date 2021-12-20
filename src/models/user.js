@@ -260,6 +260,9 @@ UserTC.addResolver({
   type: [UserTC],
   kind: 'query',
   resolve: async (rp) => {
+    const userId = getUserId(rp.context.headers.authorization);
+
+    await User.updateOne({ _id: userId }, { lastOn: new Date() });
     const users = await User.aggregate([
       {
         $match: {
@@ -322,6 +325,7 @@ UserTC.addResolver({
           viewCount: 1,
           createdAt: 1,
           priority: 1,
+          lastOn: 1,
           resultBG: { $not: [{ $ne: ['$profileBG', null] }] },
           resultFB: { $not: [{ $ne: ['$facebook', ''] }] },
           resultTwitter: { $not: [{ $ne: ['$twitter', ''] }] },
@@ -340,6 +344,7 @@ UserTC.addResolver({
       },
       {
         $sort: {
+          lastOn: -1,
           priority: 1,
           resultBG: 1,
           resultFB: 1,
@@ -355,8 +360,6 @@ UserTC.addResolver({
       { $skip: rp.args.page * 12 },
       { $limit: 12 },
     ]);
-
-    console.log(users);
 
     return users;
   },
@@ -477,6 +480,8 @@ UserTC.addResolver({
   kind: 'mutation',
   resolve: async ({ source, args, context }) => {
     const userId = getUserId(context.headers.authorization);
+
+    await User.updateOne({ _id: userId }, { lastOn: new Date() });
     await ActivityLog.create({
       action: 'profile-view',
       actionBy: userId,

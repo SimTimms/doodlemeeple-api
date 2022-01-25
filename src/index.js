@@ -65,7 +65,7 @@ app.get('/3d-artist', async (req, res) => {
         createdAt: -1,
       },
     },
-    { $limit: 12 },
+    { $limit: 8 },
   ]);
   res.send(users);
 });

@@ -32,7 +32,7 @@ app.use(cors());
 
 app.get('/3d-artist', async (req, res) => {
   const sections = await Section.find({
-    type: { $in: 'artist' },
+    type: { $in: 'mini-painter' },
   });
 
   const sectionUserIds = sections.map((section) => ObjectId(section.user));

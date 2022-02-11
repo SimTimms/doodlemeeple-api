@@ -23,20 +23,6 @@ const UserQuery = {
   latestCreativesWidget: UserTC.getResolver('latestCreativesWidget'),
   getLikes: UserTC.getResolver('getLikes'),
   creativeMinis: UserTC.getResolver('creativeMinis'),
-  getStripe: UserTC.getResolver('getStripe').wrapResolve(
-    (next) => async (rp) => {
-      const userId = getUserId(rp.context.headers.authorization);
-      const user = await User.findOne({
-        _id: userId,
-      });
-
-      const account = user.stripeID
-        ? await stripe.accounts.retrieve(`${user.stripeID}`)
-        : false;
-
-      return account;
-    }
-  ),
 };
 
 const UserMutation = {

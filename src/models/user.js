@@ -135,7 +135,6 @@ export const UserSchema = new Schema(
 
 UserSchema.plugin(timestamps);
 UserSchema.index({ createdAt: 1, updatedAt: 1 });
-
 export const User = mongoose.model('User', UserSchema);
 export const UserTC = composeWithMongoose(User);
 
@@ -501,13 +500,6 @@ UserTC.addResolver({
 
     return user;
   },
-});
-
-UserTC.addResolver({
-  name: 'getStripe',
-  type: StripeTC,
-  kind: 'query',
-  resolve: async () => {},
 });
 
 UserTC.addResolver({
